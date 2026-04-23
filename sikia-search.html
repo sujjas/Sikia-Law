@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sikia Law — Search</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --bg-muted: #fafafa;
+    --surface: #ffffff;
+    --surface-2: #f4f4f5;
+    --surface-3: #eeeef0;
+    --line: #dcdcdf;
+    --line-2: #ececee;
+    --text: #0f0f10;
+    --text-2: #525255;
+    --text-3: #8a8a8f;
+    --accent: #0f0f10;
+    --accent-fg: #ffffff;
+    --highlight: #fff3b0;
+    --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+    color: var(--text); background: var(--bg-muted);
+    min-height: 100vh; line-height: 1.5; -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3 { font-weight: 600; letter-spacing: -0.015em; color: var(--text); margin: 0; }
+  p { margin: 0; color: var(--text-2); }
+  a { color: inherit; text-decoration: none; }
+
+  .app { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+  .sidebar {
+    background: var(--surface); border-right: 1px solid var(--line-2);
+    padding: 22px 16px; position: sticky; top: 0; height: 100vh;
+    overflow-y: auto; display: flex; flex-direction: column; gap: 8px;
+  }
+  .logo {
+    display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 1rem;
+    padding: 6px 8px 18px; border-bottom: 1px solid var(--line-2); margin-bottom: 10px;
+  }
+  .logo-mark {
+    width: 26px; height: 26px; border-radius: 7px;
+    background: var(--text); color: var(--accent-fg);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.78rem; font-weight: 600;
+  }
+  .nav-group { display: flex; flex-direction: column; gap: 2px; margin-bottom: 14px; }
+  .nav-group-title {
+    font-size: 0.72rem; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--text-3); padding: 8px 10px 6px;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px; border-radius: 8px;
+    font-size: 0.92rem; color: var(--text-2); position: relative;
+    transition: padding-left 0.15s var(--ease-out), background 0.15s ease, color 0.15s ease;
+  }
+  .nav-item:hover { background: var(--surface-2); color: var(--text); padding-left: 16px; }
+  .nav-item.active { background: var(--surface-2); color: var(--text); font-weight: 500; }
+  .nav-item.active::before {
+    content: ""; position: absolute; left: 0; top: 8px; bottom: 8px;
+    width: 3px; background: var(--text); border-radius: 0 3px 3px 0;
+  }
+  .sidebar-footer {
+    margin-top: auto; padding: 12px 10px; border-top: 1px solid var(--line-2);
+    display: flex; align-items: center; gap: 10px; font-size: 0.88rem;
+  }
+  .avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--surface-3); color: var(--text);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.78rem; font-weight: 600;
+  }
+
+  .main { display: flex; flex-direction: column; min-width: 0; }
+
+  /* Search hero */
+  .search-hero {
+    padding: 32px 40px 24px; background: var(--surface);
+    border-bottom: 1px solid var(--line-2);
+  }
+  .search-big {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 20px; border: 1px solid var(--line); border-radius: 14px;
+    background: var(--surface-2); max-width: 760px;
+    transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.2s ease;
+    animation: slideDown 0.45s var(--ease-out);
+  }
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .search-big:focus-within {
+    background: var(--surface); border-color: var(--text-3);
+    box-shadow: 0 0 0 4px var(--surface-2);
+  }
+  .search-big .mag { color: var(--text-3); font-size: 1.1rem; }
+  .search-big input {
+    border: none; outline: none; background: transparent;
+    font-size: 1.05rem; font-family: inherit; flex: 1; color: var(--text);
+  }
+  .search-big input::placeholder { color: var(--text-3); }
+  .clear-btn {
+    background: var(--surface-3); border: none; border-radius: 999px;
+    width: 22px; height: 22px; color: var(--text-2); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-family: inherit; font-size: 0.82rem;
+    transition: background 0.15s ease, transform 0.15s ease;
+  }
+  .clear-btn:hover { background: var(--text); color: var(--accent-fg); transform: rotate(90deg); }
+
+  .suggest-chips {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px;
+  }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px;
+    font-size: 0.82rem; color: var(--text-2); background: var(--surface);
+    cursor: pointer; font-family: inherit;
+    transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+  }
+  .chip:hover { background: var(--text); color: var(--accent-fg); border-color: var(--text); transform: translateY(-1px); }
+
+  /* Filters bar */
+  .filter-row {
+    padding: 14px 40px; display: flex; align-items: center; gap: 12px;
+    border-bottom: 1px solid var(--line-2); background: var(--surface);
+    flex-wrap: wrap;
+  }
+  .filter-label { font-size: 0.8rem; color: var(--text-3); }
+  .tabs-sm { display: flex; gap: 4px; }
+  .tab-sm {
+    padding: 6px 12px; border-radius: 999px; border: 1px solid transparent;
+    font-size: 0.84rem; color: var(--text-2); background: transparent;
+    cursor: pointer; font-family: inherit;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+  .tab-sm:hover { background: var(--surface-2); color: var(--text); }
+  .tab-sm.active { background: var(--text); color: var(--accent-fg); }
+
+  .select {
+    padding: 7px 12px; border: 1px solid var(--line); border-radius: 8px;
+    background: var(--surface); font-size: 0.84rem; color: var(--text-2);
+    font-family: inherit; cursor: pointer;
+  }
+
+  /* Content */
+  .content { padding: 28px 40px 80px; max-width: 1000px; width: 100%; }
+
+  .results-head {
+    margin-bottom: 24px; display: flex; align-items: baseline; gap: 10px;
+    animation: fadeUp 0.4s var(--ease-out);
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .results-head h2 { font-size: 1.05rem; }
+  .results-head .count { font-size: 0.9rem; color: var(--text-3); }
+  .results-head strong { color: var(--text); font-weight: 600; }
+
+  /* Result cards */
+  .result {
+    display: block; padding: 22px 0;
+    border-bottom: 1px solid var(--line-2);
+    transition: padding-left 0.15s var(--ease-out);
+    animation: resultIn 0.4s var(--ease-out) backwards;
+  }
+  @keyframes resultIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .result:hover { padding-left: 10px; }
+  .result-meta {
+    display: flex; gap: 8px; align-items: center;
+    font-size: 0.78rem; color: var(--text-3);
+    margin-bottom: 6px;
+  }
+  .result-meta .pill {
+    padding: 2px 8px; border: 1px solid var(--line); border-radius: 999px;
+    font-size: 0.72rem; color: var(--text-2); background: var(--surface);
+  }
+  .result-meta .pill.strong { background: var(--text); color: var(--accent-fg); border-color: var(--text); }
+  .result-title {
+    font-size: 1.08rem; font-weight: 600; color: var(--text);
+    margin-bottom: 6px; transition: text-decoration 0.15s ease;
+  }
+  .result:hover .result-title { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; }
+  .result-snippet {
+    font-size: 0.94rem; color: var(--text-2); line-height: 1.65;
+    max-width: 760px;
+  }
+  .result-snippet mark { background: var(--highlight); padding: 0 2px; border-radius: 2px; color: var(--text); }
+  .result-path { margin-top: 8px; font-size: 0.78rem; color: var(--text-3); }
+
+  .no-results {
+    padding: 60px 20px; text-align: center; color: var(--text-3);
+  }
+
+  /* Pagination */
+  .pagination {
+    display: flex; align-items: center; gap: 6px;
+    margin-top: 40px; justify-content: center;
+  }
+  .page-btn {
+    min-width: 34px; height: 34px; padding: 0 10px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border: 1px solid var(--line); border-radius: 8px;
+    background: var(--surface); color: var(--text-2);
+    font-size: 0.88rem; font-family: inherit; cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .page-btn:hover { background: var(--surface-2); color: var(--text); }
+  .page-btn.active { background: var(--text); color: var(--accent-fg); border-color: var(--text); }
+
+  @media (max-width: 900px) {
+    .app { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .content, .search-hero, .filter-row { padding-left: 20px; padding-right: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <aside class="sidebar">
+    <a href="sikia-dashboard.html" class="logo"><span class="logo-mark">S</span>Sikia Law</a>
+
+    <div class="nav-group">
+      <div class="nav-group-title">Library</div>
+      <a href="sikia-dashboard.html" class="nav-item">Home</a>
+      <a href="sikia-case-law.html" class="nav-item">Case Law</a>
+      <a href="sikia-statutes.html" class="nav-item">Statutes</a>
+      <a href="sikia-statutes.html" class="nav-item">SIs</a>
+      <a href="sikia-statutes.html" class="nav-item">Decrees</a>
+      <a href="sikia-statutes.html" class="nav-item">Legal Notices</a>
+      <a href="sikia-notes.html" class="nav-item">Lecture Notes</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">Yours</div>
+      <a href="sikia-bookmarks.html" class="nav-item">Bookmarks</a>
+      <a href="sikia-bookmarks.html" class="nav-item">Folders</a>
+      <a href="sikia-search.html" class="nav-item active">Search</a>
+    </div>
+
+    <a href="sikia-profile.html" class="sidebar-footer">
+      <div class="avatar">AN</div>
+      <div>
+        <div style="font-weight: 500; color: var(--text);">Amelia N.</div>
+        <div style="color: var(--text-3); font-size: 0.78rem;">Y2 · Makerere</div>
+      </div>
+    </a>
+  </aside>
+
+  <main class="main">
+    <div class="search-hero">
+      <form class="search-big" id="searchForm">
+        <span class="mag">&#9906;</span>
+        <input type="text" id="q" placeholder="Search across 1,842 cases, 318 Acts, 1,205 SIs…" autofocus />
+        <button type="button" class="clear-btn" id="clearBtn" title="Clear">&times;</button>
+      </form>
+      <div class="suggest-chips">
+        <button class="chip" data-q="identification evidence">identification evidence</button>
+        <button class="chip" data-q="Nabulere cautionary warning">Nabulere cautionary warning</button>
+        <button class="chip" data-q="Contracts Act 2010">Contracts Act 2010</button>
+        <button class="chip" data-q="mandatory death penalty">mandatory death penalty</button>
+        <button class="chip" data-q="privity of contract">privity of contract</button>
+      </div>
+    </div>
+
+    <div class="filter-row">
+      <span class="filter-label">Filter by</span>
+      <div class="tabs-sm" id="typeTabs">
+        <button class="tab-sm active" data-type="all">All</button>
+        <button class="tab-sm" data-type="case">Cases</button>
+        <button class="tab-sm" data-type="act">Statutes</button>
+        <button class="tab-sm" data-type="note">Notes</button>
+      </div>
+      <div style="width: 1px; height: 18px; background: var(--line-2); margin: 0 4px;"></div>
+      <select class="select">
+        <option>Any court</option>
+        <option>Supreme Court</option>
+        <option>Court of Appeal</option>
+        <option>High Court</option>
+      </select>
+      <select class="select">
+        <option>Any time</option>
+        <option>Past year</option>
+        <option>Past 5 years</option>
+        <option>Past 10 years</option>
+      </select>
+      <select class="select" style="margin-left: auto;">
+        <option>Sort: Relevance</option>
+        <option>Newest first</option>
+        <option>Oldest first</option>
+      </select>
+    </div>
+
+    <div class="content">
+      <div class="results-head">
+        <h2><strong>247</strong> results for "<span id="queryEcho">identification evidence</span>"</h2>
+        <span class="count">0.21 seconds</span>
+      </div>
+
+      <div id="results">
+        <a class="result" href="sikia-document.html" data-type="case" style="animation-delay: 0.04s">
+          <div class="result-meta">
+            <span class="pill strong">Case</span>
+            <span>Supreme Court of Uganda</span>
+            <span>&middot;</span>
+            <span>2021</span>
+          </div>
+          <div class="result-title">Uganda v. Kato Jonathan (Criminal Appeal No. 14 of 2021)</div>
+          <div class="result-snippet">
+            &hellip;where a conviction rests wholly on <mark>identification evidence</mark> given in difficult
+            conditions, the trial court must expressly direct itself on the Nabulere cautionary warning&hellip;
+            must test the quality of the <mark>identification</mark> against objective factors&hellip;
+          </div>
+          <div class="result-path">Case Law &middot; Criminal &middot; Evidence</div>
+        </a>
+
+        <a class="result" href="sikia-document.html" data-type="case" style="animation-delay: 0.08s">
+          <div class="result-meta">
+            <span class="pill strong">Case</span>
+            <span>Court of Appeal</span>
+            <span>&middot;</span>
+            <span>1979</span>
+          </div>
+          <div class="result-title">Abdalla Nabulere &amp; 2 Ors v. Uganda</div>
+          <div class="result-snippet">
+            &hellip;the seminal Ugandan authority on <mark>identification evidence</mark>. Sets out the
+            cautionary warning a trial court must give itself before convicting on the uncorroborated
+            <mark>identification</mark> of a single witness&hellip;
+          </div>
+          <div class="result-path">Case Law &middot; Criminal &middot; Evidence</div>
+        </a>
+
+        <a class="result" href="sikia-document.html" data-type="case" style="animation-delay: 0.12s">
+          <div class="result-meta">
+            <span class="pill strong">Case</span>
+            <span>Supreme Court of Uganda</span>
+            <span>&middot;</span>
+            <span>2019</span>
+          </div>
+          <div class="result-title">Uganda v. Ssemwogerere</div>
+          <div class="result-snippet">
+            &hellip;revisits the standards for <mark>identification</mark> parades. Holds that failure to
+            conduct a parade where feasible weakens the weight of dock <mark>identification</mark>&hellip;
+          </div>
+          <div class="result-path">Case Law &middot; Criminal &middot; Procedure</div>
+        </a>
+
+        <a class="result" href="sikia-document.html" data-type="note" style="animation-delay: 0.16s">
+          <div class="result-meta">
+            <span class="pill">Notes</span>
+            <span>Crim Law &middot; Y2</span>
+            <span>&middot;</span>
+            <span>Lecture 7</span>
+          </div>
+          <div class="result-title">Eyewitness identification &mdash; the Nabulere warning</div>
+          <div class="result-snippet">
+            Covers the conditions under which <mark>identification evidence</mark> must be treated with
+            caution: lighting, duration, familiarity, interval before first description&hellip;
+          </div>
+          <div class="result-path">Lecture Notes &middot; Criminal Law &middot; Week 7</div>
+        </a>
+
+        <a class="result" href="sikia-document.html" data-type="act" style="animation-delay: 0.20s">
+          <div class="result-meta">
+            <span class="pill">Act</span>
+            <span>Evidence Act, Cap. 6</span>
+            <span>&middot;</span>
+            <span>In force</span>
+          </div>
+          <div class="result-title">Evidence Act &mdash; Part III: Relevance of facts</div>
+          <div class="result-snippet">
+            &hellip;sections 6 to 16 govern which facts may be given in evidence, including those relevant
+            to questions of <mark>identification</mark> and the conditions of observation&hellip;
+          </div>
+          <div class="result-path">Statutes &middot; Acts &middot; Chapter 6</div>
+        </a>
+
+        <a class="result" href="sikia-document.html" data-type="case" style="animation-delay: 0.24s">
+          <div class="result-meta">
+            <span class="pill strong">Case</span>
+            <span>Supreme Court</span>
+            <span>&middot;</span>
+            <span>1998</span>
+          </div>
+          <div class="result-title">Bogere Moses v. Uganda</div>
+          <div class="result-snippet">
+            &hellip;the court examined the reliability of single-witness <mark>identification evidence</mark>
+            and laid down practical factors for the trial court's self-direction&hellip;
+          </div>
+          <div class="result-path">Case Law &middot; Criminal &middot; Evidence</div>
+        </a>
+
+        <a class="result" href="sikia-document.html" data-type="case" style="animation-delay: 0.28s">
+          <div class="result-meta">
+            <span class="pill strong">Case</span>
+            <span>Court of Appeal EA</span>
+            <span>&middot;</span>
+            <span>1967</span>
+          </div>
+          <div class="result-title">Roria v. Republic</div>
+          <div class="result-snippet">
+            &hellip;the East African Court of Appeal set out the now-familiar checklist for assessing the
+            quality of <mark>identification evidence</mark> &mdash; still endorsed by Ugandan courts&hellip;
+          </div>
+          <div class="result-path">Case Law &middot; Criminal &middot; Evidence</div>
+        </a>
+      </div>
+
+      <div class="pagination">
+        <button class="page-btn">&lsaquo;</button>
+        <button class="page-btn active">1</button>
+        <button class="page-btn">2</button>
+        <button class="page-btn">3</button>
+        <button class="page-btn">4</button>
+        <button class="page-btn">&hellip;</button>
+        <button class="page-btn">25</button>
+        <button class="page-btn">&rsaquo;</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  const qInput = document.getElementById('q');
+  const echo = document.getElementById('queryEcho');
+
+  // Prefill from ?q=
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('q')) {
+    qInput.value = params.get('q');
+    echo.textContent = params.get('q');
+  } else {
+    qInput.value = 'identification evidence';
+  }
+
+  // Clear button
+  document.getElementById('clearBtn').addEventListener('click', () => {
+    qInput.value = '';
+    qInput.focus();
+  });
+
+  // Echo updates live
+  qInput.addEventListener('input', () => {
+    echo.textContent = qInput.value || 'everything';
+  });
+
+  // Suggest chip clicks
+  document.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      qInput.value = chip.dataset.q;
+      echo.textContent = chip.dataset.q;
+      chip.animate(
+        [{ transform: 'scale(0.9)' }, { transform: 'scale(1.06)' }, { transform: 'scale(1)' }],
+        { duration: 260, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)' }
+      );
+      qInput.focus();
+    });
+  });
+
+  // Type tabs filter
+  const typeTabs = document.querySelectorAll('#typeTabs .tab-sm');
+  const results = document.querySelectorAll('.result');
+  typeTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      typeTabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const type = tab.dataset.type;
+      results.forEach(r => {
+        const show = type === 'all' || r.dataset.type === type;
+        r.style.display = show ? '' : 'none';
+      });
+    });
+  });
+
+  // Arrow-key result navigation
+  let focusIdx = -1;
+  const visible = () => Array.from(results).filter(r => r.style.display !== 'none');
+  document.addEventListener('keydown', (e) => {
+    if (e.target === qInput) {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        const v = visible();
+        focusIdx = 0;
+        v[0] && v[0].focus();
+      }
+      if (e.key === 'Enter' && qInput.value.trim()) {
+        // No-op for demo; results already present
+      }
+      return;
+    }
+    const v = visible();
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      focusIdx = Math.min(focusIdx + 1, v.length - 1);
+      v[focusIdx] && v[focusIdx].focus();
+    }
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      focusIdx = Math.max(focusIdx - 1, 0);
+      v[focusIdx] && v[focusIdx].focus();
+    }
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      qInput.focus();
+      qInput.select();
+    }
+  });
+
+  // Make results focusable
+  results.forEach(r => r.setAttribute('tabindex', '0'));
+</script>
+</body>
+</html>

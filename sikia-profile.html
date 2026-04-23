@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sikia Law — Profile & Settings</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --bg-muted: #fafafa;
+    --surface: #ffffff;
+    --surface-2: #f4f4f5;
+    --surface-3: #eeeef0;
+    --line: #dcdcdf;
+    --line-2: #ececee;
+    --text: #0f0f10;
+    --text-2: #525255;
+    --text-3: #8a8a8f;
+    --accent: #0f0f10;
+    --accent-fg: #ffffff;
+    --danger: #b14343;
+    --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+    color: var(--text); background: var(--bg-muted);
+    min-height: 100vh; line-height: 1.5; -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3 { font-weight: 600; letter-spacing: -0.015em; color: var(--text); margin: 0; }
+  p { margin: 0; color: var(--text-2); }
+  a { color: inherit; text-decoration: none; }
+
+  .app { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+  .sidebar {
+    background: var(--surface); border-right: 1px solid var(--line-2);
+    padding: 22px 16px; position: sticky; top: 0; height: 100vh;
+    overflow-y: auto; display: flex; flex-direction: column; gap: 8px;
+  }
+  .logo {
+    display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 1rem;
+    padding: 6px 8px 18px; border-bottom: 1px solid var(--line-2); margin-bottom: 10px;
+  }
+  .logo-mark {
+    width: 26px; height: 26px; border-radius: 7px;
+    background: var(--text); color: var(--accent-fg);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.78rem; font-weight: 600;
+  }
+  .nav-group { display: flex; flex-direction: column; gap: 2px; margin-bottom: 14px; }
+  .nav-group-title {
+    font-size: 0.72rem; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--text-3); padding: 8px 10px 6px;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px; border-radius: 8px;
+    font-size: 0.92rem; color: var(--text-2); position: relative;
+    transition: padding-left 0.15s var(--ease-out), background 0.15s ease, color 0.15s ease;
+  }
+  .nav-item:hover { background: var(--surface-2); color: var(--text); padding-left: 16px; }
+  .nav-item.active { background: var(--surface-2); color: var(--text); font-weight: 500; }
+  .nav-item.active::before {
+    content: ""; position: absolute; left: 0; top: 8px; bottom: 8px;
+    width: 3px; background: var(--text); border-radius: 0 3px 3px 0;
+  }
+  .sidebar-footer {
+    margin-top: auto; padding: 12px 10px; border-top: 1px solid var(--line-2);
+    display: flex; align-items: center; gap: 10px; font-size: 0.88rem;
+  }
+  .avatar-sm {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--surface-3); color: var(--text);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.78rem; font-weight: 600;
+  }
+
+  .main { display: flex; flex-direction: column; min-width: 0; }
+  .topbar {
+    padding: 18px 40px; border-bottom: 1px solid var(--line-2);
+    background: var(--surface); display: flex; align-items: center; gap: 16px;
+  }
+  .topbar h2 { font-size: 1rem; font-weight: 500; }
+  .topbar-actions { margin-left: auto; display: flex; gap: 10px; align-items: center; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 9px 14px; border-radius: 8px; border: 1px solid var(--line);
+    background: var(--surface); font-size: 0.88rem; color: var(--text);
+    cursor: pointer; font-family: inherit;
+    transition: background 0.15s ease, transform 0.15s ease;
+  }
+  .btn:hover { background: var(--surface-2); transform: translateY(-1px); }
+  .btn-primary { background: var(--text); color: var(--accent-fg); border-color: var(--text); }
+  .btn-danger { color: var(--danger); border-color: var(--line); }
+  .btn-danger:hover { background: var(--danger); color: white; border-color: var(--danger); transform: translateY(-1px); }
+
+  /* Layout */
+  .layout {
+    display: grid; grid-template-columns: 220px 1fr;
+    gap: 48px; padding: 40px 40px 80px;
+    max-width: 1100px; width: 100%;
+  }
+
+  /* Side nav */
+  .side-nav { display: flex; flex-direction: column; gap: 2px; position: sticky; top: 90px; height: fit-content; }
+  .side-link {
+    padding: 10px 14px; border-radius: 8px;
+    font-size: 0.92rem; color: var(--text-2); cursor: pointer;
+    border: none; background: transparent; font-family: inherit;
+    text-align: left; width: 100%;
+    transition: padding-left 0.15s var(--ease-out), background 0.15s ease, color 0.15s ease;
+  }
+  .side-link:hover { background: var(--surface-2); color: var(--text); padding-left: 18px; }
+  .side-link.active {
+    background: var(--surface-2); color: var(--text); font-weight: 500;
+    padding-left: 18px;
+  }
+
+  /* Content */
+  .content { min-width: 0; }
+  .section {
+    background: var(--surface); border: 1px solid var(--line-2); border-radius: 14px;
+    padding: 28px; margin-bottom: 20px;
+    animation: fadeUp 0.5s var(--ease-out) backwards;
+  }
+  .section:nth-child(1) { animation-delay: 0.02s; }
+  .section:nth-child(2) { animation-delay: 0.08s; }
+  .section:nth-child(3) { animation-delay: 0.14s; }
+  .section:nth-child(4) { animation-delay: 0.20s; }
+  .section:nth-child(5) { animation-delay: 0.26s; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .section-head {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 20px;
+  }
+  .section-head h2 { font-size: 1.1rem; }
+  .section-head p { font-size: 0.86rem; color: var(--text-3); margin-top: 4px; }
+
+  /* Profile hero */
+  .profile-hero {
+    display: flex; gap: 20px; align-items: center; margin-bottom: 24px;
+  }
+  .avatar-lg {
+    width: 74px; height: 74px; border-radius: 50%;
+    background: var(--text); color: var(--accent-fg);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem; font-weight: 600; position: relative;
+    transition: transform 0.2s var(--ease-out);
+  }
+  .avatar-lg:hover { transform: scale(1.05); }
+  .avatar-lg::after {
+    content: "✎"; position: absolute; bottom: -2px; right: -2px;
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--surface); color: var(--text);
+    border: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; cursor: pointer;
+    transition: transform 0.15s var(--ease-out);
+  }
+  .avatar-lg:hover::after { transform: scale(1.1); }
+  .profile-hero .name { font-size: 1.25rem; font-weight: 600; margin-bottom: 2px; }
+  .profile-hero .sub { font-size: 0.88rem; color: var(--text-3); }
+
+  /* Form fields */
+  .field-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  }
+  .field { margin-bottom: 16px; }
+  .field label {
+    display: block; font-size: 0.8rem; color: var(--text-2);
+    margin-bottom: 6px; font-weight: 500;
+  }
+  .field input, .field select {
+    width: 100%; padding: 11px 14px;
+    border: 1px solid var(--line); border-radius: 8px;
+    background: var(--surface); color: var(--text);
+    font-size: 0.94rem; font-family: inherit;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .field input:focus, .field select:focus {
+    outline: none; border-color: var(--text);
+    box-shadow: 0 0 0 3px var(--surface-2);
+  }
+
+  /* Pill picker */
+  .pill-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pill-opt {
+    padding: 7px 14px; border: 1px solid var(--line); border-radius: 999px;
+    background: var(--surface); font-size: 0.84rem; color: var(--text-2);
+    cursor: pointer; font-family: inherit;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+  .pill-opt:hover { background: var(--surface-2); color: var(--text); }
+  .pill-opt.active {
+    background: var(--text); color: var(--accent-fg); border-color: var(--text);
+  }
+
+  /* Toggles */
+  .toggle-row {
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 20px;
+    padding: 16px 0; border-top: 1px solid var(--line-2);
+  }
+  .toggle-row:first-child { border-top: none; padding-top: 0; }
+  .toggle-row .tr-label { font-size: 0.94rem; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+  .toggle-row .tr-desc { font-size: 0.84rem; color: var(--text-3); }
+  .toggle {
+    width: 40px; height: 22px; background: var(--surface-3); border-radius: 999px;
+    position: relative; cursor: pointer; flex-shrink: 0; margin-top: 4px;
+    transition: background 0.2s ease;
+  }
+  .toggle::after {
+    content: ""; position: absolute; top: 2px; left: 2px;
+    width: 18px; height: 18px; background: white; border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    transition: transform 0.22s var(--ease-out);
+  }
+  .toggle.on { background: var(--text); }
+  .toggle.on::after { transform: translateX(18px); }
+
+  /* Stats row */
+  .stats-row {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+  }
+  .stat {
+    padding: 16px; background: var(--surface-2); border-radius: 10px;
+  }
+  .stat .val { font-size: 1.4rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 2px; }
+  .stat .lab { font-size: 0.78rem; color: var(--text-3); }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--text); color: var(--accent-fg);
+    padding: 10px 18px; border-radius: 999px;
+    font-size: 0.86rem; opacity: 0; pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s var(--ease-out);
+    z-index: 50;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .danger-zone {
+    border: 1px solid rgba(177, 67, 67, 0.3);
+  }
+  .danger-zone h2 { color: var(--danger); }
+
+  @media (max-width: 900px) {
+    .app { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .layout { grid-template-columns: 1fr; padding: 20px; gap: 20px; }
+    .side-nav { position: static; flex-direction: row; overflow-x: auto; }
+    .field-grid, .stats-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <aside class="sidebar">
+    <a href="sikia-dashboard.html" class="logo"><span class="logo-mark">S</span>Sikia Law</a>
+
+    <div class="nav-group">
+      <div class="nav-group-title">Library</div>
+      <a href="sikia-dashboard.html" class="nav-item">Home</a>
+      <a href="sikia-case-law.html" class="nav-item">Case Law</a>
+      <a href="sikia-statutes.html" class="nav-item">Statutes</a>
+      <a href="sikia-statutes.html" class="nav-item">SIs</a>
+      <a href="sikia-statutes.html" class="nav-item">Decrees</a>
+      <a href="sikia-statutes.html" class="nav-item">Legal Notices</a>
+      <a href="sikia-notes.html" class="nav-item">Lecture Notes</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">Yours</div>
+      <a href="sikia-bookmarks.html" class="nav-item">Bookmarks</a>
+      <a href="sikia-bookmarks.html" class="nav-item">Folders</a>
+      <a href="sikia-search.html" class="nav-item">Search</a>
+    </div>
+
+    <a href="sikia-profile.html" class="sidebar-footer">
+      <div class="avatar-sm">AN</div>
+      <div>
+        <div style="font-weight: 500; color: var(--text);">Amelia N.</div>
+        <div style="color: var(--text-3); font-size: 0.78rem;">Y2 · Makerere</div>
+      </div>
+    </a>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <h2>Profile &amp; Settings</h2>
+      <div class="topbar-actions">
+        <button class="btn" id="discardBtn">Discard</button>
+        <button class="btn btn-primary" id="saveBtn">Save changes</button>
+      </div>
+    </div>
+
+    <div class="layout">
+      <nav class="side-nav" id="sideNav">
+        <button class="side-link active" data-section="profile">Profile</button>
+        <button class="side-link" data-section="academics">Academics</button>
+        <button class="side-link" data-section="notifications">Notifications</button>
+        <button class="side-link" data-section="activity">Activity</button>
+        <button class="side-link" data-section="danger">Danger zone</button>
+      </nav>
+
+      <div class="content">
+        <!-- Profile -->
+        <section class="section" id="profile">
+          <div class="profile-hero">
+            <div class="avatar-lg" title="Change photo">AN</div>
+            <div>
+              <div class="name">Amelia Nakimuli</div>
+              <div class="sub">amelia.n@mak.ac.ug &middot; Joined April 2026</div>
+            </div>
+          </div>
+
+          <div class="field-grid">
+            <div class="field">
+              <label for="fname">First name</label>
+              <input id="fname" type="text" value="Amelia" />
+            </div>
+            <div class="field">
+              <label for="lname">Last name</label>
+              <input id="lname" type="text" value="Nakimuli" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" type="email" value="amelia.n@mak.ac.ug" />
+          </div>
+
+          <div class="field">
+            <label for="bio">Short bio</label>
+            <input id="bio" type="text" value="Y2 at Makerere. Crim law nerd. Moot team alternate." />
+          </div>
+        </section>
+
+        <!-- Academics -->
+        <section class="section" id="academics">
+          <div class="section-head">
+            <div>
+              <h2>Academics</h2>
+              <p>Helps Sikia surface the right library for you.</p>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Year of study</label>
+            <div class="pill-row" data-group="year">
+              <button class="pill-opt" data-val="Y1">Y1</button>
+              <button class="pill-opt active" data-val="Y2">Y2</button>
+              <button class="pill-opt" data-val="Y3">Y3</button>
+              <button class="pill-opt" data-val="Y4">Y4</button>
+              <button class="pill-opt" data-val="Bar">Bar</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>University</label>
+            <div class="pill-row" data-group="uni">
+              <button class="pill-opt active" data-val="Makerere">Makerere</button>
+              <button class="pill-opt" data-val="KIU">KIU</button>
+              <button class="pill-opt" data-val="UCU">UCU</button>
+              <button class="pill-opt" data-val="Uganda Martyrs">Uganda Martyrs</button>
+              <button class="pill-opt" data-val="Cavendish">Cavendish</button>
+              <button class="pill-opt" data-val="IUEA">IUEA</button>
+              <button class="pill-opt" data-val="Other">Other</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Notifications -->
+        <section class="section" id="notifications">
+          <div class="section-head">
+            <div>
+              <h2>Notifications</h2>
+              <p>Only what's useful, never noisy.</p>
+            </div>
+          </div>
+
+          <div class="toggle-row">
+            <div>
+              <div class="tr-label">Weekly digest</div>
+              <div class="tr-desc">A quiet Sunday email: new cases, acts, and notes tagged to your year.</div>
+            </div>
+            <div class="toggle on" data-toggle></div>
+          </div>
+          <div class="toggle-row">
+            <div>
+              <div class="tr-label">Reply-to updates</div>
+              <div class="tr-desc">When someone replies to a bookmark you've shared.</div>
+            </div>
+            <div class="toggle on" data-toggle></div>
+          </div>
+          <div class="toggle-row">
+            <div>
+              <div class="tr-label">Library alerts</div>
+              <div class="tr-desc">When a case or statute in one of your folders is amended or overturned.</div>
+            </div>
+            <div class="toggle" data-toggle></div>
+          </div>
+          <div class="toggle-row">
+            <div>
+              <div class="tr-label">Marketing emails</div>
+              <div class="tr-desc">Occasional product updates. We don't pester.</div>
+            </div>
+            <div class="toggle" data-toggle></div>
+          </div>
+        </section>
+
+        <!-- Activity -->
+        <section class="section" id="activity">
+          <div class="section-head">
+            <div>
+              <h2>Your activity</h2>
+              <p>Since April 2026.</p>
+            </div>
+          </div>
+          <div class="stats-row">
+            <div class="stat">
+              <div class="val">47</div>
+              <div class="lab">Bookmarks</div>
+            </div>
+            <div class="stat">
+              <div class="val">5</div>
+              <div class="lab">Folders</div>
+            </div>
+            <div class="stat">
+              <div class="val">183</div>
+              <div class="lab">Docs read</div>
+            </div>
+            <div class="stat">
+              <div class="val">24h</div>
+              <div class="lab">This month</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Danger zone -->
+        <section class="section danger-zone" id="danger">
+          <div class="section-head">
+            <div>
+              <h2>Danger zone</h2>
+              <p>Irreversible, so please be sure.</p>
+            </div>
+          </div>
+
+          <div class="toggle-row">
+            <div>
+              <div class="tr-label">Log out of this device</div>
+              <div class="tr-desc">You'll be taken back to the log-in page.</div>
+            </div>
+            <a href="sikia-login.html" class="btn">Log out</a>
+          </div>
+          <div class="toggle-row">
+            <div>
+              <div class="tr-label">Delete account</div>
+              <div class="tr-desc">Permanently remove your profile, bookmarks, and folders.</div>
+            </div>
+            <button class="btn btn-danger" id="deleteBtn">Delete account</button>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast">Saved.</div>
+
+<script>
+  // Side nav scrollspy + click
+  const links = document.querySelectorAll('.side-link');
+  const sections = Array.from(links).map(l => document.getElementById(l.dataset.section));
+
+  links.forEach((link, i) => {
+    link.addEventListener('click', () => {
+      sections[i].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  const spy = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        links.forEach(l => l.classList.toggle('active', l.dataset.section === id));
+      }
+    });
+  }, { rootMargin: '-20% 0px -65% 0px' });
+  sections.forEach(s => s && spy.observe(s));
+
+  // Pill pickers
+  document.querySelectorAll('.pill-row').forEach(row => {
+    row.querySelectorAll('.pill-opt').forEach(opt => {
+      opt.addEventListener('click', () => {
+        row.querySelectorAll('.pill-opt').forEach(o => o.classList.remove('active'));
+        opt.classList.add('active');
+        opt.animate(
+          [{ transform: 'scale(0.92)' }, { transform: 'scale(1.06)' }, { transform: 'scale(1)' }],
+          { duration: 260, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)' }
+        );
+      });
+    });
+  });
+
+  // Toggles
+  document.querySelectorAll('[data-toggle]').forEach(t => {
+    t.addEventListener('click', () => {
+      t.classList.toggle('on');
+      t.animate(
+        [{ transform: 'scale(1)' }, { transform: 'scale(1.08)' }, { transform: 'scale(1)' }],
+        { duration: 220, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)' }
+      );
+    });
+  });
+
+  // Save button — shows toast
+  const toast = document.getElementById('toast');
+  const saveBtn = document.getElementById('saveBtn');
+  saveBtn.addEventListener('click', () => {
+    saveBtn.animate(
+      [{ transform: 'scale(1)' }, { transform: 'scale(0.96)' }, { transform: 'scale(1)' }],
+      { duration: 220, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)' }
+    );
+    toast.textContent = 'Changes saved.';
+    toast.classList.add('show');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => toast.classList.remove('show'), 1800);
+  });
+
+  document.getElementById('discardBtn').addEventListener('click', () => {
+    toast.textContent = 'Changes discarded.';
+    toast.classList.add('show');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => toast.classList.remove('show'), 1600);
+  });
+
+  // Delete account — soft confirm
+  document.getElementById('deleteBtn').addEventListener('click', () => {
+    const confirmed = confirm("This will permanently remove your profile, bookmarks, and folders. Continue?");
+    if (confirmed) window.location.href = 'index.html';
+  });
+</script>
+</body>
+</html>

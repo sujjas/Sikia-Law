@@ -1,0 +1,31 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/home", "destination": "/index.html" },
+    { "source": "/about", "destination": "/sikia-about.html" },
+    { "source": "/features", "destination": "/sikia-features.html" },
+    { "source": "/contact", "destination": "/sikia-contact.html" },
+    { "source": "/login", "destination": "/sikia-login.html" },
+    { "source": "/signup", "destination": "/sikia-signup.html" },
+    { "source": "/register", "destination": "/sikia-signup.html" },
+    { "source": "/dashboard", "destination": "/sikia-dashboard.html" },
+    { "source": "/case-law", "destination": "/sikia-case-law.html" },
+    { "source": "/statutes", "destination": "/sikia-statutes.html" },
+    { "source": "/notes", "destination": "/sikia-notes.html" },
+    { "source": "/document", "destination": "/sikia-document.html" },
+    { "source": "/bookmarks", "destination": "/sikia-bookmarks.html" },
+    { "source": "/search", "destination": "/sikia-search.html" },
+    { "source": "/profile", "destination": "/sikia-profile.html" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    }
+  ]
+}

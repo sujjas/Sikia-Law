@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sikia Law — Uganda v. Kato (2021)</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --bg-muted: #fafafa;
+    --surface: #ffffff;
+    --surface-2: #f4f4f5;
+    --surface-3: #eeeef0;
+    --line: #dcdcdf;
+    --line-2: #ececee;
+    --text: #0f0f10;
+    --text-2: #525255;
+    --text-3: #8a8a8f;
+    --accent: #0f0f10;
+    --accent-fg: #ffffff;
+    --highlight: #fff3b0;
+    --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+    color: var(--text); background: var(--bg-muted);
+    min-height: 100vh; line-height: 1.5; -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4 { font-weight: 600; letter-spacing: -0.015em; color: var(--text); margin: 0; }
+  p { margin: 0; color: var(--text-2); }
+  a { color: inherit; text-decoration: none; }
+
+  /* Dashboard shell */
+  .app {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    min-height: 100vh;
+  }
+  .sidebar {
+    background: var(--surface);
+    border-right: 1px solid var(--line-2);
+    padding: 22px 16px;
+    position: sticky; top: 0; height: 100vh;
+    overflow-y: auto;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .logo {
+    display: flex; align-items: center; gap: 8px;
+    font-weight: 600; font-size: 1rem;
+    padding: 6px 8px 18px; border-bottom: 1px solid var(--line-2);
+    margin-bottom: 10px;
+  }
+  .logo-mark {
+    width: 26px; height: 26px; border-radius: 7px;
+    background: var(--text); color: var(--accent-fg);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.78rem; font-weight: 600;
+  }
+  .nav-group { display: flex; flex-direction: column; gap: 2px; margin-bottom: 14px; }
+  .nav-group-title {
+    font-size: 0.72rem; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--text-3);
+    padding: 8px 10px 6px;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px; border-radius: 8px;
+    font-size: 0.92rem; color: var(--text-2);
+    position: relative;
+    transition: padding-left 0.15s var(--ease-out), background 0.15s ease, color 0.15s ease;
+  }
+  .nav-item:hover { background: var(--surface-2); color: var(--text); padding-left: 16px; }
+  .nav-item.active {
+    background: var(--surface-2); color: var(--text); font-weight: 500;
+  }
+  .nav-item.active::before {
+    content: ""; position: absolute; left: 0; top: 8px; bottom: 8px;
+    width: 3px; background: var(--text); border-radius: 0 3px 3px 0;
+  }
+  .sidebar-footer {
+    margin-top: auto; padding: 12px 10px;
+    border-top: 1px solid var(--line-2);
+    display: flex; align-items: center; gap: 10px;
+    font-size: 0.88rem;
+  }
+  .avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--surface-3); color: var(--text);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.78rem; font-weight: 600;
+  }
+
+  /* Main */
+  .main { display: flex; flex-direction: column; min-width: 0; }
+  .topbar {
+    padding: 16px 40px;
+    border-bottom: 1px solid var(--line-2);
+    background: var(--surface);
+    display: flex; align-items: center; gap: 16px;
+    position: sticky; top: 0; z-index: 10;
+  }
+  .back-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 12px; border-radius: 8px;
+    font-size: 0.9rem; color: var(--text-2);
+    transition: background 0.15s ease, transform 0.15s ease;
+  }
+  .back-link:hover { background: var(--surface-2); transform: translateX(-2px); color: var(--text); }
+  .topbar-actions {
+    margin-left: auto;
+    display: flex; gap: 8px; align-items: center;
+  }
+  .icon-btn {
+    width: 38px; height: 38px; border-radius: 8px;
+    border: 1px solid var(--line); background: var(--surface);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--text-2); font-family: inherit;
+    transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+  }
+  .icon-btn:hover { background: var(--surface-2); color: var(--text); transform: translateY(-1px); }
+  .icon-btn.active { background: var(--text); color: var(--accent-fg); border-color: var(--text); }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 9px 16px; border-radius: 8px;
+    background: var(--text); color: var(--accent-fg); border: 1px solid var(--text);
+    font-size: 0.9rem; font-weight: 500; cursor: pointer; font-family: inherit;
+    transition: transform 0.15s ease;
+  }
+  .btn-primary:hover { transform: translateY(-1px); }
+
+  .content-wrap {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 48px;
+    padding: 40px 40px 80px;
+    max-width: 1200px;
+    width: 100%;
+  }
+
+  /* Breadcrumb */
+  .crumb {
+    font-size: 0.82rem; color: var(--text-3);
+    margin-bottom: 18px; display: flex; gap: 6px;
+  }
+  .crumb a { color: var(--text-2); transition: color 0.15s ease; }
+  .crumb a:hover { color: var(--text); text-decoration: underline; }
+
+  /* Document */
+  .doc-head {
+    border-bottom: 1px solid var(--line-2);
+    padding-bottom: 28px;
+    margin-bottom: 32px;
+    animation: fadeUp 0.5s var(--ease-out);
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .doc-type {
+    display: inline-flex; align-items: center;
+    padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px;
+    font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--text-2); background: var(--surface);
+    margin-bottom: 16px;
+  }
+  .doc-title {
+    font-size: 2.1rem; letter-spacing: -0.025em; line-height: 1.15;
+    margin-bottom: 16px; max-width: 720px;
+  }
+  .doc-meta {
+    display: flex; flex-wrap: wrap; gap: 10px 18px;
+    font-size: 0.86rem; color: var(--text-2);
+  }
+  .doc-meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .doc-meta .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--line); }
+
+  /* Document body */
+  .doc-body {
+    font-size: 1.02rem; line-height: 1.75; color: var(--text);
+    animation: fadeUp 0.7s var(--ease-out);
+  }
+  .doc-body > * + * { margin-top: 18px; }
+  .doc-body h2 {
+    font-size: 1.2rem; margin-top: 40px; letter-spacing: -0.015em;
+    padding-bottom: 6px; border-bottom: 1px solid var(--line-2);
+  }
+  .doc-body h3 { font-size: 1rem; margin-top: 28px; font-weight: 600; }
+  .doc-body p { color: var(--text); }
+  .doc-body blockquote {
+    margin: 24px 0; padding: 16px 20px;
+    background: var(--surface-2); border-left: 3px solid var(--text);
+    border-radius: 0 8px 8px 0;
+    font-style: italic; color: var(--text-2);
+  }
+  .doc-body ol, .doc-body ul { padding-left: 22px; color: var(--text); }
+  .doc-body li + li { margin-top: 6px; }
+  .doc-body .holding {
+    background: var(--surface-2); padding: 20px 22px; border-radius: 12px;
+    border: 1px solid var(--line-2); margin: 28px 0;
+  }
+  .doc-body .holding-label {
+    font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-3); margin-bottom: 8px; font-weight: 600;
+  }
+  .doc-body .holding-text { color: var(--text); font-weight: 500; font-style: normal; margin: 0; }
+
+  /* Selection highlight */
+  .doc-body ::selection { background: var(--highlight); color: var(--text); }
+
+  /* Sidebar rail */
+  .rail { display: flex; flex-direction: column; gap: 24px; position: sticky; top: 96px; height: fit-content; }
+  .rail-section {
+    background: var(--surface); border: 1px solid var(--line-2); border-radius: 14px;
+    padding: 20px;
+    animation: fadeUp 0.6s var(--ease-out) backwards;
+  }
+  .rail-section:nth-child(2) { animation-delay: 0.08s; }
+  .rail-section:nth-child(3) { animation-delay: 0.16s; }
+  .rail-title {
+    font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-3); font-weight: 600; margin-bottom: 14px;
+  }
+  .toc { display: flex; flex-direction: column; gap: 2px; }
+  .toc a {
+    display: block; padding: 7px 10px; border-radius: 6px;
+    font-size: 0.88rem; color: var(--text-2);
+    transition: background 0.15s ease, color 0.15s ease, padding-left 0.15s ease;
+  }
+  .toc a:hover { background: var(--surface-2); color: var(--text); padding-left: 14px; }
+  .toc a.active { background: var(--surface-2); color: var(--text); font-weight: 500; }
+
+  .related { display: flex; flex-direction: column; gap: 10px; }
+  .related a {
+    display: block; padding: 10px 12px; border-radius: 8px;
+    background: var(--surface-2);
+    transition: background 0.15s ease, transform 0.15s ease;
+  }
+  .related a:hover { background: var(--surface-3); transform: translateX(2px); }
+  .related .r-title { font-size: 0.88rem; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .related .r-meta { font-size: 0.76rem; color: var(--text-3); }
+
+  /* Bookmark state animation */
+  .icon-btn.bookmark-toast {
+    animation: bookmarkPulse 0.6s var(--ease-out);
+  }
+  @keyframes bookmarkPulse {
+    0% { transform: scale(1); }
+    30% { transform: scale(1.15); }
+    60% { transform: scale(0.95); }
+    100% { transform: scale(1); }
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--text); color: var(--accent-fg);
+    padding: 10px 18px; border-radius: 999px;
+    font-size: 0.86rem; opacity: 0; pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s var(--ease-out);
+    z-index: 50;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* Reading progress bar */
+  .reading-progress {
+    position: fixed; top: 0; left: 0;
+    height: 3px; background: var(--text);
+    width: 0%; z-index: 20;
+    transition: width 0.08s linear;
+  }
+
+  @media (max-width: 900px) {
+    .app { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .content-wrap { grid-template-columns: 1fr; padding: 24px; }
+    .rail { position: static; }
+  }
+</style>
+</head>
+<body>
+
+<div class="reading-progress" id="readingProgress"></div>
+
+<div class="app">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <a href="sikia-dashboard.html" class="logo"><span class="logo-mark">S</span>Sikia Law</a>
+
+    <div class="nav-group">
+      <div class="nav-group-title">Library</div>
+      <a href="sikia-dashboard.html" class="nav-item">Home</a>
+      <a href="sikia-case-law.html" class="nav-item active">Case Law</a>
+      <a href="sikia-statutes.html" class="nav-item">Statutes</a>
+      <a href="sikia-statutes.html" class="nav-item">SIs</a>
+      <a href="sikia-statutes.html" class="nav-item">Decrees</a>
+      <a href="sikia-statutes.html" class="nav-item">Legal Notices</a>
+      <a href="sikia-notes.html" class="nav-item">Lecture Notes</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">Yours</div>
+      <a href="sikia-bookmarks.html" class="nav-item">Bookmarks</a>
+      <a href="sikia-bookmarks.html" class="nav-item">Folders</a>
+      <a href="sikia-search.html" class="nav-item">Search</a>
+    </div>
+
+    <a href="sikia-profile.html" class="sidebar-footer">
+      <div class="avatar">AN</div>
+      <div>
+        <div style="font-weight: 500; color: var(--text);">Amelia N.</div>
+        <div style="color: var(--text-3); font-size: 0.78rem;">Y2 · Makerere</div>
+      </div>
+    </a>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <div class="topbar">
+      <a href="sikia-case-law.html" class="back-link">
+        <span>&larr;</span> Back to Case Law
+      </a>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="bookmarkBtn" title="Bookmark" aria-label="Bookmark">&#9734;</button>
+        <button class="icon-btn" id="highlightBtn" title="Highlight" aria-label="Highlight">H</button>
+        <button class="icon-btn" id="shareBtn" title="Share" aria-label="Share">&uarr;</button>
+        <button class="btn-primary">Add to folder</button>
+      </div>
+    </div>
+
+    <div class="content-wrap">
+      <article>
+        <div class="crumb">
+          <a href="sikia-dashboard.html">Home</a> <span>/</span>
+          <a href="sikia-case-law.html">Case Law</a> <span>/</span>
+          <span>Uganda v. Kato (2021)</span>
+        </div>
+
+        <header class="doc-head">
+          <span class="doc-type">Case &mdash; Supreme Court</span>
+          <h1 class="doc-title">Uganda v. Kato Jonathan (Criminal Appeal No. 14 of 2021)</h1>
+          <div class="doc-meta">
+            <span>Supreme Court of Uganda</span>
+            <span class="dot"></span>
+            <span>Coram: Katureebe, CJ; Mwangusya, JSC; Tibatemwa-Ekirikubinza, JSC</span>
+            <span class="dot"></span>
+            <span>Decided 12 May 2021</span>
+            <span class="dot"></span>
+            <span>Criminal Law &middot; Evidence</span>
+          </div>
+        </header>
+
+        <div class="doc-body">
+          <section id="summary">
+            <h2>Summary</h2>
+            <p>
+              The appellant, Jonathan Kato, was convicted by the High Court at Mukono of aggravated robbery
+              contrary to sections 285 and 286(2) of the Penal Code Act. His appeal to the Court of Appeal
+              was dismissed. He appealed to the Supreme Court on the ground that the identification evidence
+              relied upon at trial was unreliable and that the learned trial judge failed to apply the
+              well-known cautionary principles set out in <em>Abdalla Nabulere &amp; 2 Others v. Uganda</em>
+              [1979] HCB 77.
+            </p>
+            <p>
+              The Supreme Court allowed the appeal, set aside the conviction, and ordered the appellant's
+              immediate release. The judgment reaffirms the duty of a trial court to exercise the greatest
+              caution before convicting on the basis of identification evidence given under difficult
+              conditions.
+            </p>
+          </section>
+
+          <section id="facts">
+            <h2>Facts</h2>
+            <p>
+              On the night of 3 April 2018, at approximately 9:45 p.m., a group of four assailants attacked
+              the complainant at her home in Namataba village. The only source of light during the attack
+              was a small kerosene lamp in the sitting room. The attack lasted between three and five minutes.
+              The complainant later identified the appellant at an identification parade held eleven days
+              after the incident.
+            </p>
+            <p>
+              The prosecution case rested almost entirely on the complainant's dock identification and her
+              prior identification of the appellant at the parade. No independent corroborating evidence
+              was adduced. The appellant denied any involvement and raised an alibi.
+            </p>
+          </section>
+
+          <section id="issues">
+            <h2>Issues</h2>
+            <ol>
+              <li>Whether the trial court properly warned itself of the dangers of convicting on
+              identification evidence alone.</li>
+              <li>Whether the conditions of observation were sufficient to found a reliable identification.</li>
+              <li>Whether the appellant's alibi was adequately considered.</li>
+            </ol>
+          </section>
+
+          <section id="holding">
+            <h2>Holding</h2>
+            <div class="holding">
+              <div class="holding-label">Ratio decidendi</div>
+              <p class="holding-text">
+                Where a conviction rests wholly on identification evidence given in difficult conditions,
+                the trial court must expressly direct itself on the Nabulere cautionary warning, must test
+                the quality of the identification against objective factors (distance, lighting, duration,
+                impediments to view), and must look for corroboration. Failure to do so renders the
+                conviction unsafe.
+              </p>
+            </div>
+            <p>
+              Applying that test to the present record, the Court found the trial judge made no express
+              reference to the cautionary warning; the conditions of observation (poor lighting, brief
+              duration, stressful circumstance) were plainly difficult; and the alibi was rejected without
+              adequate reasons. The conviction could not stand.
+            </p>
+            <blockquote>
+              &ldquo;A mistaken witness can be a convincing one, and a number of such witnesses can all be
+              mistaken. The trial judge must always remind himself of this before convicting solely on
+              identification evidence.&rdquo;
+              <br />&mdash; Per Tibatemwa-Ekirikubinza, JSC, at para. 34
+            </blockquote>
+          </section>
+
+          <section id="discussion">
+            <h2>Discussion</h2>
+            <h3>The Nabulere caution</h3>
+            <p>
+              Since <em>Nabulere</em>, Ugandan courts have consistently recognised that honest witnesses
+              can be mistaken. The Supreme Court in the present appeal reaffirmed that the cautionary
+              direction is not a formulaic recital; it is a substantive self-direction that must be
+              reflected in the trial judge's reasoning on the record.
+            </p>
+            <h3>Quality of observation</h3>
+            <p>
+              The Court revisited the non-exhaustive checklist used in <em>Roria v. Republic</em> [1967]
+              EA 583 and endorsed its continued relevance: familiarity with the accused, duration of
+              observation, lighting, distance, impediments to view, and the interval between observation
+              and first description.
+            </p>
+            <h3>Treatment of the alibi</h3>
+            <p>
+              An accused who raises an alibi assumes no burden of proof. The prosecution must displace it.
+              The Court held that the trial judge had reversed the burden by demanding corroboration of the
+              alibi witnesses rather than testing whether the prosecution had disproved it.
+            </p>
+          </section>
+
+          <section id="disposition">
+            <h2>Disposition</h2>
+            <p>
+              Appeal allowed. Conviction quashed. Sentence set aside. The appellant is to be released
+              forthwith unless held on any other lawful warrant.
+            </p>
+          </section>
+        </div>
+      </article>
+
+      <!-- Rail -->
+      <aside class="rail">
+        <div class="rail-section">
+          <div class="rail-title">In this document</div>
+          <nav class="toc" id="toc">
+            <a href="#summary" class="active">Summary</a>
+            <a href="#facts">Facts</a>
+            <a href="#issues">Issues</a>
+            <a href="#holding">Holding</a>
+            <a href="#discussion">Discussion</a>
+            <a href="#disposition">Disposition</a>
+          </nav>
+        </div>
+
+        <div class="rail-section">
+          <div class="rail-title">Cited in this case</div>
+          <div class="related">
+            <a href="sikia-document.html">
+              <div class="r-title">Abdalla Nabulere &amp; 2 Ors v. Uganda</div>
+              <div class="r-meta">Court of Appeal &middot; [1979] HCB 77</div>
+            </a>
+            <a href="sikia-document.html">
+              <div class="r-title">Roria v. Republic</div>
+              <div class="r-meta">Court of Appeal EA &middot; [1967] EA 583</div>
+            </a>
+            <a href="sikia-document.html">
+              <div class="r-title">Penal Code Act, ss. 285 &amp; 286</div>
+              <div class="r-meta">Statute &middot; Cap. 120</div>
+            </a>
+          </div>
+        </div>
+
+        <div class="rail-section">
+          <div class="rail-title">Related cases</div>
+          <div class="related">
+            <a href="sikia-document.html">
+              <div class="r-title">Uganda v. Ssemwogerere</div>
+              <div class="r-meta">Supreme Court &middot; 2019</div>
+            </a>
+            <a href="sikia-document.html">
+              <div class="r-title">Bogere Moses v. Uganda</div>
+              <div class="r-meta">Supreme Court &middot; 1998</div>
+            </a>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast">Bookmarked.</div>
+
+<script>
+  // Reading progress bar
+  const progressBar = document.getElementById('readingProgress');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight);
+    progressBar.style.width = `${Math.min(100, scrolled * 100)}%`;
+  }, { passive: true });
+
+  // Bookmark toggle
+  const bookmarkBtn = document.getElementById('bookmarkBtn');
+  const toast = document.getElementById('toast');
+  let bookmarked = false;
+  bookmarkBtn.addEventListener('click', () => {
+    bookmarked = !bookmarked;
+    bookmarkBtn.classList.toggle('active', bookmarked);
+    bookmarkBtn.innerHTML = bookmarked ? '&#9733;' : '&#9734;';
+    bookmarkBtn.classList.remove('bookmark-toast');
+    void bookmarkBtn.offsetWidth;
+    bookmarkBtn.classList.add('bookmark-toast');
+    toast.textContent = bookmarked ? 'Bookmarked.' : 'Removed from bookmarks.';
+    toast.classList.add('show');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => toast.classList.remove('show'), 1600);
+  });
+
+  // Highlight toggle
+  const hlBtn = document.getElementById('highlightBtn');
+  hlBtn.addEventListener('click', () => {
+    hlBtn.classList.toggle('active');
+    toast.textContent = hlBtn.classList.contains('active') ? 'Highlight mode on. Select text to mark it.' : 'Highlight mode off.';
+    toast.classList.add('show');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => toast.classList.remove('show'), 1800);
+  });
+
+  // Share button
+  document.getElementById('shareBtn').addEventListener('click', () => {
+    toast.textContent = 'Link copied to clipboard.';
+    toast.classList.add('show');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => toast.classList.remove('show'), 1600);
+  });
+
+  // Highlight-on-select when highlight mode is on
+  document.addEventListener('mouseup', () => {
+    if (!hlBtn.classList.contains('active')) return;
+    const sel = window.getSelection();
+    if (!sel || sel.isCollapsed) return;
+    const range = sel.getRangeAt(0);
+    const article = document.querySelector('.doc-body');
+    if (!article.contains(range.commonAncestorContainer)) return;
+    try {
+      const mark = document.createElement('mark');
+      mark.style.background = 'var(--highlight)';
+      mark.style.padding = '0 2px';
+      mark.style.borderRadius = '2px';
+      range.surroundContents(mark);
+      sel.removeAllRanges();
+    } catch (e) { /* cross-element selection: ignore */ }
+  });
+
+  // Scrollspy for TOC
+  const tocLinks = Array.from(document.querySelectorAll('#toc a'));
+  const sections = tocLinks.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+  const spy = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        tocLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === `#${id}`));
+      }
+    });
+  }, { rootMargin: '-30% 0px -55% 0px' });
+  sections.forEach(s => spy.observe(s));
+
+  // Smooth-scroll TOC clicks (fallback; CSS scroll-behavior also handles this)
+  tocLinks.forEach(a => {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  // Keyboard: b to bookmark, h to highlight
+  document.addEventListener('keydown', (e) => {
+    if (e.target.matches('input, textarea')) return;
+    if (e.key === 'b' || e.key === 'B') { e.preventDefault(); bookmarkBtn.click(); }
+    if (e.key === 'h' || e.key === 'H') { e.preventDefault(); hlBtn.click(); }
+  });
+</script>
+</body>
+</html>

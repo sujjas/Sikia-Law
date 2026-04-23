@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sikia Law — Dashboard</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  :root {
+    --bg: #ffffff;
+    --bg-muted: #fafafa;
+    --surface: #ffffff;
+    --surface-2: #f4f4f5;
+    --surface-3: #e8e8ea;
+    --line: #dcdcdf;
+    --line-2: #ececee;
+    --text: #0f0f10;
+    --text-2: #525255;
+    --text-3: #8a8a8f;
+    --accent: #0f0f10;
+    --accent-fg: #ffffff;
+    --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+    color: var(--text); background: var(--bg-muted);
+    line-height: 1.5; -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+  h1, h2, h3, h4 { font-weight: 600; letter-spacing: -0.015em; color: var(--text); margin: 0; }
+  p { margin: 0; color: var(--text-2); }
+  a { color: inherit; }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 10px 16px; border-radius: 10px;
+    font-size: 0.9rem; font-weight: 500;
+    border: 1px solid var(--line); background: var(--surface); color: var(--text);
+    cursor: pointer; text-decoration: none; font-family: inherit;
+    transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+
+  /* ============ DASHBOARD SHELL ============ */
+  .dash-shell {
+    display: grid; grid-template-columns: 240px 1fr;
+    min-height: 100vh;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    background: var(--surface);
+    border-right: 1px solid var(--line-2);
+    padding: 22px 16px;
+    display: flex; flex-direction: column;
+    position: sticky; top: 0; height: 100vh;
+  }
+  .sidebar-logo {
+    display: flex; align-items: center; gap: 8px;
+    font-weight: 600; font-size: 0.98rem; text-decoration: none; color: var(--text);
+    padding: 2px 10px; margin-bottom: 24px;
+  }
+  .logo-mark {
+    width: 26px; height: 26px; border-radius: 7px;
+    background: var(--text); color: var(--accent-fg);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.78rem; font-weight: 600;
+  }
+  .side-group-label {
+    font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-3); padding: 0 12px; margin: 14px 0 6px;
+  }
+  .side-nav { display: flex; flex-direction: column; gap: 1px; }
+  .side-nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px; border-radius: 8px;
+    font-size: 0.9rem; color: var(--text-2);
+    text-decoration: none;
+    cursor: pointer; position: relative;
+    transition: background 0.15s ease, color 0.15s ease, padding-left 0.2s var(--ease-out);
+  }
+  .side-nav-item:hover {
+    background: var(--surface-2); color: var(--text);
+    padding-left: 16px;
+  }
+  .side-nav-item.active {
+    background: var(--surface-3); color: var(--text); font-weight: 500;
+  }
+  .side-nav-item.active::before {
+    content: ""; position: absolute;
+    left: 2px; top: 50%; transform: translateY(-50%);
+    width: 3px; height: 16px; border-radius: 2px;
+    background: var(--text);
+  }
+  .side-nav-divider {
+    height: 1px; background: var(--line-2);
+    margin: 10px 8px;
+  }
+
+  .sidebar-foot {
+    margin-top: auto;
+    padding: 12px;
+    border-top: 1px solid var(--line-2);
+    display: flex; align-items: center; gap: 10px;
+    cursor: pointer; border-radius: 8px;
+    transition: background 0.15s ease;
+  }
+  .sidebar-foot:hover { background: var(--surface-2); }
+  .avatar-sm {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--surface-2); border: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.78rem; font-weight: 600; color: var(--text-2);
+    flex-shrink: 0;
+  }
+  .user-block .name { font-size: 0.88rem; font-weight: 500; color: var(--text); line-height: 1.2; }
+  .user-block .meta { font-size: 0.75rem; color: var(--text-3); }
+
+  /* Main area */
+  .main {
+    padding: 28px 40px 60px;
+    min-width: 0;
+  }
+
+  /* Topbar */
+  .topbar {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 32px;
+    padding: 10px 16px;
+    background: var(--surface); border: 1px solid var(--line-2); border-radius: 14px;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+  .topbar:focus-within {
+    border-color: var(--text-3);
+    box-shadow: 0 0 0 4px var(--surface-2);
+  }
+  .search-wrap {
+    flex: 1;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .search-icon {
+    width: 16px; height: 16px;
+    border: 1.5px solid var(--text-3); border-radius: 50%;
+    position: relative; flex-shrink: 0;
+  }
+  .search-icon::after {
+    content: ""; position: absolute;
+    width: 2px; height: 6px; background: var(--text-3);
+    bottom: -3px; right: -1px; transform: rotate(-45deg);
+  }
+  .search-input {
+    flex: 1; border: none; outline: none;
+    background: transparent;
+    font-size: 0.98rem; color: var(--text);
+    font-family: inherit;
+  }
+  .search-input::placeholder { color: var(--text-3); }
+  .kbd {
+    font-size: 0.72rem; font-family: ui-monospace, monospace;
+    padding: 2px 6px; border: 1px solid var(--line);
+    border-radius: 4px; color: var(--text-3);
+    background: var(--surface-2);
+  }
+  .year-toggle {
+    display: flex; gap: 2px; padding: 3px;
+    background: var(--surface-2); border-radius: 9px;
+  }
+  .year-toggle button {
+    padding: 6px 10px; font-size: 0.82rem;
+    color: var(--text-3); border: none; background: transparent;
+    border-radius: 6px; cursor: pointer; font-family: inherit;
+    transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+  }
+  .year-toggle button.active {
+    background: var(--surface); color: var(--text); font-weight: 500;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  }
+  .year-toggle button:hover:not(.active) { color: var(--text); }
+  .year-toggle button:active { transform: scale(0.95); }
+
+  /* Greeting */
+  .greeting {
+    margin-bottom: 32px;
+  }
+  .greeting h1 {
+    font-size: 1.9rem; letter-spacing: -0.02em; margin-bottom: 4px;
+  }
+  .greeting p { font-size: 1.02rem; }
+
+  /* Section blocks */
+  .block { margin-bottom: 40px; }
+  .block-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .block-head h2 {
+    font-size: 1.02rem; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--text-2);
+  }
+  .block-head a {
+    font-size: 0.85rem; color: var(--text-2); text-decoration: none;
+    display: inline-flex; align-items: center; gap: 4px;
+    transition: gap 0.2s ease, color 0.2s ease;
+  }
+  .block-head a:hover { color: var(--text); gap: 8px; }
+
+  /* Continue reading row */
+  .continue-row {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+  }
+  .continue-card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 14px; padding: 20px;
+    display: flex; flex-direction: column; gap: 12px;
+    text-decoration: none; color: inherit;
+    cursor: pointer;
+    transition: transform 0.2s var(--ease-out), border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .continue-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--text-3);
+    box-shadow: 0 8px 28px -14px rgba(0,0,0,0.12);
+  }
+  .continue-card .c-type {
+    font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text-3);
+  }
+  .continue-card .c-title {
+    font-size: 1.02rem; font-weight: 600; line-height: 1.3;
+  }
+  .continue-card .c-progress {
+    height: 4px; width: 100%; background: var(--surface-2);
+    border-radius: 4px; overflow: hidden;
+  }
+  .continue-card .c-progress-bar {
+    height: 100%; background: var(--text); border-radius: 4px;
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 1.2s var(--ease-out);
+  }
+  .continue-card.in .c-progress-bar { transform: scaleX(var(--p, 0.5)); }
+  .continue-card .c-meta {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.78rem; color: var(--text-3);
+  }
+
+  /* Recommended / New grid (4-col) */
+  .doc-row {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+  }
+  .doc-card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 12px; padding: 16px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    min-height: 130px;
+    text-decoration: none; color: inherit; cursor: pointer;
+    opacity: 0; transform: translateY(16px);
+    transition: opacity 0.5s ease, transform 0.6s var(--ease-out),
+                transform 0.2s var(--ease-out), border-color 0.2s ease, box-shadow 0.2s ease;
+    transition-delay: var(--stagger-delay, 0s);
+  }
+  .doc-row.in .doc-card { opacity: 1; transform: translateY(0); }
+  .doc-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--text-3);
+    box-shadow: 0 8px 28px -14px rgba(0,0,0,0.12);
+  }
+  .doc-type {
+    font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text-3); margin-bottom: 8px;
+  }
+  .doc-title {
+    font-size: 0.88rem; font-weight: 500; line-height: 1.3;
+  }
+  .doc-meta {
+    display: flex; gap: 6px; align-items: center;
+    font-size: 0.72rem; color: var(--text-3); margin-top: 10px;
+  }
+  .doc-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--surface-3); }
+
+  /* Quick actions */
+  .quick-row {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+  }
+  .quick-card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 14px; padding: 20px;
+    display: flex; align-items: center; gap: 14px;
+    text-decoration: none; color: inherit; cursor: pointer;
+    transition: transform 0.2s var(--ease-out), border-color 0.2s ease;
+  }
+  .quick-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--text-3);
+  }
+  .quick-card .q-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: var(--surface-2); border: 1px solid var(--line-2);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s ease;
+  }
+  .quick-card:hover .q-icon { background: var(--surface-3); }
+  .quick-card h4 { font-size: 0.95rem; margin-bottom: 2px; }
+  .quick-card p { font-size: 0.82rem; }
+
+  /* Announcement banner */
+  .announce {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 18px;
+    background: var(--surface); border: 1px dashed var(--line);
+    border-radius: 12px; margin-bottom: 24px;
+    animation: rise 0.6s var(--ease-out);
+  }
+  @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .announce-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--text); flex-shrink: 0;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(15,15,16,0.3); }
+    50%      { box-shadow: 0 0 0 6px rgba(15,15,16,0); }
+  }
+  .announce-body { flex: 1; font-size: 0.9rem; color: var(--text-2); }
+  .announce-body strong { color: var(--text); font-weight: 600; }
+  .announce .btn { padding: 6px 12px; font-size: 0.82rem; }
+
+  @media (max-width: 900px) {
+    .dash-shell { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .continue-row, .quick-row { grid-template-columns: 1fr; }
+    .doc-row { grid-template-columns: repeat(2, 1fr); }
+    .main { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="dash-shell">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <a class="sidebar-logo" href="sikia-dashboard.html">
+      <span class="logo-mark">S</span>Sikia
+    </a>
+
+    <div class="side-group-label">Library</div>
+    <nav class="side-nav">
+      <a class="side-nav-item active" href="sikia-dashboard.html">
+        Home
+      </a>
+      <a class="side-nav-item" href="sikia-case-law.html">Case Law</a>
+      <a class="side-nav-item" href="sikia-statutes.html">Statutes</a>
+      <a class="side-nav-item" href="sikia-statutes.html">Statutory Instruments</a>
+      <a class="side-nav-item" href="sikia-statutes.html">Decrees</a>
+      <a class="side-nav-item" href="sikia-statutes.html">Legal Notices</a>
+      <a class="side-nav-item" href="sikia-notes.html">Lecture Notes</a>
+    </nav>
+
+    <div class="side-group-label">Yours</div>
+    <nav class="side-nav">
+      <a class="side-nav-item" href="sikia-bookmarks.html">Bookmarks</a>
+      <a class="side-nav-item" href="sikia-bookmarks.html">Folders</a>
+      <a class="side-nav-item" href="sikia-search.html">Search</a>
+    </nav>
+
+    <a class="sidebar-foot" href="sikia-profile.html">
+      <div class="avatar-sm">AM</div>
+      <div class="user-block">
+        <div class="name">Amelia M.</div>
+        <div class="meta">Year 2 · Makerere</div>
+      </div>
+    </a>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="main">
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <div class="search-wrap">
+        <div class="search-icon"></div>
+        <input class="search-input" id="searchInput" type="text" placeholder="Search cases, statutes, notes…" />
+        <span class="kbd">⌘K</span>
+      </div>
+      <div class="year-toggle" role="group" aria-label="Year">
+        <button>Y1</button>
+        <button class="active">Y2</button>
+        <button>Y3</button>
+        <button>Y4</button>
+        <button>Bar</button>
+      </div>
+    </div>
+
+    <!-- Greeting -->
+    <div class="greeting">
+      <h1>Welcome back, Amelia.</h1>
+      <p>You've got three things half-read and a new SI in your area of law.</p>
+    </div>
+
+    <!-- Announcement -->
+    <div class="announce">
+      <div class="announce-dot"></div>
+      <div class="announce-body"><strong>New this week:</strong> Traffic &amp; Road Safety (Amendment) Regulations, 2023 are now in force. Added to your Year 2 feed.</div>
+      <a class="btn" href="sikia-document.html">Read</a>
+    </div>
+
+    <!-- Continue reading -->
+    <section class="block">
+      <div class="block-head">
+        <h2>Continue reading</h2>
+        <a href="sikia-bookmarks.html">See all <span>→</span></a>
+      </div>
+      <div class="continue-row" id="continueRow">
+        <a class="continue-card" href="sikia-document.html" style="--p: 0.72;">
+          <div class="c-type">Case Law</div>
+          <div class="c-title">Mabirizi Kiwanuka v. Attorney General</div>
+          <div class="c-progress"><div class="c-progress-bar"></div></div>
+          <div class="c-meta">Constitutional Court · 72% read</div>
+        </a>
+        <a class="continue-card" href="sikia-document.html" style="--p: 0.45;">
+          <div class="c-type">Lecture Note</div>
+          <div class="c-title">Mens Rea in Ugandan Criminal Law</div>
+          <div class="c-progress"><div class="c-progress-bar"></div></div>
+          <div class="c-meta">Year 2 · Criminal Law · 45% read</div>
+        </a>
+        <a class="continue-card" href="sikia-document.html" style="--p: 0.18;">
+          <div class="c-type">Statute</div>
+          <div class="c-title">Contracts Act, 2010</div>
+          <div class="c-progress"><div class="c-progress-bar"></div></div>
+          <div class="c-meta">Act 7 · 18% read</div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Recommended -->
+    <section class="block">
+      <div class="block-head">
+        <h2>Recommended for Year 2 · Criminal Law</h2>
+        <a href="sikia-case-law.html">See all <span>→</span></a>
+      </div>
+      <div class="doc-row" data-stagger>
+        <a class="doc-card" href="sikia-document.html">
+          <div>
+            <div class="doc-type">Case Law</div>
+            <div class="doc-title">Uganda v. Kayondo Wycliff</div>
+          </div>
+          <div class="doc-meta"><span>High Court</span><span class="doc-dot"></span><span>2021</span></div>
+        </a>
+        <a class="doc-card" href="sikia-document.html">
+          <div>
+            <div class="doc-type">Case Law</div>
+            <div class="doc-title">R v. Yowana Kahere</div>
+          </div>
+          <div class="doc-meta"><span>High Court</span><span class="doc-dot"></span><span>1948</span></div>
+        </a>
+        <a class="doc-card" href="sikia-document.html">
+          <div>
+            <div class="doc-type">Statute</div>
+            <div class="doc-title">Penal Code Act, Cap 120</div>
+          </div>
+          <div class="doc-meta"><span>Revised 2014</span><span class="doc-dot"></span><span>In force</span></div>
+        </a>
+        <a class="doc-card" href="sikia-document.html">
+          <div>
+            <div class="doc-type">Lecture Note</div>
+            <div class="doc-title">Elements of Homicide</div>
+          </div>
+          <div class="doc-meta"><span>Year 2</span><span class="doc-dot"></span><span>Criminal Law</span></div>
+        </a>
+      </div>
+    </section>
+
+    <!-- New this week -->
+    <section class="block">
+      <div class="block-head">
+        <h2>New this week</h2>
+        <a href="sikia-statutes.html">See all <span>→</span></a>
+      </div>
+      <div class="doc-row" data-stagger>
+        <a class="doc-card" href="sikia-document.html">
+          <div>
+            <div class="doc-type">Statutory Instrument</div>
+            <div class="doc-title">Traffic &amp; Road Safety (Amendment) Regulations, 2023</div>
+          </div>
+          <div class="doc-meta"><span>SI 2023/087</span><span class="doc-dot"></span><span>In force</span></div>
+        </a>
+        <a class="doc-card" href="sikia-document.html">
+          <div>
+            <div class="doc-type">Case Law</div>
+            <div class="doc-title">Kasozi v. Ssemambo</div>
+          </div>
+          <div class="doc-meta"><span>Court of Appeal</span><span class="doc-dot"></span><span>Mar 2026</span></div>
+        </a>
+        <a class="doc-card" href="sikia-document.html">
+          <div>
+            <div class="doc-type">Legal Notice</div>
+            <div class="doc-title">Legal Notice No. 14 of 2024</div>
+          </div>
+          <div class="doc-meta"><span>Ministry of Justice</span><span class="doc-dot"></span><span>Mar 2024</span></div>
+        </a>
+        <a class="doc-card" href="sikia-document.html">
+          <div>
+            <div class="doc-type">Lecture Note</div>
+            <div class="doc-title">Self-Defence Revisited</div>
+          </div>
+          <div class="doc-meta"><span>Year 2</span><span class="doc-dot"></span><span>Criminal Law</span></div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Quick actions -->
+    <section class="block">
+      <div class="block-head">
+        <h2>Quick actions</h2>
+      </div>
+      <div class="quick-row">
+        <a class="quick-card" href="sikia-bookmarks.html">
+          <div class="q-icon"></div>
+          <div>
+            <h4>Your bookmarks</h4>
+            <p>14 saved · 3 folders</p>
+          </div>
+        </a>
+        <a class="quick-card" href="sikia-search.html">
+          <div class="q-icon"></div>
+          <div>
+            <h4>Advanced search</h4>
+            <p>By court, year, area of law</p>
+          </div>
+        </a>
+        <a class="quick-card" href="sikia-profile.html">
+          <div class="q-icon"></div>
+          <div>
+            <h4>Your profile</h4>
+            <p>Settings · notifications</p>
+          </div>
+        </a>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  // Continue-reading progress-bar animation
+  const continueRow = document.getElementById('continueRow');
+  const continueObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll('.continue-card').forEach((c, i) => {
+          setTimeout(() => c.classList.add('in'), i * 120 + 200);
+        });
+        continueObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.2 });
+  continueObs.observe(continueRow);
+
+  // Stagger doc cards
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('[data-stagger]').forEach(parent => {
+    Array.from(parent.children).forEach((child, i) => {
+      child.style.setProperty('--stagger-delay', (i * 0.07) + 's');
+    });
+    io.observe(parent);
+  });
+
+  // Year toggle
+  document.querySelectorAll('.year-toggle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.year-toggle button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  // ⌘K / Ctrl+K to focus search
+  const searchInput = document.getElementById('searchInput');
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      searchInput.focus();
+      searchInput.animate(
+        [{ transform: 'scale(1)' }, { transform: 'scale(1.02)' }, { transform: 'scale(1)' }],
+        { duration: 260, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)' }
+      );
+    }
+  });
+
+  // Search: enter → go to search results
+  searchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && searchInput.value.trim()) {
+      window.location.href = 'sikia-search.html?q=' + encodeURIComponent(searchInput.value.trim());
+    }
+  });
+</script>
+</body>
+</html>
