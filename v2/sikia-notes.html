@@ -1298,7 +1298,9 @@
   }
 };
   const NOTES_PATH_PREFIX = "../Notes/";
-  const DEFAULT_YEAR = 2;
+  // Honor ?year=N from URL (e.g. linked from the dashboard welcome modal); default to Year 2.
+  const _urlYear = parseInt(new URLSearchParams(location.search).get('year'));
+  const DEFAULT_YEAR = (_urlYear >= 1 && _urlYear <= 4) ? _urlYear : 2;
 
   const tabsEl = document.getElementById('year-tabs');
   const contentEl = document.getElementById('year-content');

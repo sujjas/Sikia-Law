@@ -280,6 +280,133 @@
     .stat-block:last-child { border-bottom: none; }
   }
 
+  /* ─ Welcome modal ────────────────────────────────────────── */
+  .welcome-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(15, 15, 16, 0.5);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 100; padding: 24px;
+    animation: welcomeFadeIn 0.3s var(--ease-out);
+  }
+  .welcome-backdrop.closing { animation: welcomeFadeOut 0.25s ease forwards; }
+  @keyframes welcomeFadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes welcomeFadeOut { to { opacity: 0; } }
+  body.welcome-open { overflow: hidden; }
+
+  .welcome-modal {
+    background: var(--surface);
+    border-radius: 18px;
+    padding: 36px 36px 28px;
+    max-width: 540px; width: 100%;
+    max-height: 92vh; overflow-y: auto;
+    position: relative;
+    box-shadow: 0 24px 64px -16px rgba(0,0,0,0.32);
+    animation: welcomeRise 0.35s var(--ease-out);
+  }
+  @keyframes welcomeRise {
+    from { opacity: 0; transform: translateY(20px) scale(0.96); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .welcome-close {
+    position: absolute; top: 14px; right: 14px;
+    width: 32px; height: 32px;
+    border: none; background: var(--surface-2);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--text-2);
+    font-size: 1.25rem; line-height: 1; font-family: inherit;
+    transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+  }
+  .welcome-close:hover { background: var(--surface-3); color: var(--text); }
+  .welcome-close:active { transform: scale(0.94); }
+
+  .welcome-art { display: flex; justify-content: center; margin-bottom: 18px; }
+  .welcome-art svg { display: block; }
+
+  .welcome-modal h2 {
+    font-size: 1.55rem; font-weight: 700; letter-spacing: -0.02em;
+    text-align: center; margin-bottom: 12px;
+  }
+  .welcome-lede {
+    font-size: 0.95rem; line-height: 1.65; color: var(--text-2);
+    text-align: center;
+    margin: 0 auto 24px; max-width: 440px;
+  }
+
+  .welcome-section-label {
+    font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text-3); font-weight: 600;
+    margin-bottom: 10px; padding: 0 4px;
+  }
+
+  .welcome-years {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 8px; margin-bottom: 18px;
+  }
+  .welcome-year {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px;
+    background: var(--bg-muted);
+    border: 1px solid var(--line-2);
+    border-radius: 10px;
+    text-decoration: none; color: var(--text);
+    font-size: 0.95rem; font-weight: 500;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+  }
+  .welcome-year:hover {
+    background: var(--surface);
+    border-color: var(--text-3);
+    transform: translateY(-1px);
+  }
+  .welcome-year-arrow { color: var(--text-3); transition: transform 0.18s var(--ease-out), color 0.18s ease; font-size: 1.05rem; }
+  .welcome-year:hover .welcome-year-arrow { transform: translateX(4px); color: var(--text); }
+
+  .welcome-note {
+    font-size: 0.84rem; line-height: 1.55; color: var(--text-3);
+    padding: 12px 14px;
+    background: var(--bg-muted);
+    border-left: 3px solid var(--line);
+    border-radius: 6px;
+    margin-bottom: 22px;
+  }
+
+  .welcome-actions {
+    display: flex; gap: 18px; justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line-2);
+  }
+  .welcome-link {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 0.86rem; color: var(--text-2);
+    text-decoration: none;
+    transition: color 0.15s ease, gap 0.15s ease;
+  }
+  .welcome-link:hover { color: var(--text); gap: 9px; }
+  .welcome-link .fa { color: var(--text-3); font-size: 0.85rem; }
+
+  .welcome-cta {
+    width: 100%;
+    padding: 13px 20px;
+    background: var(--text); color: var(--accent-fg);
+    border: none; border-radius: 10px;
+    font-family: inherit; font-size: 0.95rem; font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.1s ease;
+  }
+  .welcome-cta:hover { background: #2a2a2c; }
+  .welcome-cta:active { transform: scale(0.98); }
+
+  @media (max-width: 600px) {
+    .welcome-modal { padding: 28px 22px 22px; }
+    .welcome-modal h2 { font-size: 1.3rem; }
+    .welcome-years { grid-template-columns: 1fr; }
+    .welcome-actions { flex-direction: column; gap: 12px; align-items: flex-start; }
+  }
+
   /* ─ Mobile drawer ────────────────────────────────────────── */
   .menu-toggle {
     display: none;
@@ -443,6 +570,58 @@
     </section>
   </main>
   <div class="sidebar-backdrop"></div>
+</div>
+
+<!-- Welcome modal — shown on dashboard load -->
+<div class="welcome-backdrop" id="welcome-backdrop" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
+  <div class="welcome-modal">
+    <button class="welcome-close" id="welcome-x" aria-label="Close">×</button>
+
+    <div class="welcome-art">
+      <svg width="92" height="92" viewBox="0 0 92 92" fill="none" aria-hidden="true">
+        <circle cx="46" cy="46" r="44" fill="var(--surface-2)" stroke="var(--line-2)" stroke-width="1"/>
+        <g transform="rotate(-7 46 46)">
+          <rect x="24" y="26" width="40" height="48" rx="3" fill="var(--surface)" stroke="var(--text-2)" stroke-width="1.5"/>
+          <line x1="30" y1="36" x2="58" y2="36" stroke="var(--text-3)" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="30" y1="42" x2="52" y2="42" stroke="var(--text-3)" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="30" y1="48" x2="58" y2="48" stroke="var(--text-3)" stroke-width="1.2" stroke-linecap="round"/>
+        </g>
+        <rect x="28" y="22" width="40" height="48" rx="3" fill="var(--surface)" stroke="var(--text)" stroke-width="1.5"/>
+        <line x1="34" y1="32" x2="60" y2="32" stroke="var(--text-3)" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="34" y1="38" x2="54" y2="38" stroke="var(--text-3)" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="34" y1="44" x2="60" y2="44" stroke="var(--text-3)" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="34" y1="50" x2="48" y2="50" stroke="var(--text-3)" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="34" y1="56" x2="58" y2="56" stroke="var(--text-3)" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="34" y1="62" x2="44" y2="62" stroke="var(--text-3)" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <h2 id="welcome-title">Welcome to Sikia Law</h2>
+
+    <p class="welcome-lede">
+      Direct access to <a href="sikia-notes.html" style="color: var(--text); text-decoration: underline; text-underline-offset: 3px;">structured, peer-reviewed law study notes</a> and resources — built for students at every stage of their education, alongside legal practitioners and the curious. Sikia is your study partner: understand legal principles, stay aligned with your syllabus, and prepare confidently for exams.
+    </p>
+
+    <div class="welcome-section-label">Browse notes by year</div>
+    <div class="welcome-years">
+      <a class="welcome-year" href="sikia-notes.html?year=1"><span>Year 1</span><span class="welcome-year-arrow">→</span></a>
+      <a class="welcome-year" href="sikia-notes.html?year=2"><span>Year 2</span><span class="welcome-year-arrow">→</span></a>
+      <a class="welcome-year" href="sikia-notes.html?year=3"><span>Year 3</span><span class="welcome-year-arrow">→</span></a>
+      <a class="welcome-year" href="sikia-notes.html?year=4"><span>Year 4</span><span class="welcome-year-arrow">→</span></a>
+    </div>
+
+    <p class="welcome-note">
+      Our reading list may vary slightly from your university's. If you don't find a subject under a particular year, please explore the others — it may be taught at a different stage.
+    </p>
+
+    <div class="welcome-actions">
+      <a href="sikia-search.html" class="welcome-link"><i class="fa fa-search"></i>Keyword search</a>
+      <a href="sikia-library.html" class="welcome-link"><i class="fa fa-book"></i>Reading list</a>
+      <a href="sikia-library.html" class="welcome-link"><i class="fa fa-file-lines"></i>Study resources</a>
+    </div>
+
+    <button class="welcome-cta" id="welcome-dismiss">Continue to dashboard</button>
+  </div>
 </div>
 
 <script>
@@ -1498,6 +1677,25 @@
       document.querySelector('.search-input input').focus();
     }
   });
+
+  // Welcome modal — show on dashboard load. Dismiss via X, "Continue", backdrop click, or ESC.
+  // For wireframe: shows every load. In production, gate on localStorage('sikia-welcome-seen').
+  (function() {
+    const backdrop = document.getElementById('welcome-backdrop');
+    if (!backdrop) return;
+    document.body.classList.add('welcome-open');
+    function close() {
+      backdrop.classList.add('closing');
+      document.body.classList.remove('welcome-open');
+      setTimeout(() => { backdrop.style.display = 'none'; }, 250);
+    }
+    document.getElementById('welcome-dismiss').addEventListener('click', close);
+    document.getElementById('welcome-x').addEventListener('click', close);
+    backdrop.addEventListener('click', (e) => { if (e.target === backdrop) close(); });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && backdrop.style.display !== 'none') close();
+    });
+  })();
 </script>
 
 <script>
