@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sikia Law — Library</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff; --bg-muted: #fafafa;
+    --surface: #ffffff; --surface-2: #f4f4f5; --surface-3: #e8e8ea;
+    --line: #dcdcdf; --line-2: #ececee;
+    --text: #0f0f10; --text-2: #525255; --text-3: #8a8a8f;
+    --accent: #0f0f10; --accent-fg: #ffffff;
+    --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  @font-face { font-family: "FA"; src: url("fonts/fontawesome-regular.otf") format("opentype"); font-weight: 400; font-style: normal; font-display: block; }
+  .fa { font-family: "FA"; font-style: normal; font-weight: 400; display: inline-block; line-height: 1; -webkit-font-smoothing: antialiased; }
+  .fa-search::before { content: "\f002"; }
+  .fa-home::before { content: "\f015"; }
+  .fa-file-lines::before { content: "\f15c"; }
+  .fa-book::before { content: "\f02d"; }
+  .fa-bookmark::before { content: "\f02e"; }
+  .fa-arrow-up-right::before { content: "\f08e"; }
+  .fa-gavel::before { content: "\f0e3"; }
+  .fa-scale-balanced::before { content: "\f24e"; }
+  .fa-newspaper::before { content: "\f1ea"; }
+  .fa-folder::before { content: "\f07b"; }
+  .fa-filter::before { content: "\f0b0"; }
+
+  body { font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif; color: var(--text); background: var(--bg-muted); line-height: 1.5; -webkit-font-smoothing: antialiased; min-height: 100vh; }
+  h1, h2, h3, h4 { font-weight: 600; letter-spacing: -0.015em; color: var(--text); margin: 0; }
+  p { margin: 0; color: var(--text-2); }
+  a { color: inherit; }
+
+  .dash-shell { display: grid; grid-template-columns: 272px 1fr; min-height: 100vh; }
+  .sidebar { background: var(--surface); border-right: 1px solid var(--line-2); padding: 26px 18px 16px; display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; }
+  .sidebar-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); padding: 4px 10px; margin-bottom: 36px; }
+  .logo-mark { width: 32px; height: 32px; border-radius: 9px; background: var(--text); color: var(--accent-fg); display: flex; align-items: center; justify-content: center; font-size: 0.92rem; font-weight: 700; }
+  .logo-word { font-weight: 600; font-size: 1.05rem; letter-spacing: -0.01em; }
+  .side-nav { display: flex; flex-direction: column; gap: 4px; }
+  .side-nav-item { display: flex; align-items: center; gap: 14px; padding: 11px 12px; border-radius: 10px; font-size: 0.96rem; font-weight: 500; color: var(--text-2); text-decoration: none; transition: background 0.18s ease, color 0.18s ease; }
+  .side-nav-item .nav-ico { width: 22px; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 1.05rem; color: var(--text-3); transition: color 0.18s ease; }
+  .side-nav-item:hover { background: var(--surface-2); color: var(--text); }
+  .side-nav-item:hover .nav-ico { color: var(--text); }
+  .side-nav-item.active { background: var(--surface-2); color: var(--text); font-weight: 600; }
+  .side-nav-item.active .nav-ico { color: var(--text); }
+  .nav-count { margin-left: auto; font-size: 0.74rem; font-weight: 500; padding: 2px 9px; border-radius: 999px; border: 1px solid var(--line); color: var(--text-2); min-width: 28px; text-align: center; }
+  .sidebar-foot { margin-top: auto; padding: 12px 10px; display: flex; align-items: center; gap: 12px; border-radius: 10px; text-decoration: none; transition: background 0.18s ease; }
+  .sidebar-foot:hover { background: var(--surface-2); }
+  .avatar-md { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, var(--surface-3), var(--surface-2)); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; font-size: 0.84rem; font-weight: 600; color: var(--text-2); flex-shrink: 0; }
+  .user-block { min-width: 0; }
+  .user-block .name { font-size: 0.96rem; font-weight: 600; color: var(--text); line-height: 1.2; }
+  .user-block .meta { font-size: 0.78rem; color: var(--text-3); margin-top: 2px; }
+
+  .main { padding: 28px 40px 80px; min-width: 0; }
+  .topbar { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; }
+  .search-input { flex: 1; max-width: 480px; display: flex; align-items: center; gap: 10px; padding: 9px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+  .search-input:focus-within { border-color: var(--text-2); box-shadow: 0 0 0 4px rgba(15, 15, 16, 0.05); }
+  .search-input input { flex: 1; border: none; outline: none; background: transparent; font-family: inherit; font-size: 0.9rem; color: var(--text); }
+  .search-input input::placeholder { color: var(--text-3); }
+  .search-input .fa { color: var(--text-3); font-size: 0.95rem; }
+  .topbar-spacer { flex: 1; }
+  .kbd { font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; background: var(--surface-2); border: 1px solid var(--line-2); color: var(--text-3); font-family: ui-monospace, monospace; }
+  .breadcrumb { font-size: 0.82rem; color: var(--text-3); display: flex; gap: 6px; align-items: center; margin-bottom: 14px; }
+  .breadcrumb a { text-decoration: none; }
+  .breadcrumb a:hover { color: var(--text); }
+  .page-head { margin-bottom: 22px; }
+  .page-head h1 { font-size: 2.1rem; letter-spacing: -0.02em; }
+  .page-head p { margin-top: 8px; max-width: 60ch; }
+
+  .hero-search { display: flex; align-items: center; gap: 12px; padding: 14px 18px; border: 1px solid var(--line-2); border-radius: 14px; background: var(--surface); margin-bottom: 22px; transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+  .hero-search:hover { border-color: var(--line); }
+  .hero-search:focus-within { border-color: var(--text-2); box-shadow: 0 0 0 4px rgba(15, 15, 16, 0.05); }
+  .hero-search .fa { color: var(--text-3); font-size: 1rem; }
+  .hero-search input { flex: 1; border: none; outline: none; background: transparent; font-family: inherit; font-size: 1rem; color: var(--text); }
+  .hero-search input::placeholder { color: var(--text-3); }
+  .hero-search-meta { font-size: 0.78rem; color: var(--text-3); }
+
+  .cat-tabs { display: flex; gap: 4px; margin-bottom: 22px; flex-wrap: wrap; border: 1px solid var(--line-2); background: var(--surface); padding: 6px; border-radius: 12px; width: fit-content; max-width: 100%; }
+  .cat-tab { padding: 10px 18px; border-radius: 8px; border: none; background: transparent; font-family: inherit; font-size: 0.95rem; font-weight: 500; color: var(--text-2); cursor: pointer; display: inline-flex; align-items: center; gap: 9px; transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease; }
+  .cat-tab:hover { background: var(--surface-2); color: var(--text); }
+  .cat-tab:active { transform: scale(0.97); }
+  .cat-tab.active { background: var(--text); color: var(--accent-fg); font-weight: 600; }
+  .cat-tab-count { font-size: 0.72rem; padding: 1px 7px; border-radius: 999px; background: var(--surface-2); color: var(--text-3); border: 1px solid var(--line-2); }
+  .cat-tab.active .cat-tab-count { background: rgba(255,255,255,0.15); color: var(--accent-fg); border-color: transparent; }
+
+  .filter-row { display: flex; align-items: center; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+  .filter-row-label { font-size: 0.78rem; color: var(--text-3); display: inline-flex; align-items: center; gap: 6px; margin-right: 6px; }
+  .filter-chip { padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); font-family: inherit; font-size: 0.82rem; color: var(--text-2); cursor: pointer; transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease; }
+  .filter-chip:hover { background: var(--surface-2); color: var(--text); }
+  .filter-chip.active { background: var(--text); border-color: var(--text); color: var(--accent-fg); }
+  .filter-row-spacer { flex: 1; }
+  .sort-select { padding: 6px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); font-family: inherit; font-size: 0.82rem; color: var(--text-2); }
+
+  .result-meta { font-size: 0.82rem; color: var(--text-3); margin-bottom: 12px; }
+  .result-list { display: flex; flex-direction: column; gap: 8px; }
+  .result-row { display: grid; grid-template-columns: 36px 1fr auto; gap: 14px; padding: 16px 20px; background: var(--surface); border: 1px solid transparent; border-radius: 12px; text-decoration: none; color: inherit; cursor: pointer; transition: transform 0.15s var(--ease-out), border-color 0.15s ease, box-shadow 0.15s ease; }
+  .result-row:hover { transform: translateY(-2px); border-color: var(--line); box-shadow: 0 4px 14px -10px rgba(0,0,0,0.08); }
+  .result-icon { width: 36px; height: 36px; border-radius: 8px; background: var(--surface-2); border: 1px solid var(--line-2); display: flex; align-items: center; justify-content: center; color: var(--text-2); font-size: 0.95rem; align-self: flex-start; }
+  .result-body { min-width: 0; }
+  .result-tag { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); font-weight: 500; margin-bottom: 4px; }
+  .result-title { font-size: 0.98rem; font-weight: 500; line-height: 1.35; color: var(--text); margin-bottom: 4px; }
+  .result-sub { font-size: 0.86rem; color: var(--text-2); line-height: 1.55; margin-bottom: 6px; }
+  .result-source { font-size: 0.78rem; color: var(--text-3); display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .result-source-item { display: inline-flex; align-items: center; gap: 4px; }
+  .result-source-sep { color: var(--surface-3); }
+  .result-action { align-self: center; color: var(--text-3); font-size: 0.85rem; transition: color 0.15s ease, transform 0.15s ease; }
+  .result-row:hover .result-action { color: var(--text); transform: translateX(2px); }
+
+  @media (max-width: 900px) {
+    .dash-shell { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .main { padding: 20px; }
+    .page-head h1 { font-size: 1.6rem; }
+    .cat-tabs { width: 100%; overflow-x: auto; flex-wrap: nowrap; }
+    .result-row { grid-template-columns: 32px 1fr; }
+    .result-action { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="dash-shell">
+  <aside class="sidebar">
+    <a class="sidebar-logo" href="sikia-dashboard.html"><span class="logo-mark">S</span><span class="logo-word">Sikia</span></a>
+    <nav class="side-nav">
+      <a class="side-nav-item" href="sikia-search.html"><span class="nav-ico"><i class="fa fa-search"></i></span>Search</a>
+      <a class="side-nav-item" href="sikia-dashboard.html"><span class="nav-ico"><i class="fa fa-home"></i></span>Home</a>
+      <a class="side-nav-item" href="sikia-notes.html"><span class="nav-ico"><i class="fa fa-file-lines"></i></span>Notes<span class="nav-count">87</span></a>
+      <a class="side-nav-item active" href="sikia-library.html"><span class="nav-ico"><i class="fa fa-book"></i></span>Library</a>
+      <a class="side-nav-item" href="sikia-bookmarks.html"><span class="nav-ico"><i class="fa fa-bookmark"></i></span>Bookmarks<span class="nav-count">12</span></a>
+    </nav>
+    <a class="sidebar-foot" href="sikia-profile.html">
+      <div class="avatar-md">AM</div>
+      <div class="user-block"><div class="name">Amelia M.</div><div class="meta">Year 2 · Makerere</div></div>
+    </a>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <label class="search-input">
+        <i class="fa fa-search"></i>
+        <input type="text" placeholder="Search notes, course units, or topics" />
+        <span class="kbd">⌘K</span>
+      </label>
+      <div class="topbar-spacer"></div>
+    </div>
+
+    <div class="breadcrumb"><a href="sikia-dashboard.html">Home</a><span>/</span><span>Library</span></div>
+    <div class="page-head">
+      <h1>Library</h1>
+      <p>Cases, statutes, statutory documents, decrees and legal notices — supporting material when you need it.</p>
+    </div>
+
+    <div class="cat-tabs" id="cat-tabs"></div>
+
+    <div class="filter-row" id="filter-row"></div>
+
+    <div class="result-meta" id="result-meta">Showing 7 of 2,465 items</div>
+    <div class="result-list" id="result-list"></div>
+  </main>
+</div>
+
+<script>
+  const CATEGORIES = [
+    { id: 'all', label: 'All', icon: null, count: 2465 },
+    { id: 'cases', label: 'Case Law', icon: 'fa-gavel', count: 1243 },
+    { id: 'statutes', label: 'Statutes', icon: 'fa-scale-balanced', count: 312 },
+    { id: 'statutory-documents', label: 'Statutory Documents', icon: 'fa-newspaper', count: 587 },
+    { id: 'decrees', label: 'Decrees', icon: 'fa-folder', count: 89 },
+    { id: 'legal-notices', label: 'Legal Notices', icon: 'fa-book', count: 234 },
+  ];
+
+  const FILTERS_BY_CAT = {
+    all: ['Year', 'Area of law', 'Source'],
+    cases: ['Court', 'Year', 'Area of law'],
+    statutes: ['Year', 'Subject', 'Status'],
+    'statutory-documents': ['Year', 'Type', 'Subject'],
+    decrees: ['Year', 'Authority'],
+    'legal-notices': ['Year', 'Type'],
+  };
+
+  const MOCK_RESULTS = [
+    { cat: 'cases', tag: 'Case · Supreme Court', title: 'Uganda v. Kato Jonathan (Criminal Appeal No. 14 of 2021)', sub: 'The judgment reaffirms the duty of a trial court to exercise the greatest caution before convicting on the basis of identification evidence given under difficult conditions.', source: ['Supreme Court of Uganda', 'Decided 12 May 2021', 'Criminal Law · Evidence'] },
+    { cat: 'cases', tag: 'Case · Court of Appeal', title: 'Abdalla Nabulere & 2 Others v. Uganda [1979] HCB 77', sub: 'Cautionary principles for identification evidence in criminal trials — the foundational Ugandan authority on this question.', source: ['Court of Appeal', '1979', 'Criminal Law · Evidence'] },
+    { cat: 'statutes', tag: 'Statute', title: 'The Penal Code Act, Cap. 120', sub: 'The principal statute defining criminal offences and penalties under Ugandan law. Sections 285 & 286 cover aggravated robbery.', source: ['Cap. 120', 'In force', 'Criminal Law'] },
+    { cat: 'statutes', tag: 'Statute', title: 'The Constitution of the Republic of Uganda, 1995', sub: 'The supreme law of Uganda. Establishes fundamental rights, branches of government, and procedures for governance.', source: ['1995, as amended', 'In force', 'Constitutional Law'] },
+    { cat: 'statutory-documents', tag: 'Statutory Document', title: 'Land Acquisition Act — Statutory Instrument No. 24 of 1965', sub: 'Procedural framework under the Land Acquisition Act setting out compensation calculations and government acquisition procedures.', source: ['SI No. 24 of 1965', 'Land Law'] },
+    { cat: 'decrees', tag: 'Decree', title: 'The Expropriated Properties Act (Cap. 87)', sub: 'Governs the return or compensation for properties expropriated during the 1972 economic war.', source: ['Cap. 87', 'Land · Property Law'] },
+    { cat: 'legal-notices', tag: 'Legal Notice', title: 'Legal Notice No. 1 of 2024 — Amendment of Civil Procedure Rules', sub: 'Updates to the Civil Procedure Rules procedure for summary judgment applications.', source: ['LN 1/2024', 'Civil Procedure'] },
+  ];
+
+  let activeCat = 'all';
+
+  function buildTabs() {
+    const el = document.getElementById('cat-tabs');
+    el.innerHTML = CATEGORIES.map(c => `
+      <button class="cat-tab ${activeCat === c.id ? 'active' : ''}" data-cat="${c.id}">
+        ${c.icon ? `<i class="fa ${c.icon}"></i>` : ''}
+        ${c.label}
+        <span class="cat-tab-count">${c.count.toLocaleString()}</span>
+      </button>
+    `).join('');
+    el.querySelectorAll('.cat-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeCat = btn.dataset.cat;
+        buildTabs();
+        buildFilters();
+        renderResults();
+      });
+    });
+  }
+
+  function buildFilters() {
+    const filters = FILTERS_BY_CAT[activeCat] || [];
+    const el = document.getElementById('filter-row');
+    el.innerHTML = `
+      <span class="filter-row-label"><i class="fa fa-filter"></i>Filter</span>
+      ${filters.map(f => `<button class="filter-chip">${f}</button>`).join('')}
+      <div class="filter-row-spacer"></div>
+      <select class="sort-select"><option>Most recent</option><option>Most cited</option><option>A–Z</option></select>
+    `;
+    el.querySelectorAll('.filter-chip').forEach(chip => {
+      chip.addEventListener('click', () => chip.classList.toggle('active'));
+    });
+  }
+
+  function iconForCat(cat) {
+    const c = CATEGORIES.find(x => x.id === cat);
+    return c && c.icon ? c.icon : 'fa-book';
+  }
+
+  function renderResults() {
+    const items = activeCat === 'all' ? MOCK_RESULTS : MOCK_RESULTS.filter(r => r.cat === activeCat);
+    const meta = document.getElementById('result-meta');
+    const cat = CATEGORIES.find(c => c.id === activeCat);
+    meta.textContent = items.length ? `Showing ${items.length} of ${cat.count.toLocaleString()} items` : 'No items match this filter.';
+    const el = document.getElementById('result-list');
+    el.innerHTML = items.map(r => `
+      <a class="result-row" href="sikia-document.html">
+        <div class="result-icon"><i class="fa ${iconForCat(r.cat)}"></i></div>
+        <div class="result-body">
+          <div class="result-tag">${r.tag}</div>
+          <div class="result-title">${r.title}</div>
+          <div class="result-sub">${r.sub}</div>
+          <div class="result-source">${r.source.map((s, i) => (i ? '<span class="result-source-sep">·</span>' : '') + `<span class="result-source-item">${s}</span>`).join('')}</div>
+        </div>
+        <div class="result-action"><i class="fa fa-arrow-up-right"></i></div>
+      </a>
+    `).join('');
+  }
+
+  // Topbar search filters the result list as the user types.
+  const topSearch = document.querySelector('.search-input input');
+  if (topSearch) topSearch.addEventListener('input', (e) => {
+    const q = e.target.value.toLowerCase().trim();
+    document.querySelectorAll('.result-row').forEach(row => {
+      const text = row.textContent.toLowerCase();
+      row.style.display = (!q || text.includes(q)) ? '' : 'none';
+    });
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      if (topSearch) topSearch.focus();
+    }
+  });
+
+  buildTabs();
+  buildFilters();
+  renderResults();
+</script>
+</body>
+</html>

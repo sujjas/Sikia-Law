@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sikia Law — Sign up</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  :root {
+    --bg: #ffffff;
+    --bg-muted: #fafafa;
+    --surface: #ffffff;
+    --surface-2: #f4f4f5;
+    --surface-3: #e8e8ea;
+    --line: #dcdcdf;
+    --line-2: #ececee;
+    --text: #0f0f10;
+    --text-2: #525255;
+    --text-3: #8a8a8f;
+    --accent: #0f0f10;
+    --accent-fg: #ffffff;
+    --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+    color: var(--text); background: var(--bg);
+    min-height: 100vh;
+    line-height: 1.5; -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3 { font-weight: 600; letter-spacing: -0.015em; color: var(--text); margin: 0; }
+  h1 { font-size: 2rem; letter-spacing: -0.02em; }
+  p { margin: 0; color: var(--text-2); }
+  a { color: inherit; }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 12px 20px; border-radius: 10px;
+    font-size: 0.95rem; font-weight: 500;
+    border: 1px solid var(--line); background: var(--surface); color: var(--text);
+    cursor: pointer; text-decoration: none; font-family: inherit;
+    transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+
+  /* Nav */
+  .nav {
+    border-bottom: 1px solid var(--line-2);
+    background: var(--surface);
+  }
+  .nav-inner {
+    max-width: 1160px; margin: 0 auto; padding: 14px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-links { display: flex; gap: 4px; }
+  .nav-links a {
+    padding: 8px 14px; border-radius: 8px;
+    font-size: 0.92rem; color: var(--text-2); text-decoration: none;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .nav-links a:hover { background: var(--surface-2); color: var(--text); }
+  .nav-links a.active { color: var(--text); font-weight: 500; background: var(--surface-2); }
+  .nav-cta { display: flex; gap: 8px; align-items: center; }
+  .nav-cta .btn { padding: 8px 14px; font-size: 0.9rem; }
+  @media (max-width: 760px) { .nav-links { display: none; } }
+  .logo { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 1rem; text-decoration: none; }
+  .logo-mark {
+    width: 26px; height: 26px; border-radius: 7px;
+    background: var(--text); color: var(--accent-fg);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.78rem; font-weight: 600;
+  }
+
+  /* Layout: split — story on left, form on right */
+  .auth-wrap {
+    display: grid; grid-template-columns: 1fr 1fr;
+    min-height: calc(100vh - 64px);
+  }
+  .auth-copy {
+    padding: 72px 56px; background: var(--bg-muted);
+    display: flex; flex-direction: column; justify-content: space-between;
+    border-right: 1px solid var(--line-2);
+  }
+  .auth-copy .eyebrow {
+    font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-3);
+  }
+  .auth-copy h1 {
+    margin: 20px 0 16px; max-width: 440px;
+  }
+  .auth-copy .lead { max-width: 440px; font-size: 1.05rem; }
+  .bullets { margin-top: 36px; display: flex; flex-direction: column; gap: 12px; }
+  .bullet {
+    display: flex; gap: 12px; align-items: flex-start;
+    font-size: 0.95rem; color: var(--text-2);
+  }
+  .bullet-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--text); margin-top: 7px; flex-shrink: 0;
+  }
+  .quote-block {
+    margin-top: 40px;
+    padding: 22px; border: 1px dashed var(--line); border-radius: 14px;
+    background: var(--surface);
+    max-width: 440px;
+  }
+  .quote-block p {
+    font-size: 0.95rem; font-style: italic; color: var(--text);
+  }
+  .quote-block .byline { margin-top: 8px; font-size: 0.82rem; color: var(--text-3); font-style: normal; }
+
+  /* Form side */
+  .auth-form-wrap {
+    padding: 72px 56px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .auth-form {
+    width: 100%; max-width: 440px;
+  }
+  .auth-form h2 {
+    font-size: 1.6rem; letter-spacing: -0.02em; margin-bottom: 8px;
+  }
+  .auth-form .sub {
+    color: var(--text-2); margin-bottom: 32px;
+  }
+
+  /* Progress bar */
+  .progress {
+    height: 4px; width: 100%;
+    background: var(--surface-2); border-radius: 4px;
+    overflow: hidden; margin-bottom: 28px;
+  }
+  .progress-bar {
+    height: 100%; width: 0%;
+    background: var(--text);
+    transition: width 0.45s var(--ease-out);
+    border-radius: 4px;
+  }
+  .progress-label {
+    font-size: 0.78rem; color: var(--text-3);
+    letter-spacing: 0.04em; margin-bottom: 8px;
+    display: flex; justify-content: space-between;
+  }
+
+  /* Fields */
+  .field {
+    margin-bottom: 22px;
+    position: relative;
+  }
+  .field label {
+    display: block;
+    font-size: 0.82rem; font-weight: 500; color: var(--text-2);
+    margin-bottom: 8px; letter-spacing: 0.01em;
+    transition: color 0.2s ease;
+  }
+  .field input[type="text"],
+  .field input[type="email"],
+  .field input[type="password"] {
+    width: 100%; padding: 12px 14px;
+    border: 1px solid var(--line); border-radius: 10px;
+    background: var(--surface); color: var(--text);
+    font-size: 0.95rem; font-family: inherit;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+  }
+  .field input:focus {
+    outline: none;
+    border-color: var(--text);
+    box-shadow: 0 0 0 3px var(--surface-2);
+  }
+  .field.filled label { color: var(--text); }
+  .field.error input { border-color: #b14343; }
+  .field .error-msg {
+    font-size: 0.78rem; color: #b14343; margin-top: 6px;
+    height: 0; overflow: hidden;
+    transition: height 0.2s ease;
+  }
+  .field.error .error-msg { height: 18px; }
+
+  /* Pill pickers (year, university) */
+  .pill-row {
+    display: flex; gap: 8px; flex-wrap: wrap;
+  }
+  .pill {
+    padding: 8px 14px;
+    border: 1px solid var(--line); border-radius: 999px;
+    font-size: 0.88rem; color: var(--text-2);
+    background: var(--surface); cursor: pointer;
+    transition: transform 0.12s var(--ease-out), background 0.15s ease,
+                border-color 0.15s ease, color 0.15s ease;
+    font-family: inherit;
+  }
+  .pill:hover { background: var(--surface-2); border-color: var(--text-3); }
+  .pill.selected {
+    background: var(--text); color: var(--accent-fg); border-color: var(--text);
+  }
+  .pill.selected:active { transform: scale(0.95); }
+
+  /* Submit */
+  .submit-btn {
+    width: 100%; margin-top: 6px;
+    padding: 14px; font-size: 1rem;
+    position: relative;
+  }
+  .submit-btn[data-loading="true"] .submit-label { opacity: 0; }
+  .submit-btn[data-loading="true"]::after {
+    content: ""; position: absolute;
+    width: 18px; height: 18px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: var(--accent-fg);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .auth-footer {
+    font-size: 0.9rem; color: var(--text-3);
+    margin-top: 22px; text-align: center;
+  }
+  .auth-footer a { color: var(--text); font-weight: 500; text-decoration: none; }
+  .auth-footer a:hover { text-decoration: underline; }
+
+  @media (max-width: 900px) {
+    .auth-wrap { grid-template-columns: 1fr; }
+    .auth-copy {
+      padding: 40px 28px; border-right: none;
+      border-bottom: 1px solid var(--line-2);
+    }
+    .auth-form-wrap { padding: 40px 28px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="logo" href="sikia-homepage-animated.html"><span class="logo-mark">S</span>Sikia Law</a>
+    <div class="nav-links">
+      <a href="sikia-homepage-animated.html">Homepage</a>
+      <a href="sikia-about.html">About</a>
+      <a href="sikia-features.html">Features</a>
+      <a href="sikia-contact.html">Contact</a>
+    </div>
+    <div class="nav-cta">
+      <a class="btn" href="sikia-login.html">Login</a>
+      <a class="btn btn-primary" href="sikia-signup.html">Register</a>
+    </div>
+  </div>
+</nav>
+
+<div class="auth-wrap">
+
+  <!-- Story side -->
+  <div class="auth-copy">
+    <div>
+      <span class="eyebrow">Sign up</span>
+      <h1>Join the library in thirty seconds.</h1>
+      <p class="lead">Free while you're a student. No card, no trial. Your email just tells us which university to personalise the feed for.</p>
+
+      <div class="bullets">
+        <div class="bullet"><div class="bullet-dot"></div><div>Every major Ugandan case, statute, and statutory instrument — searchable.</div></div>
+        <div class="bullet"><div class="bullet-dot"></div><div>Organised by year of study. Year 2 sees what Year 2 needs.</div></div>
+        <div class="bullet"><div class="bullet-dot"></div><div>Reads anywhere — laptop, phone, library PC. Bookmarks sync.</div></div>
+      </div>
+    </div>
+
+    <div class="quote-block">
+      <p>"Signed up on a Sunday. By Wednesday, three of my classmates had asked what I was reading from."</p>
+      <div class="byline">— Sarah K., Year 3, Makerere</div>
+    </div>
+  </div>
+
+  <!-- Form side -->
+  <div class="auth-form-wrap">
+    <form class="auth-form" id="signupForm" novalidate>
+      <h2>Create your account</h2>
+      <p class="sub">Thirty seconds. We promise.</p>
+
+      <div class="progress-label"><span>Progress</span><span id="progressText">0%</span></div>
+      <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+
+      <div class="field" data-required>
+        <label for="name">Full name</label>
+        <input type="text" id="name" name="name" autocomplete="name" placeholder="e.g. Amelia Mutebi" />
+        <div class="error-msg">We'll need your name.</div>
+      </div>
+
+      <div class="field" data-required>
+        <label for="email">University email</label>
+        <input type="email" id="email" name="email" autocomplete="email" placeholder="you@uni.ac.ug" />
+        <div class="error-msg">That doesn't look like an email.</div>
+      </div>
+
+      <div class="field" data-required data-pill="year">
+        <label>Year of study</label>
+        <div class="pill-row">
+          <button type="button" class="pill" data-value="Y1">Year 1</button>
+          <button type="button" class="pill" data-value="Y2">Year 2</button>
+          <button type="button" class="pill" data-value="Y3">Year 3</button>
+          <button type="button" class="pill" data-value="Y4">Year 4</button>
+          <button type="button" class="pill" data-value="Bar">Bar</button>
+        </div>
+        <div class="error-msg">Pick a year.</div>
+      </div>
+
+      <div class="field" data-required data-pill="uni">
+        <label>University</label>
+        <div class="pill-row">
+          <button type="button" class="pill" data-value="Makerere">Makerere</button>
+          <button type="button" class="pill" data-value="KIU">KIU</button>
+          <button type="button" class="pill" data-value="UCU">UCU</button>
+          <button type="button" class="pill" data-value="Uganda Martyrs">Uganda Martyrs</button>
+          <button type="button" class="pill" data-value="Cavendish">Cavendish</button>
+          <button type="button" class="pill" data-value="IUEA">IUEA</button>
+          <button type="button" class="pill" data-value="Other">Other</button>
+        </div>
+        <div class="error-msg">Pick a university.</div>
+      </div>
+
+      <div class="field" data-required>
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" autocomplete="new-password" placeholder="Minimum 8 characters" />
+        <div class="error-msg">Use at least 8 characters.</div>
+      </div>
+
+      <button type="submit" class="btn btn-primary submit-btn" id="submitBtn">
+        <span class="submit-label">Create account</span>
+      </button>
+
+      <div class="auth-footer">
+        Already have an account? <a href="sikia-login.html">Log in</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  const form = document.getElementById('signupForm');
+  const progressBar = document.getElementById('progressBar');
+  const progressText = document.getElementById('progressText');
+  const submitBtn = document.getElementById('submitBtn');
+
+  const allFields = Array.from(form.querySelectorAll('.field[data-required]'));
+
+  // Hook up text/email/password inputs
+  allFields.filter(f => !f.dataset.pill).forEach(field => {
+    const input = field.querySelector('input');
+    if (!input) return;
+    input.addEventListener('input', () => {
+      field.classList.toggle('filled', input.value.trim().length > 0);
+      if (field.classList.contains('error')) field.classList.remove('error');
+      updateProgress();
+    });
+    input.addEventListener('blur', () => {
+      // Simple validation on blur
+      if (input.type === 'email' && input.value && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(input.value)) {
+        field.classList.add('error');
+      } else if (input.type === 'password' && input.value && input.value.length < 8) {
+        field.classList.add('error');
+      }
+    });
+  });
+
+  // Hook up pill pickers (single-select)
+  form.querySelectorAll('.field[data-pill]').forEach(field => {
+    const pills = field.querySelectorAll('.pill');
+    pills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        pills.forEach(p => p.classList.remove('selected'));
+        pill.classList.add('selected');
+        field.classList.add('filled');
+        field.classList.remove('error');
+        field.dataset.value = pill.dataset.value;
+        // Tiny springy feedback
+        pill.animate(
+          [{ transform: 'scale(0.92)' }, { transform: 'scale(1.04)' }, { transform: 'scale(1)' }],
+          { duration: 260, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)' }
+        );
+        updateProgress();
+      });
+    });
+  });
+
+  function fieldIsFilled(f) {
+    if (f.dataset.pill) return !!f.dataset.value;
+    const input = f.querySelector('input');
+    return input && input.value.trim().length > 0;
+  }
+
+  function updateProgress() {
+    const filled = allFields.filter(fieldIsFilled).length;
+    const pct = Math.round((filled / allFields.length) * 100);
+    progressBar.style.width = pct + '%';
+    progressText.textContent = pct + '%';
+  }
+
+  // Submit
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    let valid = true;
+
+    allFields.forEach(f => {
+      if (!fieldIsFilled(f)) {
+        f.classList.add('error');
+        valid = false;
+      }
+    });
+
+    // Email format
+    const emailInput = document.getElementById('email');
+    if (emailInput.value && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(emailInput.value)) {
+      emailInput.closest('.field').classList.add('error');
+      valid = false;
+    }
+
+    // Password length
+    const pwInput = document.getElementById('password');
+    if (pwInput.value && pwInput.value.length < 8) {
+      pwInput.closest('.field').classList.add('error');
+      valid = false;
+    }
+
+    if (!valid) {
+      // shake
+      form.animate(
+        [{ transform: 'translateX(0)' }, { transform: 'translateX(-6px)' },
+         { transform: 'translateX(6px)' }, { transform: 'translateX(-3px)' },
+         { transform: 'translateX(0)' }],
+        { duration: 280 }
+      );
+      return;
+    }
+
+    // Loading state → navigate to dashboard
+    submitBtn.setAttribute('data-loading', 'true');
+    submitBtn.disabled = true;
+    setTimeout(() => {
+      window.location.href = 'sikia-dashboard.html';
+    }, 850);
+  });
+</script>
+</body>
+</html>
