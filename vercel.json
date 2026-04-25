@@ -16,7 +16,17 @@
     { "source": "/document", "destination": "/sikia-document.html" },
     { "source": "/bookmarks", "destination": "/sikia-bookmarks.html" },
     { "source": "/search", "destination": "/sikia-search.html" },
-    { "source": "/profile", "destination": "/sikia-profile.html" }
+    { "source": "/profile", "destination": "/sikia-profile.html" },
+
+    { "source": "/v2", "destination": "/v2/sikia-dashboard.html" },
+    { "source": "/v2/home", "destination": "/v2/sikia-dashboard.html" },
+    { "source": "/v2/dashboard", "destination": "/v2/sikia-dashboard.html" },
+    { "source": "/v2/notes", "destination": "/v2/sikia-notes.html" },
+    { "source": "/v2/library", "destination": "/v2/sikia-library.html" },
+    { "source": "/v2/bookmarks", "destination": "/v2/sikia-bookmarks.html" },
+    { "source": "/v2/search", "destination": "/v2/sikia-search.html" },
+    { "source": "/v2/profile", "destination": "/v2/sikia-profile.html" },
+    { "source": "/v2/document", "destination": "/v2/sikia-document.html" }
   ],
   "headers": [
     {
@@ -25,6 +35,18 @@
         { "key": "X-Content-Type-Options", "value": "nosniff" },
         { "key": "X-Frame-Options", "value": "DENY" },
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    },
+    {
+      "source": "/Notes/(.*)\\.pdf",
+      "headers": [
+        { "key": "Content-Type", "value": "application/pdf" }
+      ]
+    },
+    {
+      "source": "/v2/fonts/(.*)\\.otf",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
       ]
     }
   ]
