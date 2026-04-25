@@ -3,549 +3,572 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Sikia Law — Profile & Settings</title>
+<title>Sikia Law — Profile</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
 
   :root {
-    --bg: #ffffff;
-    --bg-muted: #fafafa;
-    --surface: #ffffff;
-    --surface-2: #f4f4f5;
-    --surface-3: #eeeef0;
-    --line: #dcdcdf;
-    --line-2: #ececee;
-    --text: #0f0f10;
-    --text-2: #525255;
-    --text-3: #8a8a8f;
-    --accent: #0f0f10;
-    --accent-fg: #ffffff;
-    --danger: #b14343;
+    --bg: #ffffff; --bg-muted: #fafafa;
+    --surface: #ffffff; --surface-2: #f4f4f5; --surface-3: #e8e8ea;
+    --line: #dcdcdf; --line-2: #ececee;
+    --text: #0f0f10; --text-2: #525255; --text-3: #8a8a8f;
+    --accent: #0f0f10; --accent-fg: #ffffff;
     --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
-    color: var(--text); background: var(--bg-muted);
-    min-height: 100vh; line-height: 1.5; -webkit-font-smoothing: antialiased;
-  }
-  h1, h2, h3 { font-weight: 600; letter-spacing: -0.015em; color: var(--text); margin: 0; }
+  @font-face { font-family: "FA"; src: url("fonts/fontawesome-regular.otf") format("opentype"); font-weight: 400; font-style: normal; font-display: block; }
+  .fa { font-family: "FA"; font-style: normal; font-weight: 400; display: inline-block; line-height: 1; -webkit-font-smoothing: antialiased; }
+  .fa-search::before { content: "\f002"; }
+  .fa-home::before { content: "\f015"; }
+  .fa-file-lines::before { content: "\f15c"; }
+  .fa-book::before { content: "\f02d"; }
+  .fa-bookmark::before { content: "\f02e"; }
+  .fa-user::before { content: "\f007"; }
+  .fa-graduation-cap::before { content: "\f19d"; }
+  .fa-bell::before { content: "\f0f3"; }
+  .fa-chart-line::before { content: "\f201"; }
+  .fa-gear::before { content: "\f013"; }
+  .fa-camera::before { content: "\f030"; }
+
+  body { font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif; color: var(--text); background: var(--bg-muted); line-height: 1.5; -webkit-font-smoothing: antialiased; min-height: 100vh; }
+  h1, h2, h3, h4 { font-weight: 600; letter-spacing: -0.015em; color: var(--text); margin: 0; }
   p { margin: 0; color: var(--text-2); }
-  a { color: inherit; text-decoration: none; }
+  a { color: inherit; }
 
-  .app { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
-  .sidebar {
-    background: var(--surface); border-right: 1px solid var(--line-2);
-    padding: 22px 16px; position: sticky; top: 0; height: 100vh;
-    overflow-y: auto; display: flex; flex-direction: column; gap: 8px;
-  }
-  .logo {
-    display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 1rem;
-    padding: 6px 8px 18px; border-bottom: 1px solid var(--line-2); margin-bottom: 10px;
-  }
-  .logo-mark {
-    width: 26px; height: 26px; border-radius: 7px;
-    background: var(--text); color: var(--accent-fg);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.78rem; font-weight: 600;
-  }
-  .nav-group { display: flex; flex-direction: column; gap: 2px; margin-bottom: 14px; }
-  .nav-group-title {
-    font-size: 0.72rem; font-weight: 600; text-transform: uppercase;
-    letter-spacing: 0.08em; color: var(--text-3); padding: 8px 10px 6px;
-  }
-  .nav-item {
-    display: flex; align-items: center; gap: 10px;
-    padding: 8px 12px; border-radius: 8px;
-    font-size: 0.92rem; color: var(--text-2); position: relative;
-    transition: padding-left 0.15s var(--ease-out), background 0.15s ease, color 0.15s ease;
-  }
-  .nav-item:hover { background: var(--surface-2); color: var(--text); padding-left: 16px; }
-  .nav-item.active { background: var(--surface-2); color: var(--text); font-weight: 500; }
-  .nav-item.active::before {
-    content: ""; position: absolute; left: 0; top: 8px; bottom: 8px;
-    width: 3px; background: var(--text); border-radius: 0 3px 3px 0;
-  }
-  .sidebar-footer {
-    margin-top: auto; padding: 12px 10px; border-top: 1px solid var(--line-2);
-    display: flex; align-items: center; gap: 10px; font-size: 0.88rem;
-  }
-  .avatar-sm {
-    width: 32px; height: 32px; border-radius: 50%;
-    background: var(--surface-3); color: var(--text);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.78rem; font-weight: 600;
-  }
+  .dash-shell { display: grid; grid-template-columns: 272px 1fr; min-height: 100vh; }
+  .sidebar { background: var(--surface); border-right: 1px solid var(--line-2); padding: 26px 18px 16px; display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; }
+  .sidebar-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); padding: 4px 10px; margin-bottom: 36px; }
+  .logo-mark { width: 32px; height: 32px; border-radius: 9px; background: var(--text); color: var(--accent-fg); display: flex; align-items: center; justify-content: center; font-size: 0.92rem; font-weight: 700; }
+  .logo-word { font-weight: 600; font-size: 1.05rem; letter-spacing: -0.01em; }
+  .side-nav { display: flex; flex-direction: column; gap: 4px; }
+  .side-nav-item { display: flex; align-items: center; gap: 14px; padding: 11px 12px; border-radius: 10px; font-size: 0.96rem; font-weight: 500; color: var(--text-2); text-decoration: none; transition: background 0.18s ease, color 0.18s ease; }
+  .side-nav-item .nav-ico { width: 22px; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 1.05rem; color: var(--text-3); transition: color 0.18s ease; }
+  .side-nav-item:hover { background: var(--surface-2); color: var(--text); }
+  .side-nav-item:hover .nav-ico { color: var(--text); }
+  .side-nav-item.active { background: var(--surface-2); color: var(--text); font-weight: 600; }
+  .side-nav-item.active .nav-ico { color: var(--text); }
+  .nav-count { margin-left: auto; font-size: 0.74rem; font-weight: 500; padding: 2px 9px; border-radius: 999px; border: 1px solid var(--line); color: var(--text-2); min-width: 28px; text-align: center; }
+  .sidebar-foot { margin-top: auto; padding: 12px 10px; display: flex; align-items: center; gap: 12px; border-radius: 10px; text-decoration: none; transition: background 0.18s ease; }
+  .sidebar-foot, .sidebar-foot.active { background: var(--surface-2); }
+  .avatar-md { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, var(--surface-3), var(--surface-2)); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; font-size: 0.84rem; font-weight: 600; color: var(--text-2); flex-shrink: 0; }
+  .user-block { min-width: 0; }
+  .user-block .name { font-size: 0.96rem; font-weight: 600; color: var(--text); line-height: 1.2; }
+  .user-block .meta { font-size: 0.78rem; color: var(--text-3); margin-top: 2px; }
 
-  .main { display: flex; flex-direction: column; min-width: 0; }
-  .topbar {
-    padding: 18px 40px; border-bottom: 1px solid var(--line-2);
-    background: var(--surface); display: flex; align-items: center; gap: 16px;
-  }
-  .topbar h2 { font-size: 1rem; font-weight: 500; }
-  .topbar-actions { margin-left: auto; display: flex; gap: 10px; align-items: center; }
-  .btn {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 9px 14px; border-radius: 8px; border: 1px solid var(--line);
-    background: var(--surface); font-size: 0.88rem; color: var(--text);
-    cursor: pointer; font-family: inherit;
-    transition: background 0.15s ease, transform 0.15s ease;
-  }
-  .btn:hover { background: var(--surface-2); transform: translateY(-1px); }
-  .btn-primary { background: var(--text); color: var(--accent-fg); border-color: var(--text); }
-  .btn-danger { color: var(--danger); border-color: var(--line); }
-  .btn-danger:hover { background: var(--danger); color: white; border-color: var(--danger); transform: translateY(-1px); }
+  .main { padding: 28px 40px 80px; min-width: 0; }
+  .topbar { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; }
+  .search-input { flex: 1; max-width: 480px; display: flex; align-items: center; gap: 10px; padding: 9px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+  .search-input input { flex: 1; border: none; outline: none; background: transparent; font-family: inherit; font-size: 0.9rem; color: var(--text); }
+  .search-input input::placeholder { color: var(--text-3); }
+  .search-input .fa { color: var(--text-3); font-size: 0.95rem; }
+  .topbar-spacer { flex: 1; }
+  .kbd { font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; background: var(--surface-2); border: 1px solid var(--line-2); color: var(--text-3); font-family: ui-monospace, monospace; }
+  .breadcrumb { font-size: 0.82rem; color: var(--text-3); display: flex; gap: 6px; align-items: center; margin-bottom: 14px; }
+  .breadcrumb a { text-decoration: none; }
+  .breadcrumb a:hover { color: var(--text); }
+  .page-head { margin-bottom: 22px; }
+  .page-head h1 { font-size: 2.1rem; letter-spacing: -0.02em; }
+  .page-head p { margin-top: 8px; max-width: 60ch; }
 
-  /* Layout */
-  .layout {
-    display: grid; grid-template-columns: 220px 1fr;
-    gap: 48px; padding: 40px 40px 80px;
-    max-width: 1100px; width: 100%;
-  }
+  /* Two-column with side TOC */
+  .profile-wrap { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 48px; align-items: start; }
 
-  /* Side nav */
-  .side-nav { display: flex; flex-direction: column; gap: 2px; position: sticky; top: 90px; height: fit-content; }
-  .side-link {
-    padding: 10px 14px; border-radius: 8px;
-    font-size: 0.92rem; color: var(--text-2); cursor: pointer;
-    border: none; background: transparent; font-family: inherit;
-    text-align: left; width: 100%;
-    transition: padding-left 0.15s var(--ease-out), background 0.15s ease, color 0.15s ease;
-  }
-  .side-link:hover { background: var(--surface-2); color: var(--text); padding-left: 18px; }
-  .side-link.active {
-    background: var(--surface-2); color: var(--text); font-weight: 500;
-    padding-left: 18px;
-  }
+  .profile-toc { position: sticky; top: 22px; }
+  .profile-toc-label { font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-3); font-weight: 600; padding: 0 4px 12px; margin-bottom: 6px; border-bottom: 1px solid var(--line-2); }
+  .toc-list { display: flex; flex-direction: column; gap: 1px; }
+  .toc-item { padding: 8px 12px; font-size: 0.88rem; color: var(--text-2); text-decoration: none; border-radius: 8px; display: flex; align-items: center; gap: 10px; transition: background 0.15s ease, color 0.15s ease; }
+  .toc-item .fa { font-size: 0.85rem; color: var(--text-3); width: 16px; }
+  .toc-item:hover { background: var(--surface-2); color: var(--text); }
+  .toc-item:hover .fa { color: var(--text); }
+  .toc-item.active { background: var(--surface-2); color: var(--text); font-weight: 600; }
+  .toc-item.active .fa { color: var(--text); }
 
-  /* Content */
-  .content { min-width: 0; }
-  .section {
-    background: var(--surface); border: 1px solid var(--line-2); border-radius: 14px;
-    padding: 28px; margin-bottom: 20px;
-    animation: fadeUp 0.5s var(--ease-out) backwards;
+  /* Section card */
+  .profile-section { margin-bottom: 32px; scroll-margin-top: 24px; }
+  .section-card {
+    background: var(--surface); border: 1px solid var(--line-2);
+    border-radius: 14px; overflow: hidden;
   }
-  .section:nth-child(1) { animation-delay: 0.02s; }
-  .section:nth-child(2) { animation-delay: 0.08s; }
-  .section:nth-child(3) { animation-delay: 0.14s; }
-  .section:nth-child(4) { animation-delay: 0.20s; }
-  .section:nth-child(5) { animation-delay: 0.26s; }
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: translateY(0); }
+  .section-card-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 16px; padding: 18px 22px;
+    border-bottom: 1px solid var(--line-2);
   }
-  .section-head {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 20px;
-  }
-  .section-head h2 { font-size: 1.1rem; }
-  .section-head p { font-size: 0.86rem; color: var(--text-3); margin-top: 4px; }
+  .section-card-head h2 { font-size: 1.05rem; font-weight: 600; }
+  .section-card-head p { font-size: 0.84rem; color: var(--text-3); margin-top: 4px; }
+  .section-card-body { padding: 22px; }
 
-  /* Profile hero */
-  .profile-hero {
-    display: flex; gap: 20px; align-items: center; margin-bottom: 24px;
-  }
+  /* Profile section */
+  .profile-row { display: flex; gap: 28px; align-items: center; margin-bottom: 24px; flex-wrap: wrap; }
   .avatar-lg {
-    width: 74px; height: 74px; border-radius: 50%;
-    background: var(--text); color: var(--accent-fg);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.6rem; font-weight: 600; position: relative;
-    transition: transform 0.2s var(--ease-out);
-  }
-  .avatar-lg:hover { transform: scale(1.05); }
-  .avatar-lg::after {
-    content: "✎"; position: absolute; bottom: -2px; right: -2px;
-    width: 24px; height: 24px; border-radius: 50%;
-    background: var(--surface); color: var(--text);
+    width: 84px; height: 84px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--surface-3), var(--surface-2));
     border: 1px solid var(--line);
     display: flex; align-items: center; justify-content: center;
-    font-size: 0.7rem; cursor: pointer;
-    transition: transform 0.15s var(--ease-out);
+    font-size: 1.7rem; font-weight: 600; color: var(--text-2);
+    position: relative;
   }
-  .avatar-lg:hover::after { transform: scale(1.1); }
-  .profile-hero .name { font-size: 1.25rem; font-weight: 600; margin-bottom: 2px; }
-  .profile-hero .sub { font-size: 0.88rem; color: var(--text-3); }
+  .avatar-edit {
+    position: absolute; right: -2px; bottom: -2px;
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--text); color: var(--accent-fg);
+    border: 2px solid var(--surface);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 0.78rem;
+    transition: transform 0.15s ease;
+  }
+  .avatar-edit:hover { transform: scale(1.07); }
+  .profile-name { font-size: 1.2rem; font-weight: 600; }
+  .profile-sub { font-size: 0.88rem; color: var(--text-3); margin-top: 2px; }
 
-  /* Form fields */
-  .field-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 20px; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field-label { font-size: 0.78rem; color: var(--text-3); font-weight: 500; }
+  .field-input {
+    padding: 10px 14px;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 9px;
+    font-family: inherit; font-size: 0.92rem; color: var(--text);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
   }
-  .field { margin-bottom: 16px; }
-  .field label {
-    display: block; font-size: 0.8rem; color: var(--text-2);
-    margin-bottom: 6px; font-weight: 500;
-  }
-  .field input, .field select {
-    width: 100%; padding: 11px 14px;
-    border: 1px solid var(--line); border-radius: 8px;
-    background: var(--surface); color: var(--text);
-    font-size: 0.94rem; font-family: inherit;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  }
-  .field input:focus, .field select:focus {
-    outline: none; border-color: var(--text);
-    box-shadow: 0 0 0 3px var(--surface-2);
-  }
+  .field-input:focus { outline: none; border-color: var(--text-2); box-shadow: 0 0 0 4px rgba(15, 15, 16, 0.05); }
 
   /* Pill picker */
   .pill-row { display: flex; flex-wrap: wrap; gap: 8px; }
-  .pill-opt {
-    padding: 7px 14px; border: 1px solid var(--line); border-radius: 999px;
-    background: var(--surface); font-size: 0.84rem; color: var(--text-2);
-    cursor: pointer; font-family: inherit;
-    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  .pill-pick {
+    padding: 7px 14px; border-radius: 999px;
+    border: 1px solid var(--line); background: var(--surface);
+    font-family: inherit; font-size: 0.86rem;
+    color: var(--text-2); cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
   }
-  .pill-opt:hover { background: var(--surface-2); color: var(--text); }
-  .pill-opt.active {
-    background: var(--text); color: var(--accent-fg); border-color: var(--text);
-  }
+  .pill-pick:hover { background: var(--surface-2); color: var(--text); }
+  .pill-pick.active { background: var(--text); border-color: var(--text); color: var(--accent-fg); }
 
-  /* Toggles */
+  /* Toggle row */
   .toggle-row {
-    display: flex; justify-content: space-between; align-items: flex-start; gap: 20px;
-    padding: 16px 0; border-top: 1px solid var(--line-2);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 0; gap: 20px;
+    border-bottom: 1px solid var(--line-2);
   }
-  .toggle-row:first-child { border-top: none; padding-top: 0; }
-  .toggle-row .tr-label { font-size: 0.94rem; font-weight: 500; color: var(--text); margin-bottom: 3px; }
-  .toggle-row .tr-desc { font-size: 0.84rem; color: var(--text-3); }
+  .toggle-row:last-child { border-bottom: none; }
+  .toggle-row-text { min-width: 0; }
+  .toggle-row-title { font-size: 0.94rem; font-weight: 500; color: var(--text); }
+  .toggle-row-desc { font-size: 0.82rem; color: var(--text-3); margin-top: 3px; }
   .toggle {
-    width: 40px; height: 22px; background: var(--surface-3); border-radius: 999px;
-    position: relative; cursor: pointer; flex-shrink: 0; margin-top: 4px;
+    width: 40px; height: 22px; border-radius: 999px;
+    background: var(--surface-3); position: relative;
+    cursor: pointer; flex-shrink: 0;
     transition: background 0.2s ease;
+    border: 1px solid var(--line);
   }
   .toggle::after {
-    content: ""; position: absolute; top: 2px; left: 2px;
-    width: 18px; height: 18px; background: white; border-radius: 50%;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    transition: transform 0.22s var(--ease-out);
+    content: ""; position: absolute;
+    top: 2px; left: 2px; width: 16px; height: 16px;
+    border-radius: 50%; background: var(--surface);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.18);
+    transition: transform 0.2s var(--ease-out);
   }
-  .toggle.on { background: var(--text); }
+  .toggle.on { background: var(--text); border-color: var(--text); }
   .toggle.on::after { transform: translateX(18px); }
 
-  /* Stats row */
+  /* Activity stats */
   .stats-row {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px; margin-bottom: 18px;
   }
-  .stat {
-    padding: 16px; background: var(--surface-2); border-radius: 10px;
+  .stat-tile {
+    background: var(--bg-muted); border: 1px solid var(--line-2);
+    border-radius: 10px; padding: 14px 16px;
   }
-  .stat .val { font-size: 1.4rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 2px; }
-  .stat .lab { font-size: 0.78rem; color: var(--text-3); }
+  .stat-tile-label { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); font-weight: 500; }
+  .stat-tile-value { font-size: 1.4rem; font-weight: 600; margin-top: 6px; letter-spacing: -0.01em; }
+  .stat-tile-sub { font-size: 0.76rem; color: var(--text-3); margin-top: 3px; }
 
-  /* Toast */
-  .toast {
-    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
-    background: var(--text); color: var(--accent-fg);
-    padding: 10px 18px; border-radius: 999px;
-    font-size: 0.86rem; opacity: 0; pointer-events: none;
-    transition: opacity 0.25s ease, transform 0.25s var(--ease-out);
-    z-index: 50;
+  /* Account section */
+  .account-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 0; gap: 16px;
+    border-bottom: 1px solid var(--line-2);
   }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-  .danger-zone {
-    border: 1px solid rgba(177, 67, 67, 0.3);
+  .account-row:last-child { border-bottom: none; }
+  .account-text-title { font-size: 0.94rem; font-weight: 500; }
+  .account-text-desc { font-size: 0.82rem; color: var(--text-3); margin-top: 3px; }
+  .btn-ghost {
+    padding: 8px 14px; border-radius: 8px;
+    border: 1px solid var(--line); background: var(--surface);
+    font-family: inherit; font-size: 0.85rem; color: var(--text);
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
   }
-  .danger-zone h2 { color: var(--danger); }
+  .btn-ghost:hover { background: var(--surface-2); border-color: var(--text-3); }
+  .btn-danger {
+    padding: 8px 14px; border-radius: 8px;
+    border: 1px solid var(--line); background: var(--surface);
+    font-family: inherit; font-size: 0.85rem; color: var(--text-2);
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  }
+  .btn-danger:hover { background: #2a2a2c; color: #ffffff; border-color: #2a2a2c; }
 
+  @media (max-width: 1000px) {
+    .profile-wrap { grid-template-columns: 1fr; gap: 24px; }
+    .profile-toc { position: static; }
+    .toc-list { flex-direction: row; flex-wrap: wrap; }
+  }
   @media (max-width: 900px) {
-    .app { grid-template-columns: 1fr; }
+    .dash-shell { grid-template-columns: 1fr; }
     .sidebar { display: none; }
-    .layout { grid-template-columns: 1fr; padding: 20px; gap: 20px; }
-    .side-nav { position: static; flex-direction: row; overflow-x: auto; }
-    .field-grid, .stats-row { grid-template-columns: 1fr; }
+    .main { padding: 20px; }
+    .page-head h1 { font-size: 1.6rem; }
+    .field-grid { grid-template-columns: 1fr; }
+    .profile-row { flex-direction: column; align-items: flex-start; gap: 16px; }
   }
+
+  /* ─ Mobile drawer ────────────────────────────────────────── */
+  .menu-toggle {
+    display: none;
+    width: 40px; height: 40px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    border-radius: 9px;
+    align-items: center; justify-content: center;
+    cursor: pointer; color: var(--text); flex-shrink: 0;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+  }
+  .menu-toggle:hover { background: var(--surface-2); border-color: var(--text-3); }
+  .menu-toggle:active { transform: scale(0.94); }
+  .menu-toggle svg { width: 18px; height: 18px; display: block; }
+  .sidebar-backdrop {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(15, 15, 16, 0.4);
+    z-index: 40;
+    animation: backdropFade 0.2s ease;
+  }
+  @keyframes backdropFade { from { opacity: 0; } to { opacity: 1; } }
+  .dash-shell.sidebar-open .sidebar-backdrop { display: block; }
+  @media (max-width: 900px) {
+    .menu-toggle { display: inline-flex; }
+    body.menu-open { overflow: hidden; }
+    .dash-shell .sidebar {
+      display: flex !important;
+      position: fixed; top: 0; left: 0;
+      width: 280px; max-width: 85vw;
+      height: 100vh;
+      z-index: 50;
+      transform: translateX(-100%);
+      transition: transform 0.28s var(--ease-out);
+      box-shadow: 0 0 40px rgba(0,0,0,0.18);
+    }
+    .dash-shell.sidebar-open .sidebar { transform: translateX(0); }
+    .topbar { gap: 8px; }
+    .search-input, .search-input-top { max-width: none; }
+  }
+
 </style>
 </head>
 <body>
 
-<div class="app">
+<div class="dash-shell">
   <aside class="sidebar">
-    <a href="sikia-dashboard.html" class="logo"><span class="logo-mark">S</span>Sikia Law</a>
-
-    <div class="nav-group">
-      <div class="nav-group-title">Library</div>
-      <a href="sikia-dashboard.html" class="nav-item">Home</a>
-      <a href="sikia-case-law.html" class="nav-item">Case Law</a>
-      <a href="sikia-statutes.html" class="nav-item">Statutes</a>
-      <a href="sikia-statutes.html" class="nav-item">SIs</a>
-      <a href="sikia-statutes.html" class="nav-item">Decrees</a>
-      <a href="sikia-statutes.html" class="nav-item">Legal Notices</a>
-      <a href="sikia-notes.html" class="nav-item">Lecture Notes</a>
-    </div>
-
-    <div class="nav-group">
-      <div class="nav-group-title">Yours</div>
-      <a href="sikia-bookmarks.html" class="nav-item">Bookmarks</a>
-      <a href="sikia-bookmarks.html" class="nav-item">Folders</a>
-      <a href="sikia-search.html" class="nav-item">Search</a>
-    </div>
-
-    <a href="sikia-profile.html" class="sidebar-footer">
-      <div class="avatar-sm">AN</div>
-      <div>
-        <div style="font-weight: 500; color: var(--text);">Amelia N.</div>
-        <div style="color: var(--text-3); font-size: 0.78rem;">Y2 · Makerere</div>
-      </div>
+    <a class="sidebar-logo" href="sikia-dashboard.html"><span class="logo-mark">S</span><span class="logo-word">Sikia</span></a>
+    <nav class="side-nav">
+      <a class="side-nav-item" href="sikia-search.html"><span class="nav-ico"><i class="fa fa-search"></i></span>Search</a>
+      <a class="side-nav-item" href="sikia-dashboard.html"><span class="nav-ico"><i class="fa fa-home"></i></span>Home</a>
+      <a class="side-nav-item" href="sikia-notes.html"><span class="nav-ico"><i class="fa fa-file-lines"></i></span>Notes<span class="nav-count">87</span></a>
+      <a class="side-nav-item" href="sikia-library.html"><span class="nav-ico"><i class="fa fa-book"></i></span>Library</a>
+      <a class="side-nav-item" href="sikia-bookmarks.html"><span class="nav-ico"><i class="fa fa-bookmark"></i></span>Bookmarks<span class="nav-count">12</span></a>
+    </nav>
+    <a class="sidebar-foot active" href="sikia-profile.html">
+      <div class="avatar-md">AM</div>
+      <div class="user-block"><div class="name">Amelia M.</div><div class="meta">Year 2 · Makerere</div></div>
     </a>
   </aside>
 
   <main class="main">
     <div class="topbar">
-      <h2>Profile &amp; Settings</h2>
-      <div class="topbar-actions">
-        <button class="btn" id="discardBtn">Discard</button>
-        <button class="btn btn-primary" id="saveBtn">Save changes</button>
-      </div>
+      <button class="menu-toggle" aria-label="Open menu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <label class="search-input">
+        <i class="fa fa-search"></i>
+        <input type="text" placeholder="Search notes, course units, or topics" />
+        <span class="kbd">⌘K</span>
+      </label>
+      <div class="topbar-spacer"></div>
     </div>
 
-    <div class="layout">
-      <nav class="side-nav" id="sideNav">
-        <button class="side-link active" data-section="profile">Profile</button>
-        <button class="side-link" data-section="academics">Academics</button>
-        <button class="side-link" data-section="notifications">Notifications</button>
-        <button class="side-link" data-section="activity">Activity</button>
-        <button class="side-link" data-section="danger">Danger zone</button>
-      </nav>
+    <div class="breadcrumb"><a href="sikia-dashboard.html">Home</a><span>/</span><span>Profile</span></div>
+    <div class="page-head">
+      <h1>Profile</h1>
+      <p>Your account, academic profile, notifications, and preferences.</p>
+    </div>
 
-      <div class="content">
-        <!-- Profile -->
-        <section class="section" id="profile">
-          <div class="profile-hero">
-            <div class="avatar-lg" title="Change photo">AN</div>
-            <div>
-              <div class="name">Amelia Nakimuli</div>
-              <div class="sub">amelia.n@mak.ac.ug &middot; Joined April 2026</div>
+    <div class="profile-wrap">
+      <aside class="profile-toc">
+        <div class="profile-toc-label">On this page</div>
+        <nav class="toc-list" id="toc">
+          <a class="toc-item active" href="#profile"><i class="fa fa-user"></i>Profile</a>
+          <a class="toc-item" href="#academics"><i class="fa fa-graduation-cap"></i>Academics</a>
+          <a class="toc-item" href="#notifications"><i class="fa fa-bell"></i>Notifications</a>
+          <a class="toc-item" href="#activity"><i class="fa fa-chart-line"></i>Activity</a>
+          <a class="toc-item" href="#account"><i class="fa fa-gear"></i>Account</a>
+        </nav>
+      </aside>
+
+      <div>
+        <!-- PROFILE -->
+        <section id="profile" class="profile-section">
+          <div class="section-card">
+            <div class="section-card-head">
+              <div><h2>Profile</h2><p>How you appear to your study group.</p></div>
             </div>
-          </div>
-
-          <div class="field-grid">
-            <div class="field">
-              <label for="fname">First name</label>
-              <input id="fname" type="text" value="Amelia" />
-            </div>
-            <div class="field">
-              <label for="lname">Last name</label>
-              <input id="lname" type="text" value="Nakimuli" />
-            </div>
-          </div>
-
-          <div class="field">
-            <label for="email">Email</label>
-            <input id="email" type="email" value="amelia.n@mak.ac.ug" />
-          </div>
-
-          <div class="field">
-            <label for="bio">Short bio</label>
-            <input id="bio" type="text" value="Y2 at Makerere. Crim law nerd. Moot team alternate." />
-          </div>
-        </section>
-
-        <!-- Academics -->
-        <section class="section" id="academics">
-          <div class="section-head">
-            <div>
-              <h2>Academics</h2>
-              <p>Helps Sikia surface the right library for you.</p>
-            </div>
-          </div>
-
-          <div class="field">
-            <label>Year of study</label>
-            <div class="pill-row" data-group="year">
-              <button class="pill-opt" data-val="Y1">Y1</button>
-              <button class="pill-opt active" data-val="Y2">Y2</button>
-              <button class="pill-opt" data-val="Y3">Y3</button>
-              <button class="pill-opt" data-val="Y4">Y4</button>
-              <button class="pill-opt" data-val="Bar">Bar</button>
-            </div>
-          </div>
-
-          <div class="field">
-            <label>University</label>
-            <div class="pill-row" data-group="uni">
-              <button class="pill-opt active" data-val="Makerere">Makerere</button>
-              <button class="pill-opt" data-val="KIU">KIU</button>
-              <button class="pill-opt" data-val="UCU">UCU</button>
-              <button class="pill-opt" data-val="Uganda Martyrs">Uganda Martyrs</button>
-              <button class="pill-opt" data-val="Cavendish">Cavendish</button>
-              <button class="pill-opt" data-val="IUEA">IUEA</button>
-              <button class="pill-opt" data-val="Other">Other</button>
+            <div class="section-card-body">
+              <div class="profile-row">
+                <div class="avatar-lg">AM<button class="avatar-edit" title="Change photo"><i class="fa fa-camera"></i></button></div>
+                <div>
+                  <div class="profile-name">Amelia M.</div>
+                  <div class="profile-sub">amelia.m@students.muk.ac.ug</div>
+                </div>
+              </div>
+              <div class="field-grid">
+                <div class="field"><label class="field-label">Full name</label><input class="field-input" value="Amelia Maganda" /></div>
+                <div class="field"><label class="field-label">Display name</label><input class="field-input" value="Amelia M." /></div>
+                <div class="field"><label class="field-label">Email</label><input class="field-input" value="amelia.m@students.muk.ac.ug" /></div>
+                <div class="field"><label class="field-label">Phone (optional)</label><input class="field-input" placeholder="+256 …" /></div>
+              </div>
             </div>
           </div>
         </section>
 
-        <!-- Notifications -->
-        <section class="section" id="notifications">
-          <div class="section-head">
-            <div>
-              <h2>Notifications</h2>
-              <p>Only what's useful, never noisy.</p>
+        <!-- ACADEMICS -->
+        <section id="academics" class="profile-section">
+          <div class="section-card">
+            <div class="section-card-head">
+              <div><h2>Academics</h2><p>Your university, year, and the electives you care about.</p></div>
             </div>
-          </div>
-
-          <div class="toggle-row">
-            <div>
-              <div class="tr-label">Weekly digest</div>
-              <div class="tr-desc">A quiet Sunday email: new cases, acts, and notes tagged to your year.</div>
-            </div>
-            <div class="toggle on" data-toggle></div>
-          </div>
-          <div class="toggle-row">
-            <div>
-              <div class="tr-label">Reply-to updates</div>
-              <div class="tr-desc">When someone replies to a bookmark you've shared.</div>
-            </div>
-            <div class="toggle on" data-toggle></div>
-          </div>
-          <div class="toggle-row">
-            <div>
-              <div class="tr-label">Library alerts</div>
-              <div class="tr-desc">When a case or statute in one of your folders is amended or overturned.</div>
-            </div>
-            <div class="toggle" data-toggle></div>
-          </div>
-          <div class="toggle-row">
-            <div>
-              <div class="tr-label">Marketing emails</div>
-              <div class="tr-desc">Occasional product updates. We don't pester.</div>
-            </div>
-            <div class="toggle" data-toggle></div>
-          </div>
-        </section>
-
-        <!-- Activity -->
-        <section class="section" id="activity">
-          <div class="section-head">
-            <div>
-              <h2>Your activity</h2>
-              <p>Since April 2026.</p>
-            </div>
-          </div>
-          <div class="stats-row">
-            <div class="stat">
-              <div class="val">47</div>
-              <div class="lab">Bookmarks</div>
-            </div>
-            <div class="stat">
-              <div class="val">5</div>
-              <div class="lab">Folders</div>
-            </div>
-            <div class="stat">
-              <div class="val">183</div>
-              <div class="lab">Docs read</div>
-            </div>
-            <div class="stat">
-              <div class="val">24h</div>
-              <div class="lab">This month</div>
+            <div class="section-card-body">
+              <div class="field-grid" style="margin-bottom: 22px;">
+                <div class="field"><label class="field-label">University</label><input class="field-input" value="Makerere University" /></div>
+                <div class="field"><label class="field-label">Programme</label><input class="field-input" value="Bachelor of Laws (LLB)" /></div>
+              </div>
+              <div class="field" style="margin-bottom: 18px;">
+                <div class="field-label">Current year</div>
+                <div class="pill-row">
+                  <button class="pill-pick">Year 1</button>
+                  <button class="pill-pick active">Year 2</button>
+                  <button class="pill-pick">Year 3</button>
+                  <button class="pill-pick">Year 4</button>
+                </div>
+              </div>
+              <div class="field" style="margin-bottom: 18px;">
+                <div class="field-label">Current semester</div>
+                <div class="pill-row">
+                  <button class="pill-pick active">Semester 1</button>
+                  <button class="pill-pick">Semester 2</button>
+                </div>
+              </div>
+              <div class="field">
+                <div class="field-label">Electives of interest</div>
+                <div class="pill-row">
+                  <button class="pill-pick active">Constitutional Law</button>
+                  <button class="pill-pick active">Criminal Law</button>
+                  <button class="pill-pick">Land Law</button>
+                  <button class="pill-pick">International Law</button>
+                  <button class="pill-pick">Human Rights</button>
+                  <button class="pill-pick active">Family Law</button>
+                  <button class="pill-pick">Tax</button>
+                  <button class="pill-pick">Intellectual Property</button>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        <!-- Danger zone -->
-        <section class="section danger-zone" id="danger">
-          <div class="section-head">
-            <div>
-              <h2>Danger zone</h2>
-              <p>Irreversible, so please be sure.</p>
+        <!-- NOTIFICATIONS -->
+        <section id="notifications" class="profile-section">
+          <div class="section-card">
+            <div class="section-card-head">
+              <div><h2>Notifications</h2><p>What we let you know about, and how often.</p></div>
+            </div>
+            <div class="section-card-body">
+              <div class="toggle-row">
+                <div class="toggle-row-text">
+                  <div class="toggle-row-title">Weekly digest email</div>
+                  <div class="toggle-row-desc">A short summary of new notes added to your year, every Sunday.</div>
+                </div>
+                <div class="toggle on" data-t></div>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-row-text">
+                  <div class="toggle-row-title">New notes in my courses</div>
+                  <div class="toggle-row-desc">Get notified when a lecturer or peer adds notes to a course you're taking.</div>
+                </div>
+                <div class="toggle on" data-t></div>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-row-text">
+                  <div class="toggle-row-title">New cases added to the Library</div>
+                  <div class="toggle-row-desc">Especially useful around exam time. Quiet by default.</div>
+                </div>
+                <div class="toggle" data-t></div>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-row-text">
+                  <div class="toggle-row-title">Reading reminders</div>
+                  <div class="toggle-row-desc">A nudge to keep your streak alive if you haven't opened anything for two days.</div>
+                </div>
+                <div class="toggle on" data-t></div>
+              </div>
             </div>
           </div>
+        </section>
 
-          <div class="toggle-row">
-            <div>
-              <div class="tr-label">Log out of this device</div>
-              <div class="tr-desc">You'll be taken back to the log-in page.</div>
+        <!-- ACTIVITY -->
+        <section id="activity" class="profile-section">
+          <div class="section-card">
+            <div class="section-card-head">
+              <div><h2>Activity</h2><p>What you've been reading, at a glance.</p></div>
             </div>
-            <a href="sikia-login.html" class="btn">Log out</a>
+            <div class="section-card-body">
+              <div class="stats-row">
+                <div class="stat-tile"><div class="stat-tile-label">Notes opened</div><div class="stat-tile-value">142</div><div class="stat-tile-sub">all-time</div></div>
+                <div class="stat-tile"><div class="stat-tile-label">This week</div><div class="stat-tile-value">23</div><div class="stat-tile-sub">+6 vs last week</div></div>
+                <div class="stat-tile"><div class="stat-tile-label">Reading streak</div><div class="stat-tile-value">5 days</div><div class="stat-tile-sub">current</div></div>
+                <div class="stat-tile"><div class="stat-tile-label">Time on Sikia</div><div class="stat-tile-value">8h 24m</div><div class="stat-tile-sub">this week</div></div>
+                <div class="stat-tile"><div class="stat-tile-label">Bookmarks</div><div class="stat-tile-value">12</div><div class="stat-tile-sub">across 3 folders</div></div>
+                <div class="stat-tile"><div class="stat-tile-label">Year 2 progress</div><div class="stat-tile-value">64%</div><div class="stat-tile-sub">14 of 22 courses</div></div>
+              </div>
+            </div>
           </div>
-          <div class="toggle-row">
-            <div>
-              <div class="tr-label">Delete account</div>
-              <div class="tr-desc">Permanently remove your profile, bookmarks, and folders.</div>
+        </section>
+
+        <!-- ACCOUNT -->
+        <section id="account" class="profile-section">
+          <div class="section-card">
+            <div class="section-card-head">
+              <div><h2>Account</h2><p>Security, data, and the door out.</p></div>
             </div>
-            <button class="btn btn-danger" id="deleteBtn">Delete account</button>
+            <div class="section-card-body">
+              <div class="account-row">
+                <div>
+                  <div class="account-text-title">Change password</div>
+                  <div class="account-text-desc">We'll send a verification link to your university email.</div>
+                </div>
+                <button class="btn-ghost">Update</button>
+              </div>
+              <div class="account-row">
+                <div>
+                  <div class="account-text-title">Export bookmarks</div>
+                  <div class="account-text-desc">Download a JSON file of your saved notes and folders.</div>
+                </div>
+                <button class="btn-ghost">Export</button>
+              </div>
+              <div class="account-row">
+                <div>
+                  <div class="account-text-title">Sign out</div>
+                  <div class="account-text-desc">Sign out of this browser session.</div>
+                </div>
+                <button class="btn-ghost">Sign out</button>
+              </div>
+              <div class="account-row">
+                <div>
+                  <div class="account-text-title">Delete account</div>
+                  <div class="account-text-desc">Removes your profile, bookmarks and folders. Cannot be undone.</div>
+                </div>
+                <button class="btn-danger">Delete</button>
+              </div>
+            </div>
           </div>
         </section>
       </div>
     </div>
   </main>
+  <div class="sidebar-backdrop"></div>
 </div>
 
-<div class="toast" id="toast">Saved.</div>
-
 <script>
-  // Side nav scrollspy + click
-  const links = document.querySelectorAll('.side-link');
-  const sections = Array.from(links).map(l => document.getElementById(l.dataset.section));
-
-  links.forEach((link, i) => {
-    link.addEventListener('click', () => {
-      sections[i].scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
+  // Toggle switches
+  document.querySelectorAll('[data-t]').forEach(t => {
+    t.addEventListener('click', () => t.classList.toggle('on'));
   });
 
-  const spy = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const id = entry.target.id;
-        links.forEach(l => l.classList.toggle('active', l.dataset.section === id));
-      }
-    });
-  }, { rootMargin: '-20% 0px -65% 0px' });
-  sections.forEach(s => s && spy.observe(s));
-
-  // Pill pickers
+  // Pill pickers (single-select rows for year/semester, multi-select for electives)
   document.querySelectorAll('.pill-row').forEach(row => {
-    row.querySelectorAll('.pill-opt').forEach(opt => {
-      opt.addEventListener('click', () => {
-        row.querySelectorAll('.pill-opt').forEach(o => o.classList.remove('active'));
-        opt.classList.add('active');
-        opt.animate(
-          [{ transform: 'scale(0.92)' }, { transform: 'scale(1.06)' }, { transform: 'scale(1)' }],
-          { duration: 260, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)' }
-        );
+    const pills = Array.from(row.querySelectorAll('.pill-pick'));
+    const isMulti = pills.length > 4; // electives row has more pills
+    pills.forEach(p => {
+      p.addEventListener('click', () => {
+        if (isMulti) p.classList.toggle('active');
+        else { pills.forEach(x => x.classList.remove('active')); p.classList.add('active'); }
       });
     });
   });
 
-  // Toggles
-  document.querySelectorAll('[data-toggle]').forEach(t => {
-    t.addEventListener('click', () => {
-      t.classList.toggle('on');
-      t.animate(
-        [{ transform: 'scale(1)' }, { transform: 'scale(1.08)' }, { transform: 'scale(1)' }],
-        { duration: 220, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)' }
-      );
+  // Side TOC scrollspy
+  const sections = ['profile', 'academics', 'notifications', 'activity', 'account'];
+  const tocItems = new Map();
+  document.querySelectorAll('#toc .toc-item').forEach(a => tocItems.set(a.getAttribute('href').slice(1), a));
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        document.querySelectorAll('#toc .toc-item').forEach(a => a.classList.remove('active'));
+        const a = tocItems.get(e.target.id);
+        if (a) a.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-30% 0px -55% 0px' });
+  sections.forEach(id => { const el = document.getElementById(id); if (el) obs.observe(el); });
+
+  // Smooth scroll
+  document.querySelectorAll('#toc .toc-item').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const id = a.getAttribute('href').slice(1);
+      const target = document.getElementById(id);
+      if (target) window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 24, behavior: 'smooth' });
     });
   });
 
-  // Save button — shows toast
-  const toast = document.getElementById('toast');
-  const saveBtn = document.getElementById('saveBtn');
-  saveBtn.addEventListener('click', () => {
-    saveBtn.animate(
-      [{ transform: 'scale(1)' }, { transform: 'scale(0.96)' }, { transform: 'scale(1)' }],
-      { duration: 220, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)' }
-    );
-    toast.textContent = 'Changes saved.';
-    toast.classList.add('show');
-    clearTimeout(toast._t);
-    toast._t = setTimeout(() => toast.classList.remove('show'), 1800);
-  });
-
-  document.getElementById('discardBtn').addEventListener('click', () => {
-    toast.textContent = 'Changes discarded.';
-    toast.classList.add('show');
-    clearTimeout(toast._t);
-    toast._t = setTimeout(() => toast.classList.remove('show'), 1600);
-  });
-
-  // Delete account — soft confirm
-  document.getElementById('deleteBtn').addEventListener('click', () => {
-    const confirmed = confirm("This will permanently remove your profile, bookmarks, and folders. Continue?");
-    if (confirmed) window.location.href = 'index.html';
+  // ⌘K
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      document.querySelector('.search-input input').focus();
+    }
   });
 </script>
+
+<script>
+  // Mobile drawer toggle — works alongside the page's existing scripts.
+  (function() {
+    const shell = document.querySelector('.dash-shell');
+    const toggle = document.querySelector('.menu-toggle');
+    if (!shell || !toggle) return;
+    const backdrop = document.querySelector('.sidebar-backdrop');
+    function openMenu() {
+      shell.classList.add('sidebar-open');
+      document.body.classList.add('menu-open');
+      toggle.setAttribute('aria-expanded', 'true');
+    }
+    function closeMenu() {
+      shell.classList.remove('sidebar-open');
+      document.body.classList.remove('menu-open');
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+    toggle.addEventListener('click', () => {
+      shell.classList.contains('sidebar-open') ? closeMenu() : openMenu();
+    });
+    if (backdrop) backdrop.addEventListener('click', closeMenu);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+    document.querySelectorAll('.sidebar a').forEach(a => {
+      a.addEventListener('click', () => setTimeout(closeMenu, 50));
+    });
+  })();
+</script>
+
 </body>
 </html>
