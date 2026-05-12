@@ -1,0 +1,940 @@
+{
+  "_meta": {
+    "source": "Students Notes Work Flow.xlsx (provided by client, Apr 2026)",
+    "structure": "Year → Semester → Course Unit → Notes",
+    "source_of_truth": "The curriculum spreadsheet — confirmed by client. PDF placement in the Notes/ folder is informational only; courses are surfaced in the year/semester the spreadsheet specifies, regardless of which folder the file lives in.",
+    "notes_path_base": "Notes/",
+    "course_code_format": "LAW [Y][S][NN] where Y=year (1-4), S=1 for Sem 1, 2 for Sem 2, NN=course number. A few legacy entries don't have codes."
+  },
+  "years": [
+    {
+      "year": 1,
+      "label": "Year 1",
+      "semesters": [
+        {
+          "semester": 1,
+          "label": "Semester 1",
+          "courses": [
+            {
+              "code": "LAW 1106",
+              "title": "Introducing Law",
+              "notes": [
+                {
+                  "title": "Introducing Law Notes",
+                  "file": "YR 1 SEM 1/PDFs/Introducing law notes(1).pdf",
+                  "html_file": "HTML/YR 1 SEM 1/Introducing law notes(1).html"
+                },
+                {
+                  "title": "Foundations of Law — Questions and Answers (2017)",
+                  "file": "YR 1 SEM 1/PDFs/FOUNDATIONS_OF_LAW_QUESTIONS_AND_ANSWERS_2017[1] (Autosaved).pdf",
+                  "html_file": "HTML/YR 1 SEM 1/FOUNDATIONS_OF_LAW_QUESTIONS_AND_ANSWERS_2017[1] (Autosaved).html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 1107",
+              "title": "Development Studies",
+              "notes": []
+            },
+            {
+              "code": "LAW 1108",
+              "title": "Fundamentals of Criminal Law",
+              "notes": [
+                {
+                  "title": "Criminal Law — Jorvan Notes",
+                  "file": "YR 1 SEM 1/PDFs/Criminal Law 1 - jorvannotes.pdf",
+                  "html_file": "HTML/YR 1 SEM 1/Criminal Law 1 - jorvannotes.html"
+                },
+                {
+                  "title": "Criminal Law Notes K",
+                  "file": "YR 1 SEM 1/PDFs/Criminal Law notes K.pdf",
+                  "html_file": "HTML/YR 1 SEM 1/Criminal Law notes K.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 1109",
+              "title": "Law of Contracts I",
+              "notes": [
+                {
+                  "title": "Notes on Contract 1 and 2 (Uganda)",
+                  "file": "YR 1 SEM 1/PDFs/NOTES_ON_CONTRACT_1_and_2_Ug (1).pdf",
+                  "_also_used_by": [
+                    "LAW 1209"
+                  ],
+                  "html_file": "HTML/YR 1 SEM 1/NOTES_ON_CONTRACT_1_and_2_Ug (1).html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 1110",
+              "title": "Principles of Constitutional Law I",
+              "notes": [
+                {
+                  "title": "1900 Buganda Agreement",
+                  "file": "YR 1 SEM 1/PDFs/1900 BUGANDA AGREEMENT.pdf",
+                  "html_file": "HTML/YR 1 SEM 1/1900 BUGANDA AGREEMENT.html"
+                },
+                {
+                  "title": "Constitutional History — Notes by Dr Onoria",
+                  "file": "YR 1 SEM 1/PDFs/CONSTITUTIONAL HISTORY NOTES Dr ONORIA-1(4).pdf",
+                  "html_file": "HTML/YR 1 SEM 1/CONSTITUTIONAL HISTORY NOTES Dr ONORIA-1(4).html"
+                },
+                {
+                  "title": "Constitutional History Notes (2021)",
+                  "file": "YR 1 SEM 1/PDFs/Constitutional History Notes 2021.pdf",
+                  "html_file": "HTML/YR 1 SEM 1/Constitutional History Notes 2021.html"
+                },
+                {
+                  "title": "MU Constitutional History Notes",
+                  "file": "YR 1 SEM 1/PDFs/MU-CONSTITUTIONAL HISTORY NOTES.pdf",
+                  "html_file": "HTML/YR 1 SEM 1/MU-CONSTITUTIONAL HISTORY NOTES.html"
+                },
+                {
+                  "title": "Constitutional History — Finale",
+                  "file": "YR 1 SEM 1/PDFs/Notes_Constitutional_Hist_Finale_A___12_(1)[1].pdf",
+                  "html_file": "HTML/YR 1 SEM 1/Notes_Constitutional_Hist_Finale_A___12_(1)[1].html"
+                },
+                {
+                  "title": "Constitutional History (MUK)",
+                  "file": "YR 1 SEM 1/PDFs/constitutional History MUK.pdf",
+                  "html_file": "HTML/YR 1 SEM 1/constitutional History MUK.html"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "semester": 2,
+          "label": "Semester 2",
+          "courses": [
+            {
+              "code": null,
+              "title": "Communication Skills",
+              "notes": [
+                {
+                  "title": "Communication Skills Notes (A)",
+                  "file": "YR 1 SEM 1/PDFs/COMMUNICATION SKILLS NOTES .pdf",
+                  "_filed_in": "YR 1 SEM 1",
+                  "html_file": "HTML/YR 1 SEM 1/COMMUNICATION SKILLS NOTES .html"
+                },
+                {
+                  "title": "Communication Skills Notes (B)",
+                  "file": "YR 1 SEM 1/PDFs/COMMUNICATION-SKILLS-NOTES-B.pdf",
+                  "_filed_in": "YR 1 SEM 1",
+                  "html_file": "HTML/YR 1 SEM 1/COMMUNICATION-SKILLS-NOTES-B.html"
+                },
+                {
+                  "title": "Communication Skills Notes (C)",
+                  "file": "YR 1 SEM 2/PDFs/COMMUNICATION SKILLS NOTES C.pdf",
+                  "html_file": "HTML/YR 1 SEM 2/COMMUNICATION SKILLS NOTES C.html"
+                }
+              ]
+            },
+            {
+              "code": null,
+              "title": "Legal Methods",
+              "notes": [
+                {
+                  "title": "Legal Methods — Questions and Answers",
+                  "file": "YR 1 SEM 2/PDFs/LEGAL METHODS QUESTIONS AND ANSWERS (1).pdf",
+                  "html_file": "HTML/YR 1 SEM 2/LEGAL METHODS QUESTIONS AND ANSWERS (1).html"
+                },
+                {
+                  "title": "Legal Methods Notes",
+                  "file": "YR 1 SEM 2/PDFs/Legal Method Notes 1.pdf",
+                  "html_file": "HTML/YR 1 SEM 2/Legal Method Notes 1.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 1207",
+              "title": "Administrative Law I",
+              "notes": []
+            },
+            {
+              "code": "LAW 1208",
+              "title": "Criminal Liability",
+              "notes": [
+                {
+                  "title": "LLB Fundamentals of Criminal Law Notes",
+                  "file": "YR 1 SEM 2/PDFs/LLB Fundamentals of Criminal Law Notes.pdf",
+                  "html_file": "HTML/YR 1 SEM 2/LLB Fundamentals of Criminal Law Notes.html"
+                },
+                {
+                  "title": "Shisa Robert — Strict Liability Notes",
+                  "file": "YR 1 SEM 2/PDFs/SHISA_ROBERT_STRICT_LIABILITY_NOTES.pdf",
+                  "html_file": "HTML/YR 1 SEM 2/SHISA_ROBERT_STRICT_LIABILITY_NOTES.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 1209",
+              "title": "Law of Contracts II",
+              "notes": [
+                {
+                  "title": "Law of Contract II Notes",
+                  "file": "YR 1 SEM 2/PDFs/LAW OF CONTRACT-2 Notes.pdf",
+                  "html_file": "HTML/YR 1 SEM 2/LAW OF CONTRACT-2 Notes.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 1210",
+              "title": "Principles of Constitutional Law II",
+              "notes": [
+                {
+                  "title": "Constitutional Law Notes — Finale",
+                  "file": "YR 1 SEM 2/PDFs/CONSTITUTIONAL LAW NOTES   finale.pdf",
+                  "html_file": "HTML/YR 1 SEM 2/CONSTITUTIONAL LAW NOTES   finale.html"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "year": 2,
+      "label": "Year 2",
+      "semesters": [
+        {
+          "semester": 1,
+          "label": "Semester 1",
+          "courses": [
+            {
+              "code": "LAW 2106",
+              "title": "Nature & History of Torts",
+              "notes": []
+            },
+            {
+              "code": "LAW 2107",
+              "title": "Administrative Law II",
+              "notes": [
+                {
+                  "title": "Administrative Law II Notes",
+                  "file": "YR 2 SEM 1/PDFs/ADMINISTRATIVE LAW 2.pdf",
+                  "html_file": "HTML/YR 2 SEM 1/ADMINISTRATIVE LAW 2.html"
+                },
+                {
+                  "title": "Administrative Law Summary",
+                  "file": "YR 2 SEM 1/PDFs/ADMINISTRATIVE LAW sammary.pdf",
+                  "html_file": "HTML/YR 2 SEM 1/ADMINISTRATIVE LAW sammary.html"
+                },
+                {
+                  "title": "Full Administrative Law Reading List & Class Notes",
+                  "file": "YR 2 SEM 1/PDFs/Full Administrative Law Reading List and Class Notes_1 - Copy.pdf",
+                  "html_file": "HTML/YR 2 SEM 1/Full Administrative Law Reading List and Class Notes_1 - Copy.html"
+                },
+                {
+                  "title": "Full Admin II Notes",
+                  "file": "YR 2 SEM 2/PDFs/Full Admin 2 Notes.pdf",
+                  "_filed_in": "YR 2 SEM 2",
+                  "html_file": "HTML/YR 2 SEM 2/Full Admin 2 Notes.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 2108",
+              "title": "Equity & Trusts",
+              "notes": [
+                {
+                  "title": "Equity & Trusts — Q&A",
+                  "file": "YR 2 SEM 2/PDFs/EQUITY AND TRUST Q&A.pdf",
+                  "_filed_in": "YR 2 SEM 2",
+                  "html_file": "HTML/YR 2 SEM 2/EQUITY AND TRUST Q&A.html"
+                },
+                {
+                  "title": "Equity & Trusts Notes (2021)",
+                  "file": "YR 2 SEM 2/PDFs/EQUITY AND TRUSTS NOTES 2021.pdf",
+                  "_filed_in": "YR 2 SEM 2",
+                  "html_file": "HTML/YR 2 SEM 2/EQUITY AND TRUSTS NOTES 2021.html"
+                }
+              ]
+            },
+            {
+              "code": null,
+              "title": "Company Law I",
+              "notes": [
+                {
+                  "title": "Company Law Notes",
+                  "file": "YR 2 SEM 1/PDFs/Company-law-Notespdf.pdf",
+                  "html_file": "HTML/YR 2 SEM 1/Company-law-Notespdf.html"
+                }
+              ]
+            },
+            {
+              "code": null,
+              "title": "Sale of Goods",
+              "notes": [
+                {
+                  "title": "Sale of Goods",
+                  "file": "YR 2 SEM 1/PDFs/Sale of Goods.pdf",
+                  "html_file": "HTML/YR 2 SEM 1/Sale of Goods.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 2109",
+              "title": "Law of Evidence I",
+              "notes": []
+            },
+            {
+              "code": null,
+              "title": "Foundations of Land Law",
+              "notes": []
+            }
+          ]
+        },
+        {
+          "semester": 2,
+          "label": "Semester 2",
+          "courses": [
+            {
+              "code": "LAW 2207",
+              "title": "Negligence, Strict Liability & Procedure in Torts",
+              "notes": [
+                {
+                  "title": "TORTS",
+                  "file": "YR 2 SEM 2/PDFs/ TORTS.pdf",
+                  "html_file": "HTML/YR 2 SEM 2/ TORTS.html"
+                },
+                {
+                  "title": "Negligence and Strict Liability Notes",
+                  "file": "YR 2 SEM 2/PDFs/NEGLIGENCE and STRICT LIABILITY. NOTES.pdf",
+                  "html_file": "HTML/YR 2 SEM 2/NEGLIGENCE and STRICT LIABILITY. NOTES.html"
+                },
+                {
+                  "title": "Tort Class Material Notes",
+                  "file": "YR 2 SEM 2/PDFs/Tort class material NOTES .pdf",
+                  "html_file": "HTML/YR 2 SEM 2/Tort class material NOTES .html"
+                },
+                {
+                  "title": "Negligence and Strict Liability (2)",
+                  "file": "YR 2 SEM 1/PDFs/NEGLIGENCE_and_STRICT_LIABILITY._NOTES.pdf (1).pdf",
+                  "_filed_in": "YR 2 SEM 1",
+                  "html_file": "HTML/YR 2 SEM 1/NEGLIGENCE_and_STRICT_LIABILITY._NOTES.pdf (1).html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 2208",
+              "title": "Social Research Methods",
+              "notes": [
+                {
+                  "title": "Research Methods Notes (Groups Combined)",
+                  "file": "YR 4 SEM 1/PDFs/RESEARCH METHODS NOTES.docx  GROUPS COMBINED .pdf",
+                  "_filed_in": "YR 4 SEM 1",
+                  "html_file": "HTML/YR 4 SEM 1/RESEARCH METHODS NOTES.docx  GROUPS COMBINED .html"
+                },
+                {
+                  "title": "Research Methods Notes",
+                  "file": "YR 4 SEM 1/PDFs/research-methods-notes.pdf",
+                  "_filed_in": "YR 4 SEM 1",
+                  "html_file": "HTML/YR 4 SEM 1/research-methods-notes.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 2209",
+              "title": "Family Law II",
+              "notes": [
+                {
+                  "title": "Family Law Notes",
+                  "file": "YR 2 SEM 1/PDFs/FAMILY_LAW_NOTES.pdf",
+                  "_filed_in": "YR 2 SEM 1",
+                  "html_file": "HTML/YR 2 SEM 1/FAMILY_LAW_NOTES.html"
+                },
+                {
+                  "title": "Family Law (Real Notes)",
+                  "file": "YR 2 SEM 1/PDFs/family-law-real-notes-1.pdf",
+                  "_filed_in": "YR 2 SEM 1",
+                  "html_file": "HTML/YR 2 SEM 1/family-law-real-notes-1.html"
+                },
+                {
+                  "title": "Family Law II Notes",
+                  "file": "YR 2 SEM 2/PDFs/family-2-notes.pdf",
+                  "html_file": "HTML/YR 2 SEM 2/family-2-notes.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 2210",
+              "title": "Law of Evidence II",
+              "notes": [
+                {
+                  "title": "Evidence II Notes",
+                  "file": "YR 3 SEM 2/PDFs/EVIDENCE 2 NOTES-12.pdf",
+                  "_filed_in": "YR 3 SEM 2",
+                  "html_file": "HTML/YR 3 SEM 2/EVIDENCE 2 NOTES-12.html"
+                },
+                {
+                  "title": "Law of Evidence II",
+                  "file": "YR 3 SEM 2/PDFs/LAW OF EVIDENCE 11.pdf",
+                  "_filed_in": "YR 3 SEM 2",
+                  "html_file": "HTML/YR 3 SEM 2/LAW OF EVIDENCE 11.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 2211",
+              "title": "Land Transactions",
+              "notes": [
+                {
+                  "title": "Land Law Main Notes",
+                  "file": "YR 2 SEM 1/PDFs/LAND_LAW_MAIN_NOTES_2[1].pdf",
+                  "_filed_in": "YR 2 SEM 1",
+                  "html_file": "HTML/YR 2 SEM 1/LAND_LAW_MAIN_NOTES_2[1].html"
+                },
+                {
+                  "title": "Escalating Land Conflicts in Uganda",
+                  "file": "YR 2 SEM 1/PDFs/Escalating Land Conflicts in Uganda.pdf",
+                  "_filed_in": "YR 2 SEM 1",
+                  "html_file": "HTML/YR 2 SEM 1/Escalating Land Conflicts in Uganda.html"
+                },
+                {
+                  "title": "Expropriated Properties",
+                  "file": "YR 2 SEM 2/PDFs/_EXPROPRIATED_PROPERTIES.pdf",
+                  "html_file": "HTML/YR 2 SEM 2/_EXPROPRIATED_PROPERTIES.html"
+                },
+                {
+                  "title": "Equitable Redemption of Mortgages",
+                  "file": "YR 2 SEM 2/PDFs/equitable redemtion of mortgages.pdf",
+                  "html_file": "HTML/YR 2 SEM 2/equitable redemtion of mortgages.html"
+                },
+                {
+                  "title": "Land Law II — Kitata (Mortgages)",
+                  "file": "YR 2 SEM 2/PDFs/land law 2- kitata (mortgage).pdf",
+                  "html_file": "HTML/YR 2 SEM 2/land law 2- kitata (mortgage).html"
+                },
+                {
+                  "title": "Land Law II — Lecture Notes",
+                  "file": "YR 2 SEM 2/PDFs/Land Law II-Lecture notes..pdf",
+                  "html_file": "HTML/YR 2 SEM 2/Land Law II-Lecture notes..html"
+                },
+                {
+                  "title": "Theories of Ownership",
+                  "file": "YR 2 SEM 2/PDFs/theories of ownership.pdf",
+                  "html_file": "HTML/YR 2 SEM 2/theories of ownership.html"
+                },
+                {
+                  "title": "Condominium Property in Uganda",
+                  "file": "YR 3 SEM 2/PDFs/CONDOMINIUM_PROPERTY_IN_UGANDA[1].pdf",
+                  "_filed_in": "YR 3 SEM 2",
+                  "html_file": "HTML/YR 3 SEM 2/CONDOMINIUM_PROPERTY_IN_UGANDA[1].html"
+                }
+              ]
+            },
+            {
+              "code": null,
+              "title": "Company Law II",
+              "notes": [
+                {
+                  "title": "Company Law II — Aziz",
+                  "file": "YR 2 SEM 2/PDFs/company-law-2-aziz.pdf",
+                  "html_file": "HTML/YR 2 SEM 2/company-law-2-aziz.html"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "year": 3,
+      "label": "Year 3",
+      "semesters": [
+        {
+          "semester": 1,
+          "label": "Semester 1",
+          "courses": [
+            {
+              "code": "LAW 3109",
+              "title": "Family Law II (core)",
+              "notes": [],
+              "_flag": "Conflict — also listed as LAW 2209 in Year 2 Sem 2. Awaiting client confirmation."
+            },
+            {
+              "code": "LAW 3110",
+              "title": "Law of Sale of Goods & Hire Purchase (core)",
+              "notes": [
+                {
+                  "title": "Law of Sale of Goods Notes",
+                  "file": "YR 2 SEM 2/PDFs/LAW_OF_SALE_OF_GOODS_NOTES.pdf",
+                  "_filed_in": "YR 2 SEM 2",
+                  "html_file": "HTML/YR 2 SEM 2/LAW_OF_SALE_OF_GOODS_NOTES.html"
+                },
+                {
+                  "title": "Liability of Goods",
+                  "file": "YR 2 SEM 2/PDFs/LIABILITY OF GOODS.pdf",
+                  "_filed_in": "YR 2 SEM 2",
+                  "html_file": "HTML/YR 2 SEM 2/LIABILITY OF GOODS.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 3111",
+              "title": "Conflict of Laws",
+              "notes": []
+            },
+            {
+              "code": "LAW 3112",
+              "title": "Principles of International Law",
+              "notes": [
+                {
+                  "title": "International Organizations",
+                  "file": "YR 3 SEM 2/PDFs/International Organizations.pdf",
+                  "_filed_in": "YR 3 SEM 2",
+                  "html_file": "HTML/YR 3 SEM 2/International Organizations.html"
+                },
+                {
+                  "title": "Notes on International Dispute Settlement",
+                  "file": "YR 3 SEM 2/PDFs/notes-on-international-dispute-settlement.pdf",
+                  "_filed_in": "YR 3 SEM 2",
+                  "html_file": "HTML/YR 3 SEM 2/notes-on-international-dispute-settlement.html"
+                },
+                {
+                  "title": "Principles of International State Recognition",
+                  "file": "YR 3 SEM 2/PDFs/principles-of-intl-state-recognition (1).pdf",
+                  "_filed_in": "YR 3 SEM 2",
+                  "html_file": "HTML/YR 3 SEM 2/principles-of-intl-state-recognition (1).html"
+                },
+                {
+                  "title": "The Law of Use of Force — Lecture Notes",
+                  "file": "YR 3 SEM 2/PDFs/the-law-of-use-of-force-lecture-notes (1) (1).pdf",
+                  "_filed_in": "YR 3 SEM 2",
+                  "html_file": "HTML/YR 3 SEM 2/the-law-of-use-of-force-lecture-notes (1) (1).html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 3113",
+              "title": "Banking and Negotiable Instruments",
+              "notes": [
+                {
+                  "title": "Banking — Questions & Answers (Final)",
+                  "file": "YR 3 SEM 1/PDFs/BANKING - QNS & ANS - FINAL.pdf",
+                  "html_file": "HTML/YR 3 SEM 1/BANKING - QNS & ANS - FINAL.html"
+                },
+                {
+                  "title": "Banking Law Notes",
+                  "file": "YR 3 SEM 1/PDFs/Banking Law notes docx.pdf",
+                  "html_file": "HTML/YR 3 SEM 1/Banking Law notes docx.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 3114",
+              "title": "International & Regional Human Rights",
+              "notes": [
+                {
+                  "title": "International and Regional Human Rights Regimes",
+                  "file": "YR 4 SEM 1/PDFs/INTERNATIONAL AND REGIONAL HUMAN RIGHTS REGIMES.pdf",
+                  "_filed_in": "YR 4 SEM 1",
+                  "html_file": "HTML/YR 4 SEM 1/INTERNATIONAL AND REGIONAL HUMAN RIGHTS REGIMES.html"
+                }
+              ]
+            },
+            {
+              "code": null,
+              "title": "Jurisprudence",
+              "notes": [
+                {
+                  "title": "Jurisprudence Unit I",
+                  "file": "YR 3 SEM 1/PDFs/jurisprudence-Unit-I.pdf",
+                  "html_file": "HTML/YR 3 SEM 1/jurisprudence-Unit-I.html"
+                },
+                {
+                  "title": "Natural Theory of Law",
+                  "file": "YR 3 SEM 1/PDFs/NATURAL_THEORY_OF_LAW[2] (1).pdf",
+                  "html_file": "HTML/YR 3 SEM 1/NATURAL_THEORY_OF_LAW[2] (1).html"
+                },
+                {
+                  "title": "Jurisprudence I — Notes (Nuru)",
+                  "file": "YR 3 SEM 2/PDFs/jurisprudence 1 notes nuru2.pdf",
+                  "_filed_in": "YR 3 SEM 2",
+                  "html_file": "HTML/YR 3 SEM 2/jurisprudence 1 notes nuru2.html"
+                },
+                {
+                  "title": "Feminist Theory and the Law",
+                  "file": "YR 4 SEM 1/PDFs/Feminist theory and the Law.pdf",
+                  "_filed_in": "YR 4 SEM 1",
+                  "html_file": "HTML/YR 4 SEM 1/Feminist theory and the Law.html"
+                },
+                {
+                  "title": "Time Present and Time Past — Lord Reed Lecture",
+                  "file": "YR 3 SEM 2/PDFs/time-present-and-time-past-lord-reed-lecture.pdf",
+                  "_filed_in": "YR 3 SEM 2",
+                  "html_file": "HTML/YR 3 SEM 2/time-present-and-time-past-lord-reed-lecture.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 3115",
+              "title": "Civil Procedure I",
+              "notes": [
+                {
+                  "title": "Civil Procedure I Notes",
+                  "file": "YR 3 SEM 1/PDFs/CIVIL PROCEDURE 1 NOTES.pdf",
+                  "html_file": "HTML/YR 3 SEM 1/CIVIL PROCEDURE 1 NOTES.html"
+                },
+                {
+                  "title": "Civil Procedure 1 — Best Notes",
+                  "file": "YR 3 SEM 1/PDFs/Civil procedure 1 best notes.pdf",
+                  "html_file": "HTML/YR 3 SEM 1/Civil procedure 1 best notes.html"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "semester": 2,
+          "label": "Semester 2",
+          "courses": [
+            {
+              "code": "LAW 3210",
+              "title": "Criminal Procedure (core)",
+              "notes": []
+            },
+            {
+              "code": "LAW 3211",
+              "title": "Law of Business Associations I (core)",
+              "notes": [
+                {
+                  "title": "Business Law — Guidance Notes",
+                  "file": "YR 3 SEM 2/PDFs/BUSINESS LAW NOTES GUIDANCE NOTES.pdf",
+                  "html_file": "HTML/YR 3 SEM 2/BUSINESS LAW NOTES GUIDANCE NOTES.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 3212",
+              "title": "Environmental Law & Policy",
+              "notes": [
+                {
+                  "title": "LLB Environmental Law Notes",
+                  "file": "YR 2 SEM 2/PDFs/LLB Environmental Law Notes.pdf",
+                  "_filed_in": "YR 2 SEM 2",
+                  "html_file": "HTML/YR 2 SEM 2/LLB Environmental Law Notes.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 3213",
+              "title": "Principles of International Law II",
+              "notes": [
+                {
+                  "title": "International Law II — Notes (Uganda)",
+                  "file": "YR 3 SEM 2/PDFs/international-law-2-notes-uganda (2).pdf",
+                  "html_file": "HTML/YR 3 SEM 2/international-law-2-notes-uganda (2).html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 3214",
+              "title": "Human Rights in the Domestic Perspective",
+              "notes": []
+            },
+            {
+              "code": "LAW 3215",
+              "title": "Consumer Law",
+              "notes": []
+            },
+            {
+              "code": "LAW 3217",
+              "title": "Clinical Legal Education",
+              "notes": []
+            },
+            {
+              "code": "LAW 3218",
+              "title": "Civil Procedure II",
+              "notes": [
+                {
+                  "title": "Civil Procedure II Notes",
+                  "file": "YR 3 SEM 2/PDFs/CIVIL PROCEDURE 2 NOTES (1).pdf",
+                  "html_file": "HTML/YR 3 SEM 2/CIVIL PROCEDURE 2 NOTES (1).html"
+                },
+                {
+                  "title": "Civil Procedure",
+                  "file": "YR 3 SEM 2/PDFs/CIVIL PROCEDURE.pdf",
+                  "html_file": "HTML/YR 3 SEM 2/CIVIL PROCEDURE.html"
+                },
+                {
+                  "title": "Grounds for Judicial Review",
+                  "file": "YR 3 SEM 2/PDFs/Grounds for Judicial Review.pdf",
+                  "html_file": "HTML/YR 3 SEM 2/Grounds for Judicial Review.html"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "year": 4,
+      "label": "Year 4",
+      "semesters": [
+        {
+          "semester": 1,
+          "label": "Semester 1",
+          "courses": [
+            {
+              "code": "LAW 4112",
+              "title": "Law of Business Associations II",
+              "notes": [
+                {
+                  "title": "Business Associations II",
+                  "file": "YR 2 SEM 2/PDFs/Business Associations 2 .pdf",
+                  "_filed_in": "YR 2 SEM 2",
+                  "html_file": "HTML/YR 2 SEM 2/Business Associations 2 .html"
+                },
+                {
+                  "title": "Partnership Notes — Class II",
+                  "file": "YR 3 SEM 1/PDFs/partnership notes class-2.pdf",
+                  "_filed_in": "YR 3 SEM 1",
+                  "html_file": "HTML/YR 3 SEM 1/partnership notes class-2.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 4113",
+              "title": "Revenue Law & Taxation I",
+              "notes": [
+                {
+                  "title": "Revenue Law and Taxation I",
+                  "file": "YR 4 SEM 1/PDFs/Copy-Revenue Law and Taxation I.pdf",
+                  "html_file": "HTML/YR 4 SEM 1/Copy-Revenue Law and Taxation I.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 4114",
+              "title": "International Trade & Business",
+              "notes": [
+                {
+                  "title": "International Trade",
+                  "file": "YR 3 SEM 1/PDFs/international-trade.pdf",
+                  "_filed_in": "YR 3 SEM 1",
+                  "html_file": "HTML/YR 3 SEM 1/international-trade.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 4115",
+              "title": "Health & the Law I",
+              "notes": []
+            },
+            {
+              "code": "LAW 4116",
+              "title": "Intellectual Property Law I",
+              "notes": [
+                {
+                  "title": "Intellectual Property I",
+                  "file": "YR 4 SEM 1/PDFs/interlectual-property-one.pdf",
+                  "html_file": "HTML/YR 4 SEM 1/interlectual-property-one.html"
+                },
+                {
+                  "title": "Patent Lecture Notes",
+                  "file": "YR 4 SEM 1/PDFs/patent-lecture-notes.pdf",
+                  "html_file": "HTML/YR 4 SEM 1/patent-lecture-notes.html"
+                },
+                {
+                  "title": "Intellectual Property Fair",
+                  "file": "YR 4 SEM 1/PDFs/INTELLECTUAL PROPERTY FAIR.pdf",
+                  "html_file": "HTML/YR 4 SEM 1/INTELLECTUAL PROPERTY FAIR.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 4118",
+              "title": "Insurance Law",
+              "notes": [
+                {
+                  "title": "The Law of Insurance — Class Notes",
+                  "file": "YR 3 SEM 1/PDFs/the-law-of-insurance-class-notes.pdf",
+                  "_filed_in": "YR 3 SEM 1",
+                  "html_file": "HTML/YR 3 SEM 1/the-law-of-insurance-class-notes.html"
+                },
+                {
+                  "title": "Insurance Law — Evening Class (Mr Ntegyereize)",
+                  "file": "YR 3 SEM 2/PDFs/INSURANCE LAW - Evening Class- Mr Ntegyereize Alauterio (1).pdf",
+                  "_filed_in": "YR 3 SEM 2",
+                  "html_file": "HTML/YR 3 SEM 2/INSURANCE LAW - Evening Class- Mr Ntegyereize Alauterio (1).html"
+                },
+                {
+                  "title": "Insurance Law Class Notes (Revised)",
+                  "file": "YR 3 SEM 2/PDFs/INSURANCE LAW CLASS NOTES Revised.pdf",
+                  "_filed_in": "YR 3 SEM 2",
+                  "html_file": "HTML/YR 3 SEM 2/INSURANCE LAW CLASS NOTES Revised.html"
+                },
+                {
+                  "title": "Insurance Summary",
+                  "file": "YR 3 SEM 2/PDFs/Insurance Summary.pdf",
+                  "_filed_in": "YR 3 SEM 2",
+                  "html_file": "HTML/YR 3 SEM 2/Insurance Summary.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 4119",
+              "title": "Labour Law I",
+              "notes": []
+            },
+            {
+              "code": null,
+              "title": "Human Rights",
+              "notes": [
+                {
+                  "title": "Human Rights I",
+                  "file": "YR 4 SEM 1/PDFs/human rights-1[1].pdf",
+                  "html_file": "HTML/YR 4 SEM 1/human rights-1[1].html"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "semester": 2,
+          "label": "Semester 2",
+          "courses": [
+            {
+              "code": "LAW 4202",
+              "title": "Research Paper",
+              "notes": [
+                {
+                  "title": "Legal Research Methodology — Kasim Balarabe",
+                  "file": "YR 4 SEM 2/PDFs/Legal Research Methodology by Kasim Balarabe-1.pdf",
+                  "html_file": "HTML/YR 4 SEM 2/Legal Research Methodology by Kasim Balarabe-1.html"
+                },
+                {
+                  "title": "Research Notes Lecture",
+                  "file": "YR 4 SEM 1/PDFs/RESEARCH NOTES LECTURE.pdf",
+                  "_filed_in": "YR 4 SEM 1",
+                  "html_file": "HTML/YR 4 SEM 1/RESEARCH NOTES LECTURE.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 4214",
+              "title": "Estate Planning",
+              "notes": []
+            },
+            {
+              "code": "LAW 4215",
+              "title": "Revenue Law & Taxation II",
+              "notes": []
+            },
+            {
+              "code": "LAW 4216",
+              "title": "Gender and the Law",
+              "notes": [
+                {
+                  "title": "Gender CW — Group Seven",
+                  "file": "YR 4 SEM 2/PDFs/GENDER CW GROUP SEVEN.pdf",
+                  "html_file": "HTML/YR 4 SEM 2/GENDER CW GROUP SEVEN.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 4217",
+              "title": "Criminology and Penology",
+              "notes": []
+            },
+            {
+              "code": "LAW 4220",
+              "title": "Intellectual Property Law II",
+              "notes": [
+                {
+                  "title": "Intellectual Property Fair (II)",
+                  "file": "YR 4 SEM 2/PDFs/INTELLECTUAL PROPERTY FAIR.pdf",
+                  "html_file": "HTML/YR 4 SEM 2/INTELLECTUAL PROPERTY FAIR.html"
+                }
+              ]
+            },
+            {
+              "code": null,
+              "title": "Jurisprudence II",
+              "notes": [
+                {
+                  "title": "Jurisprudence Unit I (II)",
+                  "file": "YR 4 SEM 2/PDFs/jurisprudence-Unit-I.pdf",
+                  "html_file": "HTML/YR 4 SEM 2/jurisprudence-Unit-I.html"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "_inconsistencies_to_flag": [
+    "LAW 3109 'Family Law II (core)' in Year 3 Sem 1 — Family Law II is also LAW 2209 in Year 2 Sem 2. One is likely mislabeled. Possibly Year 3 should be 'Family Law III' or Year 2 should be 'Family Law I'.",
+    "LAW 4215 'Revenue Law & Taxation I' was listed in Year 4 Sem 1 alongside LAW 4113 with the same title. Treated as a duplicate; LAW 4215 retained only in Year 4 Sem 2 as 'Revenue Law & Taxation II'.",
+    "Several courses lack codes (Communication Skills, Legal Methods, Company Law I/II, Sale of Goods, Foundations of Land Law, Jurisprudence I/II, Human Rights). Awaiting client confirmation on whether codes are coming.",
+    "Some PDFs are surfaced under multiple courses (e.g. NOTES_ON_CONTRACT_1_and_2_Ug.pdf is the source for both LAW 1109 and LAW 1209). Marked with `_also_used_by`."
+  ],
+  "_ambiguous_mappings": [
+    {
+      "file": "YR 1 SEM 2/PDFs/LLB Fundamentals of Criminal Law Notes.pdf",
+      "assigned_to": "LAW 1208 Criminal Liability",
+      "reason": "Spreadsheet's LAW 1208 entry references 'Fundamentals of criminal law notes' which matches this filename. LAW 1108 'Fundamentals of Criminal Law' could also be a candidate."
+    },
+    {
+      "file": "YR 3 SEM 2/PDFs/CIVIL PROCEDURE.pdf",
+      "assigned_to": "LAW 3218 Civil Procedure II",
+      "reason": "Generic title, could fit LAW 3115 (Civil Procedure I) or LAW 3218. Folder placement (Sem 2) tipped toward 3218."
+    },
+    {
+      "file": "YR 3 SEM 2/PDFs/Grounds for Judicial Review.pdf",
+      "assigned_to": "LAW 3218 Civil Procedure II",
+      "reason": "Judicial review can sit under Admin Law (LAW 1207/2107) or Civil Procedure II. Assigned to 3218 based on folder placement."
+    },
+    {
+      "file": "YR 3 SEM 2/PDFs/time-present-and-time-past-lord-reed-lecture.pdf",
+      "assigned_to": "Jurisprudence (Year 3 Sem 1)",
+      "reason": "Lord Reed lectures often cover legal-philosophical themes; could fit Jurisprudence or International Law. Placed under Jurisprudence."
+    },
+    {
+      "file": "YR 3 SEM 1/PDFs/GENDER CW GROUP SEVEN.pdf",
+      "assigned_to": "LAW 4216 Gender and the Law (Year 4 Sem 2)",
+      "reason": "Same file appears in YR 4 SEM 2 folder as well. Spreadsheet places Gender CW under both LAW 4216 and Jurisprudence II — kept the LAW 4216 link as primary."
+    }
+  ],
+  "_unmapped_pdfs": {
+    "_note": "These 8 PDFs are duplicate copies of files already mapped under another path (same filename in another folder, or explicit 'copy' suffix). They aren't lost — the canonical file is referenced. Listed here for completeness.",
+    "duplicates": [
+      {
+        "duplicate": "YR 1 SEM 1/PDFs/LEGAL METHODS QUESTIONS AND ANSWERS (1).pdf",
+        "canonical": "YR 1 SEM 2/PDFs/LEGAL METHODS QUESTIONS AND ANSWERS (1).pdf"
+      },
+      {
+        "duplicate": "YR 1 SEM 1/PDFs/Legal Method Notes 1.pdf",
+        "canonical": "YR 1 SEM 2/PDFs/Legal Method Notes 1.pdf"
+      },
+      {
+        "duplicate": "YR 1 SEM 2/PDFs/Criminal Law 1 - jorvannotes.pdf",
+        "canonical": "YR 1 SEM 1/PDFs/Criminal Law 1 - jorvannotes.pdf"
+      },
+      {
+        "duplicate": "YR 2 SEM 2/PDFs/Land Law II-Lecture notes. copy.pdf",
+        "canonical": "YR 2 SEM 2/PDFs/Land Law II-Lecture notes..pdf"
+      },
+      {
+        "duplicate": "YR 3 SEM 1/PDFs/Business Associations 2 .pdf",
+        "canonical": "YR 2 SEM 2/PDFs/Business Associations 2 .pdf"
+      },
+      {
+        "duplicate": "YR 3 SEM 1/PDFs/CIVIL PROCEDURE 1 NOTES copy.pdf",
+        "canonical": "YR 3 SEM 1/PDFs/CIVIL PROCEDURE 1 NOTES.pdf"
+      },
+      {
+        "duplicate": "YR 3 SEM 1/PDFs/GENDER CW GROUP SEVEN.pdf",
+        "canonical": "YR 4 SEM 2/PDFs/GENDER CW GROUP SEVEN.pdf"
+      },
+      {
+        "duplicate": "YR 4 SEM 1/PDFs/Legal Research Methodology by Kasim Balarabe-1.pdf",
+        "canonical": "YR 4 SEM 2/PDFs/Legal Research Methodology by Kasim Balarabe-1.pdf"
+      }
+    ]
+  }
+}
