@@ -6,7 +6,7 @@ import { Logo } from "@/components/ui/Logo";
 import { Avatar } from "@/components/ui/Avatar";
 import { SidebarNavItem } from "./SidebarNavItem";
 
-type ActiveKey = "search" | "home" | "notes" | "library" | "bookmarks";
+type ActiveKey = "search" | "home" | "notes" | "library" | "bookmarks" | "profile";
 
 export function Sidebar({
   active,
