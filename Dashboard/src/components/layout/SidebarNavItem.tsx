@@ -16,12 +16,18 @@ export function SidebarNavItem({
   icon: Icon,
   count,
   active = false,
+  registerRef,
+  onItemEnter,
 }: {
   href: string;
   label: string;
   icon?: LucideIcon;
   count?: number;
   active?: boolean;
+  /** Lets the parent Sidebar measure this item for the sliding indicator. */
+  registerRef?: (el: HTMLAnchorElement | null) => void;
+  /** Fired when the cursor enters this item — parent slides the indicator. */
+  onItemEnter?: () => void;
 }) {
   const linkRef = useRef<HTMLAnchorElement | null>(null);
   const iconRef = useRef<SVGSVGElement | null>(null);
@@ -40,7 +46,22 @@ export function SidebarNavItem({
       // Pivot for the post-draw shake.
       gsap.set(icon, { transformOrigin: "50% 50%" });
 
+      // Only play after the user has genuinely moved their cursor. This
+      // avoids the synthetic mouseenter that fires when the nav item
+      // mounts beneath a stationary cursor right after a click → navigate.
+      const mountedAt = performance.now();
+      let pressing = false;
+
+      const onDown = () => {
+        pressing = true;
+      };
+      const onUp = () => {
+        pressing = false;
+      };
+
       const onEnter = contextSafe(() => {
+        if (pressing) return;
+        if (performance.now() - mountedAt < 300) return;
         const tl = gsap.timeline({ overwrite: "auto" });
 
         // Draw outward from the midpoint of each stroke.
@@ -56,19 +77,15 @@ export function SidebarNavItem({
           0
         );
 
-        // Subtle shake riding alongside the draw — same start, same end.
+        // Scale pop — slightly more prominent.
         tl.to(
           icon,
           {
             keyframes: [
-              { rotation: 2 },
-              { rotation: -2 },
-              { rotation: 1.2 },
-              { rotation: -0.6 },
-              { rotation: 0 },
+              { scale: 1.42, duration: 0.19, ease: "back.out(2.8)" },
+              { scale: 1.12, duration: 0.2,  ease: "power2.inOut" },
+              { scale: 1.0,  duration: 0.16, ease: "power2.out" },
             ],
-            duration: 0.55,
-            ease: "power1.inOut",
           },
           0
         );
@@ -83,6 +100,7 @@ export function SidebarNavItem({
         });
         gsap.to(icon, {
           rotation: 0,
+          scale: 1,
           duration: 0.2,
           overwrite: true,
         });
@@ -90,10 +108,14 @@ export function SidebarNavItem({
 
       link.addEventListener("mouseenter", onEnter);
       link.addEventListener("mouseleave", onLeave);
+      link.addEventListener("mousedown", onDown);
+      link.addEventListener("mouseup", onUp);
 
       return () => {
         link.removeEventListener("mouseenter", onEnter);
         link.removeEventListener("mouseleave", onLeave);
+        link.removeEventListener("mousedown", onDown);
+        link.removeEventListener("mouseup", onUp);
       };
     },
     { scope: linkRef }
@@ -101,13 +123,17 @@ export function SidebarNavItem({
 
   return (
     <Link
-      ref={linkRef}
+      ref={(el) => {
+        linkRef.current = el;
+        registerRef?.(el);
+      }}
       href={href}
+      onMouseEnter={onItemEnter}
       aria-current={active ? "page" : undefined}
-      className={`relative flex items-center rounded-md font-sans text-label no-underline transition-colors ${
+      className={`relative z-10 flex items-center rounded-md font-sans text-label no-underline transition-colors ${
         active
           ? "bg-stone-100 text-stone-900 font-semibold ring-1 ring-black/[0.04]"
-          : "text-stone-600 font-medium hover:bg-stone-50 hover:text-stone-900 active:bg-stone-100"
+          : "text-stone-600 font-medium hover:text-stone-900"
       }`}
       style={{
         paddingInline: "var(--nav-item-px)",

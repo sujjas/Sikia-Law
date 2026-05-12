@@ -70,6 +70,17 @@ const CAT_THUMB_VARIANT: Record<Exclude<CategoryId, "all">, NoteThumbVariant> = 
   "legal-notices": "orange",
 };
 
+/** Stand-in document for each category — the mock library data doesn't have
+ * its own bodies yet, so each card opens a curriculum note that fits the
+ * category so /document has real content to render. */
+const CAT_DEFAULT_DOC: Record<Exclude<CategoryId, "all">, string> = {
+  "case-law": "HTML/YR 1 SEM 1/Criminal Law 1 - jorvannotes.html",
+  statutes: "HTML/YR 1 SEM 1/CONSTITUTIONAL HISTORY NOTES Dr ONORIA-1(4).html",
+  "statutory-documents": "HTML/YR 1 SEM 1/1900 BUGANDA AGREEMENT.html",
+  decrees: "HTML/YR 2 SEM 2/EQUITY AND TRUST Q&A.html",
+  "legal-notices": "HTML/YR 1 SEM 2/Legal Method Notes 1.html",
+};
+
 type FacetKey = "Year" | "Area of law" | "Source";
 
 /** Extractors that pull facet values from a result row. */
@@ -587,7 +598,7 @@ export function LibraryView({ initialCategory }: { initialCategory: string }) {
         {filtered.map((r, i) => (
           <NoteThumb
             key={`${activeCat}-${i}`}
-            href="/document"
+            href={`/document?file=${encodeURIComponent(CAT_DEFAULT_DOC[r.cat])}`}
             title={r.title}
             code={CAT_SHORT_LABEL[r.cat]}
             meta={r.source[r.source.length - 1]}
