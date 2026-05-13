@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Topbar } from "@/components/layout/Topbar";
 import { DocumentReader } from "@/components/document/DocumentReader";
+import { ReadingProgress } from "@/components/document/ReadingProgress";
 import { findNoteByFile, getPrevNext, getRelatedNotes } from "@/lib/curriculum-lookup";
 import { loadNoteHtml } from "@/lib/notes-content";
 
@@ -14,16 +15,14 @@ export default async function DocumentPage({
   const fileParam = sp.file ?? null;
 
   return (
-    <div
-      className="grid min-h-screen"
-      style={{ gridTemplateColumns: "var(--width-sidebar) 1fr" }}
-    >
+    <div className="min-h-screen lg:grid lg:[grid-template-columns:var(--width-sidebar)_1fr]">
+      <ReadingProgress />
       <Sidebar
         active="notes"
         user={{ initials: "AM", name: "Amelia M.", meta: "Year 2 · Makerere" }}
       />
       <main
-        className="min-w-0"
+        className="page-panel min-w-0"
         style={{
           paddingInline: "var(--page-px)",
           paddingTop: "var(--page-pt)",

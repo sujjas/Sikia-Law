@@ -19,6 +19,7 @@ import {
   NoteThumb,
   type NoteThumbVariant,
 } from "@/components/dashboard/NoteThumb";
+import { haptic } from "@/lib/haptics";
 
 type CategoryId =
   | "all"
@@ -288,6 +289,7 @@ export function LibraryView({ initialCategory }: { initialCategory: string }) {
   );
 
   const toggleFilter = (facet: FacetKey, value: string) => {
+    haptic("selection");
     setActiveFilters((prev) => {
       const nextSet = new Set(prev[facet]);
       if (nextSet.has(value)) nextSet.delete(value);
@@ -296,7 +298,10 @@ export function LibraryView({ initialCategory }: { initialCategory: string }) {
     });
   };
 
-  const clearFilters = () => setActiveFilters(makeEmptyFilters());
+  const clearFilters = () => {
+    haptic("light");
+    setActiveFilters(makeEmptyFilters());
+  };
 
   return (
     <>
@@ -312,14 +317,7 @@ export function LibraryView({ initialCategory }: { initialCategory: string }) {
       </nav>
 
       <header className="mb-6">
-        <h1
-          className="font-semibold"
-          style={{
-            fontSize: "var(--text-display)",
-            lineHeight: "var(--text-display--line-height)",
-            letterSpacing: "var(--text-display--letter-spacing)",
-          }}
-        >
+        <h1 className="font-serif text-h1 sm:text-display font-semibold tracking-tight">
           Library
         </h1>
         <p className="mt-2 max-w-[60ch]" style={{ color: "var(--text-2)" }}>
@@ -329,9 +327,8 @@ export function LibraryView({ initialCategory }: { initialCategory: string }) {
       </header>
 
       <label
-        className="flex items-center gap-3 mb-6 transition-all focus-within:[border-color:var(--text-2)] focus-within:shadow-[0_0_0_4px_rgba(15,15,16,0.05)]"
+        className="flex items-center gap-3 mb-6 px-4 py-3 sm:px-[18px] sm:py-3.5 transition-all focus-within:[border-color:var(--text-2)] focus-within:shadow-[0_0_0_4px_rgba(15,15,16,0.05)]"
         style={{
-          padding: "14px 18px",
           border: "1px solid var(--line-2)",
           borderRadius: "var(--radius-xl)",
           background: "var(--surface)",
@@ -344,22 +341,25 @@ export function LibraryView({ initialCategory }: { initialCategory: string }) {
         />
         <input
           type="search"
-          placeholder="Search this library — by case name, statute, citation, area of law…"
+          placeholder="Search this library…"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="flex-1 outline-none bg-transparent"
-          style={{ fontSize: "1rem", color: "var(--text)" }}
+          className="flex-1 outline-none bg-transparent text-base"
+          style={{ color: "var(--text)" }}
         />
-        <span style={{ fontSize: "var(--text-meta)", color: "var(--text-3)" }}>
+        <span
+          className="hidden sm:inline"
+          style={{ fontSize: "var(--text-meta)", color: "var(--text-3)" }}
+        >
           {CATEGORIES[0].count.toLocaleString()} items
         </span>
       </label>
 
-      <div className="flex items-center justify-between gap-4 flex-wrap mb-6">
+      <div className="flex items-center justify-between gap-4 flex-wrap mb-6 max-w-full">
       <div
         ref={catStripRef}
         role="tablist"
-        className="relative inline-flex items-center flex-wrap gap-0.5 p-1 max-w-full bg-stone-150 rounded-full"
+        className="relative inline-flex items-center gap-0.5 p-1 bg-stone-150 rounded-full max-w-full overflow-x-auto cat-strip-scroll lg:overflow-x-visible"
       >
         {/* Sliding active indicator */}
         <div
@@ -383,14 +383,17 @@ export function LibraryView({ initialCategory }: { initialCategory: string }) {
               }}
               role="tab"
               aria-selected={active}
-              onClick={() => setActiveCat(c.id)}
-              className={`relative z-10 inline-flex items-center gap-2 rounded-full transition-colors cursor-pointer ${
+              onClick={() => {
+                haptic("selection");
+                setActiveCat(c.id);
+              }}
+              className={`relative z-10 inline-flex items-center gap-2 rounded-full transition-colors cursor-pointer shrink-0 whitespace-nowrap ${
                 active
                   ? "text-stone-900 font-semibold"
                   : "text-stone-700 font-medium hover:text-stone-900"
               }`}
               style={{
-                padding: "9px 16px",
+                padding: "9px 14px",
                 fontSize: "var(--text-label-sm)",
               }}
             >
@@ -418,7 +421,10 @@ export function LibraryView({ initialCategory }: { initialCategory: string }) {
           <div ref={filterMenuRef} className="relative">
             <button
               type="button"
-              onClick={() => setFilterOpen((v) => !v)}
+              onClick={() => {
+                haptic("light");
+                setFilterOpen((v) => !v);
+              }}
               aria-expanded={filterOpen}
               aria-haspopup="menu"
               className="inline-flex items-center gap-1.5 cursor-pointer transition-colors"
@@ -594,7 +600,7 @@ export function LibraryView({ initialCategory }: { initialCategory: string }) {
           : "No items match this filter."}
       </div>
 
-      <div ref={resultsRef} className="grid gap-4 grid-cols-3">
+      <div ref={resultsRef} className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {filtered.map((r, i) => (
           <NoteThumb
             key={`${activeCat}-${i}`}

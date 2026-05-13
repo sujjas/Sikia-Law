@@ -101,14 +101,7 @@ export function ProfileView() {
       </nav>
 
       <header className="mb-6">
-        <h1
-          className="font-semibold"
-          style={{
-            fontSize: "var(--text-display)",
-            lineHeight: "var(--text-display--line-height)",
-            letterSpacing: "var(--text-display--letter-spacing)",
-          }}
-        >
+        <h1 className="font-serif text-h1 sm:text-display font-semibold tracking-tight">
           Profile
         </h1>
         <p className="mt-2 max-w-[60ch]" style={{ color: "var(--text-2)" }}>
@@ -117,7 +110,7 @@ export function ProfileView() {
       </header>
 
       <div className="grid items-start profile-grid" style={{ gridTemplateColumns: "220px minmax(0, 1fr)", gap: 48 }}>
-        <aside className="sticky" style={{ top: 22 }}>
+        <aside className="hidden sm:block sm:sticky" style={{ top: 22 }}>
           <div
             className="uppercase font-semibold"
             style={{
@@ -200,7 +193,7 @@ export function ProfileView() {
                 </div>
               </div>
             </div>
-            <div className="grid gap-3.5 gap-x-5" style={{ gridTemplateColumns: "1fr 1fr" }}>
+            <div className="grid gap-3.5 gap-x-5 grid-cols-1 sm:grid-cols-2">
               <Field label="Full name" defaultValue="Amelia Maganda" />
               <Field label="Display name" defaultValue="Amelia M." />
               <Field label="Email" defaultValue="amelia.m@students.muk.ac.ug" />
@@ -210,7 +203,7 @@ export function ProfileView() {
 
           {/* Academics */}
           <Section id="academics" title="Academics" subtitle="Your university, year, and the electives you care about.">
-            <div className="grid gap-3.5 gap-x-5 mb-5" style={{ gridTemplateColumns: "1fr 1fr" }}>
+            <div className="grid gap-3.5 gap-x-5 mb-5 grid-cols-1 sm:grid-cols-2">
               <Field label="University" defaultValue="Makerere University" />
               <Field label="Programme" defaultValue="Bachelor of Laws (LLB)" />
             </div>
@@ -376,8 +369,8 @@ function Section({
         }}
       >
         <div
-          className="flex items-baseline justify-between gap-4"
-          style={{ padding: "18px 22px", borderBottom: "1px solid var(--line-2)" }}
+          className="flex items-baseline justify-between gap-4 px-4 sm:px-[22px] py-4 sm:py-[18px]"
+          style={{ borderBottom: "1px solid var(--line-2)" }}
         >
           <div>
             <h2 style={{ fontSize: "1.05rem", fontWeight: 600 }}>{title}</h2>
@@ -386,7 +379,7 @@ function Section({
             </p>
           </div>
         </div>
-        <div style={{ padding: 22 }}>{children}</div>
+        <div className="p-4 sm:p-[22px]">{children}</div>
       </div>
     </section>
   );

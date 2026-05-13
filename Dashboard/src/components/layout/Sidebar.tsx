@@ -1,11 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { useLayoutEffect, useRef, useState } from "react";
-import { Search, House, FileText, Library, Bookmark } from "lucide-react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  Search,
+  House,
+  FileText,
+  Library,
+  Bookmark,
+} from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { Avatar } from "@/components/ui/Avatar";
 import { SidebarNavItem } from "./SidebarNavItem";
+import { haptic } from "@/lib/haptics";
 
 type ActiveKey = "search" | "home" | "notes" | "library" | "bookmarks" | "profile";
 
@@ -37,6 +44,57 @@ export function Sidebar({
   });
   const [hovered, setHovered] = useState<NavKey | null>(null);
   const [measured, setMeasured] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  // Close drawer on Escape.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open]);
+
+  // Lock body scroll while drawer is open.
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
+
+  // Drive the page-panel slide via a class on <html>.
+  useEffect(() => {
+    if (!open) return;
+    document.documentElement.classList.add("drawer-open");
+    return () => {
+      document.documentElement.classList.remove("drawer-open");
+    };
+  }, [open]);
+
+  // Close the drawer when the user taps anywhere on the slid page panel
+  // (everything outside the sidebar + toggle).
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: MouseEvent | TouchEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
+      if (target.closest(".sb-aside")) return;
+      if (target.closest(".sb-toggle")) return;
+      e.preventDefault();
+      e.stopPropagation();
+      setOpen(false);
+    };
+    document.addEventListener("mousedown", handler, true);
+    document.addEventListener("touchstart", handler, true);
+    return () => {
+      document.removeEventListener("mousedown", handler, true);
+      document.removeEventListener("touchstart", handler, true);
+    };
+  }, [open]);
 
   const navKey: NavKey | null = active === "profile" ? null : active;
 
@@ -64,14 +122,44 @@ export function Sidebar({
   }, [hovered, navKey, measured]);
 
   return (
-    <aside
-      className="bg-white border-r border-[var(--line-2)] sticky top-0 h-screen flex flex-col"
-      style={{
-        paddingInline: "var(--sidebar-px)",
-        paddingTop: "var(--sidebar-pt)",
-        paddingBottom: "var(--sidebar-pb)",
-      }}
-    >
+    <>
+      {/* Mobile hamburger ↔ X — single morphing toggle, fixed above the drawer. */}
+      <button
+        type="button"
+        onClick={() => {
+          haptic(open ? "light" : "medium");
+          setOpen((o) => !o);
+        }}
+        aria-label={open ? "Close menu" : "Open menu"}
+        aria-expanded={open}
+        className="sb-toggle lg:hidden fixed top-3 left-3 z-[60] flex items-center justify-center w-7 h-7 rounded-full bg-white border border-[var(--line-2)] shadow-[0_1px_2px_rgba(0,0,0,0.05)] text-stone-700 cursor-pointer"
+      >
+        <span
+          aria-hidden
+          className="hamburger-icon"
+          data-open={open ? "true" : "false"}
+        >
+          <span className="hamburger-line" />
+          <span className="hamburger-line" />
+          <span className="hamburger-line" />
+        </span>
+      </button>
+
+      <aside
+        onClick={(e) => {
+          // Close on link tap (mobile drawer)
+          if (open && (e.target as HTMLElement).closest("a")) {
+            haptic("selection");
+            setOpen(false);
+          }
+        }}
+        className="sb-aside bg-white flex flex-col fixed inset-y-0 left-0 w-72 max-w-[85vw] z-30 lg:sticky lg:top-0 lg:h-screen lg:w-auto lg:max-w-none lg:z-auto lg:border-r lg:border-[var(--line-2)]"
+        style={{
+          paddingInline: "var(--sidebar-px)",
+          paddingTop: "var(--sidebar-pt)",
+          paddingBottom: "var(--sidebar-pb)",
+        }}
+      >
       <div style={{ marginBottom: "var(--sidebar-logo-mb)" }}>
         <Logo />
       </div>
@@ -124,6 +212,7 @@ export function Sidebar({
           </div>
         </div>
       </Link>
-    </aside>
+      </aside>
+    </>
   );
 }

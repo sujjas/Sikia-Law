@@ -131,14 +131,7 @@ export function SearchView({ initialQuery }: { initialQuery: string }) {
       </nav>
 
       <header className="mb-6">
-        <h1
-          className="font-semibold"
-          style={{
-            fontSize: "var(--text-display)",
-            lineHeight: "var(--text-display--line-height)",
-            letterSpacing: "var(--text-display--letter-spacing)",
-          }}
-        >
+        <h1 className="font-serif text-h1 sm:text-display font-semibold tracking-tight">
           Search
         </h1>
         <p className="mt-2 max-w-[60ch]" style={{ color: "var(--text-2)" }}>
@@ -147,9 +140,8 @@ export function SearchView({ initialQuery }: { initialQuery: string }) {
       </header>
 
       <label
-        className="flex items-center gap-3.5 mb-6 transition-all focus-within:shadow-[0_0_0_5px_rgba(15,15,16,0.06)]"
+        className="flex items-center gap-3 sm:gap-3.5 mb-6 px-4 py-3 sm:px-[22px] sm:py-[18px] transition-all focus-within:shadow-[0_0_0_5px_rgba(15,15,16,0.06)]"
         style={{
-          padding: "18px 22px",
           border: "1px solid var(--line)",
           borderRadius: "var(--radius-xl)",
           background: "var(--surface)",
@@ -159,11 +151,11 @@ export function SearchView({ initialQuery }: { initialQuery: string }) {
         <input
           type="text"
           autoFocus
-          placeholder="Search everything — case names, course units, statutes, topics…"
+          placeholder="Search everything…"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="flex-1 outline-none bg-transparent"
-          style={{ fontSize: "1.1rem", color: "var(--text)" }}
+          className="flex-1 outline-none bg-transparent text-base sm:text-[1.1rem]"
+          style={{ color: "var(--text)" }}
         />
         {hasQuery && (
           <button
@@ -223,11 +215,8 @@ export function SearchView({ initialQuery }: { initialQuery: string }) {
                 <Link
                   key={i}
                   href={r.href}
-                  className="group grid no-underline text-inherit transition-all hover:-translate-y-0.5"
+                  className="group grid gap-3 sm:gap-3.5 px-4 py-3 sm:px-[18px] sm:py-3.5 no-underline text-inherit transition-all hover:-translate-y-0.5 [grid-template-columns:32px_1fr] sm:[grid-template-columns:36px_1fr_auto]"
                   style={{
-                    gridTemplateColumns: "36px 1fr auto",
-                    gap: 14,
-                    padding: "14px 18px",
                     background: "var(--surface)",
                     border: "1px solid var(--line-2)",
                     borderRadius: "var(--radius-lg)",
@@ -290,7 +279,7 @@ export function SearchView({ initialQuery }: { initialQuery: string }) {
                     </div>
                   </div>
                   <div
-                    className="self-center transition-all group-hover:translate-x-0.5 group-hover:[color:var(--text)]"
+                    className="hidden sm:flex self-center items-center transition-all group-hover:translate-x-0.5 group-hover:[color:var(--text)]"
                     style={{ color: "var(--text-3)" }}
                   >
                     <ArrowUpRight size={16} />
@@ -301,7 +290,7 @@ export function SearchView({ initialQuery }: { initialQuery: string }) {
           </div>
         </>
       ) : (
-        <div className="grid gap-5" style={{ gridTemplateColumns: "1.2fr 1fr" }}>
+        <div className="grid gap-4 sm:gap-5 grid-cols-1 sm:[grid-template-columns:1.2fr_1fr]">
           <Card label="Recent searches" icon={Clock}>
             <div className="flex flex-col">
               {RECENT.map((r) => (

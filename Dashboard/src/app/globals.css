@@ -243,6 +243,57 @@
   --progress-h:           3px;
 }
 
+/* ──────────────────────────────────────────────────────────────
+   MOBILE — collapse the sidebar column and shrink page chrome.
+   The sidebar sits behind the page panel; the panel slides right to
+   reveal it (iOS shelf-style drawer). See Sidebar.tsx + .page-panel.
+   ────────────────────────────────────────────────────────────── */
+@media (max-width: 1023px) {
+  :root {
+    --width-sidebar: 0px;
+    --page-px:       20px;
+    --page-pt:       72px;   /* room for the fixed hamburger toggle */
+    --page-pb:       80px;
+    --topbar-mb:     24px;
+    --hero-py:       24px;
+    --section-py:    28px;
+    --section-head-mb: 16px;
+    /* Drawer: push the logo down so the hamburger button has clearance */
+    --sidebar-pt:    60px;
+  }
+
+  /* Body background matches the sidebar so the rounded corner mask reveals
+   * the same color from any corner. */
+  body {
+    background: #FFFFFF;
+  }
+
+  /* The page-panel is fixed at viewport size with its own scroll. Corners
+   * are flush at rest; they round only when the drawer slides it open. */
+  .page-panel {
+    position: fixed;
+    inset: 0;
+    overflow-y: auto;
+    z-index: 40;
+    background: var(--bg);
+    border-radius: 0;
+    transform-origin: 0 50%;
+    transition:
+      transform 0.34s var(--ease-out),
+      border-radius 0.34s var(--ease-out),
+      box-shadow 0.34s var(--ease-out),
+      opacity 0.34s var(--ease-out);
+  }
+
+  html.drawer-open .page-panel {
+    transform: translateX(min(288px, 85vw));
+    border-radius: 36px;
+    box-shadow: -14px 0 36px rgba(0, 0, 0, 0.22);
+    opacity: 0.94;
+    overflow: hidden; /* freeze inner scroll while drawer is open */
+  }
+}
+
 @layer base {
   html, body { height: 100%; margin: 0; padding: 0; }
   body {
@@ -269,6 +320,85 @@
 .filter-row:hover {
   background: var(--surface-2) !important;
   color: var(--text) !important;
+}
+
+/* Hide the native scrollbar on the horizontally-scrolling category pill. */
+.cat-strip-scroll { scrollbar-width: none; -ms-overflow-style: none; }
+.cat-strip-scroll::-webkit-scrollbar { display: none; }
+
+/* ──────────────────────────────────────────────────────────────
+   SCROLLBAR — minimal, only visible on hover. Applied to the page
+   panel (mobile scroll container) and to the document/body so the
+   ReadingProgress bar at the top can do the heavy lifting visually.
+   ────────────────────────────────────────────────────────────── */
+html,
+.page-panel {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+html:hover,
+.page-panel:hover {
+  scrollbar-color: var(--surface-3) transparent;
+}
+html::-webkit-scrollbar,
+.page-panel::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+html::-webkit-scrollbar-track,
+.page-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+html::-webkit-scrollbar-thumb,
+.page-panel::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 999px;
+  transition: background 0.2s ease;
+}
+html:hover::-webkit-scrollbar-thumb,
+.page-panel:hover::-webkit-scrollbar-thumb {
+  background: var(--surface-3);
+}
+html::-webkit-scrollbar-thumb:hover,
+.page-panel::-webkit-scrollbar-thumb:hover {
+  background: var(--surface-4);
+}
+
+/* ──────────────────────────────────────────────────────────────
+   HAMBURGER ↔ X — morphing menu toggle (mobile sidebar)
+   ────────────────────────────────────────────────────────────── */
+.hamburger-icon {
+  position: relative;
+  display: block;
+  width: 12px;
+  height: 9px;
+}
+.hamburger-icon .hamburger-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1.5px;
+  background: currentColor;
+  border-radius: 999px;
+  transform-origin: 50% 50%;
+  transition: transform 0.28s var(--ease-out), opacity 0.18s ease;
+}
+.hamburger-icon .hamburger-line:nth-child(1) { top: 0; }
+.hamburger-icon .hamburger-line:nth-child(2) { top: 50%; transform: translateY(-50%); }
+.hamburger-icon .hamburger-line:nth-child(3) { bottom: 0; }
+
+.hamburger-icon[data-open="true"] .hamburger-line:nth-child(1) {
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+}
+.hamburger-icon[data-open="true"] .hamburger-line:nth-child(2) {
+  opacity: 0;
+  transform: translateY(-50%) scaleX(0);
+}
+.hamburger-icon[data-open="true"] .hamburger-line:nth-child(3) {
+  top: 50%;
+  bottom: auto;
+  transform: translateY(-50%) rotate(-45deg);
 }
 
 /* ──────────────────────────────────────────────────────────────
@@ -484,21 +614,20 @@
 .folder-card.is-selected .folder-card__paper--3 {
   /* Match the hover fan-out so the papers stay flared while drawer is open. */
 }
-.folder-card.is-selected .folder-card__papers { left: 50%; transform: translateX(-50%); }
 .folder-card.is-selected .folder-card__paper--1 {
   width: 100px; height: 124px;
-  left: 50%; top: -3px;
-  transform: translateX(-50%) rotate(0deg);
+  left: 22px; top: -3px;
+  transform: rotate(0deg);
 }
 .folder-card.is-selected .folder-card__paper--2 {
   width: 110px; height: 130px;
-  left: 50%; top: 3px;
-  transform: translateX(-50%) rotate(0deg);
+  left: 17px; top: 3px;
+  transform: rotate(0deg);
 }
 .folder-card.is-selected .folder-card__paper--3 {
   width: 120px; height: 124px;
-  left: 50%; top: 10px;
-  transform: translateX(-50%) rotate(0deg);
+  left: 12px; top: 10px;
+  transform: rotate(0deg);
 }
 .folder-card__top { padding: 8px 8px 0; display: flex; }
 .folder-card__cover {
@@ -509,16 +638,18 @@
   overflow: hidden;
   background: linear-gradient(135deg, var(--grad-a) 0%, var(--grad-b) 55%, var(--grad-c) 100%);
 }
+/* Container is centered horizontally; individual papers keep their original
+ * fanned rotation + slight offsets for the layered "stack of pages" look. */
 .folder-card__papers {
   position: absolute;
   top: 18px;
-  left: 30px;
+  left: 50%;
   width: 144px;
   height: 134px;
   pointer-events: none;
+  margin-left: -72px; /* center the 144px container without using transform */
   transition: all 0.36s var(--ease-out);
 }
-.folder-card:hover .folder-card__papers { left: 50%; transform: translateX(-50%); }
 .folder-card__paper {
   position: absolute;
   border-radius: 6px 6px 3px 3px;
@@ -549,20 +680,21 @@
   display: flex;
   overflow: hidden;
 }
+.folder-card:hover .folder-card__papers { margin-left: -72px; }
 .folder-card:hover .folder-card__paper--1 {
   width: 100px; height: 124px;
-  left: 50%; top: -3px;
-  transform: translateX(-50%) rotate(0deg);
+  left: 22px; top: -3px;
+  transform: rotate(0deg);
 }
 .folder-card:hover .folder-card__paper--2 {
   width: 110px; height: 130px;
-  left: 50%; top: 3px;
-  transform: translateX(-50%) rotate(0deg);
+  left: 17px; top: 3px;
+  transform: rotate(0deg);
 }
 .folder-card:hover .folder-card__paper--3 {
   width: 120px; height: 124px;
-  left: 50%; top: 10px;
-  transform: translateX(-50%) rotate(0deg);
+  left: 12px; top: 10px;
+  transform: rotate(0deg);
 }
 .folder-card__lines {
   display: flex;

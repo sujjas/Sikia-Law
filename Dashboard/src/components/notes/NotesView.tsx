@@ -11,6 +11,7 @@ import {
   noteThumbVariantFor,
 } from "@/components/dashboard/NoteThumb";
 import type { FolderVariant } from "@/components/dashboard/Folder";
+import { haptic } from "@/lib/haptics";
 
 const FOLDER_VARIANT_CYCLE: FolderVariant[] = [
   "orange",
@@ -83,16 +84,9 @@ export function NotesView({ curriculum, initialYear, initialCourse }: Props) {
         <span>Notes</span>
       </nav>
 
-      <header className="flex items-end justify-between gap-6 flex-wrap mb-7">
+      <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between sm:gap-6 mb-6 sm:mb-7">
         <div>
-          <h1
-            style={{
-              fontSize: "var(--text-display)",
-              lineHeight: "var(--text-display--line-height)",
-              letterSpacing: "var(--text-display--letter-spacing)",
-            }}
-            className="font-semibold"
-          >
+          <h1 className="font-serif text-h1 sm:text-display font-semibold tracking-tight">
             Notes
           </h1>
           <p className="mt-2 max-w-[60ch]" style={{ color: "var(--text-2)" }}>
@@ -129,14 +123,17 @@ export function NotesView({ curriculum, initialYear, initialCourse }: Props) {
               }}
               role="tab"
               aria-selected={active}
-              onClick={() => setActiveYear(y.year)}
-              className={`relative z-10 px-5 py-2 rounded-full font-sans text-label-sm cursor-pointer transition-colors ${
+              onClick={() => {
+                haptic("selection");
+                setActiveYear(y.year);
+              }}
+              className={`relative z-10 px-4 sm:px-5 py-2 rounded-full font-sans text-label-sm cursor-pointer transition-colors whitespace-nowrap ${
                 active
                   ? "text-stone-900 font-semibold"
                   : "text-stone-700 font-medium hover:text-stone-900"
               }`}
             >
-              {y.label}
+              {y.label.replace(/^Year\s+/i, "Yr ")}
             </button>
           );
         })}
@@ -167,9 +164,9 @@ export function NotesView({ curriculum, initialYear, initialCourse }: Props) {
 function SemesterHeader({ sem }: { sem: Semester }) {
   const noteCount = sem.courses.reduce((n, c) => n + c.notes.length, 0);
   return (
-    <div className="flex items-baseline gap-3 mb-4">
+    <div className="flex items-baseline gap-3 mb-4 flex-wrap">
       <h2
-        className="uppercase font-bold"
+        className="uppercase font-bold whitespace-nowrap"
         style={{
           fontSize: "var(--text-meta)",
           letterSpacing: "0.1em",
@@ -178,12 +175,15 @@ function SemesterHeader({ sem }: { sem: Semester }) {
       >
         {sem.label}
       </h2>
-      <span style={{ fontSize: "var(--text-meta)", color: "var(--text-3)" }}>
+      <span
+        className="whitespace-nowrap"
+        style={{ fontSize: "var(--text-meta)", color: "var(--text-3)" }}
+      >
         {sem.courses.length} courses · {noteCount} notes
       </span>
       <span
         aria-hidden
-        className="flex-1 h-px ml-1.5"
+        className="flex-1 h-px ml-1.5 hidden sm:block"
         style={{ background: "var(--line-2)" }}
       />
     </div>
@@ -260,7 +260,7 @@ function FolderGridWithDrawer({
       {semesters.map((sem) => (
         <section key={sem.semester} className="mb-12">
           <SemesterHeader sem={sem} />
-          <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(220px,1fr))]">
+          <div className="grid gap-3 sm:gap-4 grid-cols-2 sm:grid-cols-[repeat(auto-fill,minmax(220px,1fr))]">
             {sem.courses.map((course, i) => {
               const folderVariant =
                 FOLDER_VARIANT_CYCLE[i % FOLDER_VARIANT_CYCLE.length];
@@ -272,14 +272,15 @@ function FolderGridWithDrawer({
                   semLabel={sem.label}
                   variant={folderVariant}
                   selected={selection?.course === course}
-                  onClick={() =>
+                  onClick={() => {
+                    haptic("medium");
                     setSelection({
                       course,
                       semLabel: sem.label,
                       yearLabel,
                       paletteIndex: i,
-                    })
-                  }
+                    });
+                  }}
                 />
               );
             })}
@@ -290,7 +291,10 @@ function FolderGridWithDrawer({
       <Drawer
         open={selection !== null}
         selection={selection}
-        onClose={() => setSelection(null)}
+        onClose={() => {
+          haptic("light");
+          setSelection(null);
+        }}
       />
     </div>
   );

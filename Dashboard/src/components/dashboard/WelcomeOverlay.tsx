@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { BookOpen, FileText, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { haptic } from "@/lib/haptics";
 import {
   Folder as FolderCard,
   type FolderVariant,
@@ -50,6 +51,7 @@ export function WelcomeOverlay({
   }, [open]);
 
   function close() {
+    haptic("light");
     setClosing(true);
     try {
       localStorage.setItem(STORAGE_KEY, "1");
@@ -156,6 +158,7 @@ export function WelcomeOverlay({
             <div
               key={y}
               onClick={() => {
+                haptic("medium");
                 try {
                   localStorage.setItem(STORAGE_KEY, "1");
                 } catch {}

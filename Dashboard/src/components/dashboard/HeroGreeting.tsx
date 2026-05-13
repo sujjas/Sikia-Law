@@ -11,7 +11,7 @@ export function HeroGreeting({
 }) {
   return (
     <section
-      className="grid grid-cols-[1fr_auto] gap-8 items-end border-b border-[var(--line-2)]"
+      className="flex flex-col gap-5 sm:grid sm:grid-cols-[1fr_auto] sm:gap-8 items-stretch sm:items-end border-b border-[var(--line-2)]"
       style={{ paddingTop: 0, paddingBottom: "var(--hero-py)" }}
     >
       <div className="max-w-[var(--width-hero-max)]">
@@ -21,7 +21,7 @@ export function HeroGreeting({
         >
           {overline}
         </div>
-        <h1 className="font-serif text-display font-medium m-0">
+        <h1 className="font-serif text-h1 sm:text-display font-medium m-0">
           {`Welcome back, ${name}.`}
         </h1>
         <p
@@ -31,8 +31,8 @@ export function HeroGreeting({
           {subtitle}
         </p>
       </div>
-      <aside className="flex flex-col items-end gap-4">
-        <SearchInput className="w-[var(--width-search-max)]" />
+      <aside className="flex flex-col sm:items-end gap-4">
+        <SearchInput className="w-full sm:w-[var(--width-search-max)]" />
       </aside>
     </section>
   );

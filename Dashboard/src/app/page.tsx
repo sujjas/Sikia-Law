@@ -130,17 +130,14 @@ const LIBRARY = [
 
 export default function Home() {
   return (
-    <div
-      className="grid min-h-screen"
-      style={{ gridTemplateColumns: "var(--width-sidebar) 1fr" }}
-    >
+    <div className="min-h-screen lg:grid lg:[grid-template-columns:var(--width-sidebar)_1fr]">
       <Sidebar
         active="home"
         user={{ initials: "AM", name: "Amelia M.", meta: "Year 2 · Makerere" }}
       />
 
       <main
-        className="min-w-0"
+        className="page-panel min-w-0"
         style={{
           paddingInline: "var(--page-px)",
           paddingTop: "var(--page-pt)",
@@ -156,12 +153,15 @@ export default function Home() {
         />
 
         <Section title="Your activity">
-          <div className="grid grid-cols-4 divide-x divide-stone-200 rounded-lg bg-white border border-[var(--line-2)] overflow-hidden">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-0 lg:divide-x divide-stone-200 lg:rounded-lg lg:bg-white lg:border lg:border-[var(--line-2)] lg:overflow-hidden">
             {STATS.map((s, i) => {
               const Icon = s.icon;
               const tokens = ACCENT_TOKENS[s.accent];
               return (
-                <div key={i} className="flex flex-col px-6 py-5">
+                <div
+                  key={i}
+                  className="flex flex-col px-5 py-4 sm:px-6 sm:py-5 bg-white border border-[var(--line-2)] rounded-lg lg:border-0 lg:rounded-none"
+                >
                   <div
                     className="flex items-center gap-2"
                     style={{ color: tokens.fg }}
@@ -217,7 +217,7 @@ export default function Home() {
           cta={{ href: "/library", label: "Open library" }}
           noBorder
         >
-          <div className="grid gap-2.5 grid-cols-[repeat(auto-fit,minmax(180px,1fr))]">
+          <div className="grid gap-2.5 grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(180px,1fr))]">
             {LIBRARY.map((l) => (
               <LibraryTile key={l.href} {...l} />
             ))}

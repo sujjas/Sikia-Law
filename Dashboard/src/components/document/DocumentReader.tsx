@@ -185,13 +185,7 @@ export function DocumentReader({
         </Link>
       </div>
 
-      <div
-        className="grid items-start"
-        style={{
-          gridTemplateColumns: "minmax(0, 1fr) 320px",
-          gap: 56,
-        }}
-      >
+      <div className="flex flex-col gap-10 lg:gap-14 lg:grid lg:items-start lg:[grid-template-columns:minmax(0,1fr)_320px]">
         <div className="min-w-0" style={{ maxWidth: 720 }}>
           <nav
             className="flex items-center gap-1.5 flex-wrap mb-4"
@@ -226,15 +220,7 @@ export function DocumentReader({
             {noteKind}
           </span>
 
-          <h1
-            className="font-bold mb-4"
-            style={{
-              fontSize: "var(--text-display)",
-              lineHeight: "var(--text-display--line-height)",
-              letterSpacing: "var(--text-display--letter-spacing)",
-              color: "var(--text)",
-            }}
-          >
+          <h1 className="font-serif font-bold mb-4 text-h1 sm:text-display tracking-tight text-[color:var(--text)]">
             {noteTitle}
           </h1>
 
@@ -276,22 +262,15 @@ export function DocumentReader({
             </div>
           )}
 
-          <nav
-            className="grid mt-16 pt-7"
-            style={{
-              gridTemplateColumns: "1fr 1fr",
-              gap: 12,
-              borderTop: "1px solid var(--line-2)",
-            }}
-          >
+          <nav className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-12 sm:mt-16 pt-6 sm:pt-7 border-t border-[var(--line-2)]">
             <FootNavCard direction="prev" note={prev} />
             <FootNavCard direction="next" note={next} />
           </nav>
         </div>
 
         <aside
-          className="flex flex-col gap-3.5 self-start sticky"
-          style={{ top: 22, maxHeight: "calc(100vh - 44px)", overflowY: "auto" }}
+          className="flex flex-col gap-3.5 lg:self-start lg:sticky lg:max-h-[calc(100vh-44px)] lg:overflow-y-auto"
+          style={{ top: 22 }}
         >
           <RailCard label="In this note">
             {headings.length === 0 ? (

@@ -20,6 +20,7 @@ import {
   type NoteThumbVariant,
 } from "@/components/dashboard/NoteThumb";
 import { Folder, type FolderVariant } from "@/components/dashboard/Folder";
+import { haptic } from "@/lib/haptics";
 
 type BookmarkType = "notes" | "case-law" | "statutes" | "docs";
 
@@ -180,6 +181,7 @@ export function BookmarksView() {
   );
 
   const toggleFilter = (facet: FacetKey, value: string) => {
+    haptic("selection");
     setActiveFilters((prev) => {
       const nextSet = new Set(prev[facet]);
       if (nextSet.has(value)) nextSet.delete(value);
@@ -187,7 +189,10 @@ export function BookmarksView() {
       return { ...prev, [facet]: nextSet };
     });
   };
-  const clearFilters = () => setActiveFilters(makeEmptyFilters());
+  const clearFilters = () => {
+    haptic("light");
+    setActiveFilters(makeEmptyFilters());
+  };
 
   // Stagger result cards on filter change.
   useGSAP(
@@ -227,14 +232,7 @@ export function BookmarksView() {
       </nav>
 
       <header className="mb-6">
-        <h1
-          className="font-semibold"
-          style={{
-            fontSize: "var(--text-display)",
-            lineHeight: "var(--text-display--line-height)",
-            letterSpacing: "var(--text-display--letter-spacing)",
-          }}
-        >
+        <h1 className="font-serif text-h1 sm:text-display font-semibold tracking-tight">
           Bookmarks
         </h1>
         <p className="mt-2 max-w-[60ch]" style={{ color: "var(--text-2)" }}>
@@ -253,10 +251,7 @@ export function BookmarksView() {
         </p>
       </div>
 
-      <div
-        className="grid mb-14 gap-4"
-        style={{ gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))" }}
-      >
+      <div className="grid mb-10 sm:mb-14 gap-3 sm:gap-4 grid-cols-2 sm:[grid-template-columns:repeat(auto-fill,minmax(220px,1fr))]">
         {FOLDERS.map((name, i) => (
           <FolderButton
             key={name}
@@ -264,7 +259,10 @@ export function BookmarksView() {
             count={folderCounts[name] ?? 0}
             variant={FOLDER_VARIANTS[i % FOLDER_VARIANTS.length]}
             selected={openFolder === name}
-            onClick={() => setOpenFolder(name)}
+            onClick={() => {
+              haptic("medium");
+              setOpenFolder(name);
+            }}
           />
         ))}
         {/* New folder — keep dashed CTA as-is */}
@@ -308,7 +306,10 @@ export function BookmarksView() {
           <div ref={filterMenuRef} className="relative">
             <button
               type="button"
-              onClick={() => setFilterOpen((v) => !v)}
+              onClick={() => {
+                haptic("light");
+                setFilterOpen((v) => !v);
+              }}
               aria-expanded={filterOpen}
               aria-haspopup="menu"
               className="inline-flex items-center gap-1.5 cursor-pointer transition-colors"
@@ -478,7 +479,7 @@ export function BookmarksView() {
       </div>
 
       {/* Results — NoteThumb grid (same as Library) */}
-      <div ref={resultsRef} className="grid gap-4 grid-cols-3">
+      <div ref={resultsRef} className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {filtered.map((b, i) => {
           const t = bookmarkToThumb(b);
           return (
@@ -501,7 +502,10 @@ export function BookmarksView() {
         open={openFolder !== null}
         name={openFolder}
         bookmarks={bookmarksInOpenFolder}
-        onClose={() => setOpenFolder(null)}
+        onClose={() => {
+          haptic("light");
+          setOpenFolder(null);
+        }}
       />
     </>
   );

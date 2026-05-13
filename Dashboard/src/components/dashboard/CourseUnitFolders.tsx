@@ -3,6 +3,7 @@ import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { Folder, type FolderVariant } from "./Folder";
+import { haptic } from "@/lib/haptics";
 
 export type CourseUnit = {
   code: string;
@@ -92,6 +93,8 @@ export function CourseUnitFolders({
 
   const shortLabel = (semLabel: string) =>
     semLabel.replace(/Semester\s+/i, "SEM ").replace(/Sem\.?\s*/i, "SEM ");
+  const shortYearLabel = (yearLabel: string) =>
+    yearLabel.replace(/^Year\s+/i, "Yr ");
 
   const yearPicker = (
     <div
@@ -125,19 +128,20 @@ export function CourseUnitFolders({
               role="tab"
               aria-selected={false}
               onClick={() => {
+                haptic("selection");
                 setActiveYear(y.year);
                 const stillHasSem = y.semesters.some((s) => s.semester === activeSemester);
                 if (!stillHasSem) {
                   setActiveSemester(y.semesters[0]?.semester ?? 1);
                 }
               }}
-              className="relative z-10 rounded-full font-sans text-label-sm font-medium text-stone-700 hover:text-stone-900 cursor-pointer transition-colors"
+              className="relative z-10 rounded-full font-sans text-label-sm font-medium text-stone-700 hover:text-stone-900 cursor-pointer transition-colors whitespace-nowrap"
               style={{
                 paddingInline: "var(--year-btn-px)",
                 paddingBlock: "var(--year-btn-py)",
               }}
             >
-              {y.label}
+              {shortYearLabel(y.label)}
             </button>
           );
         }
@@ -158,13 +162,13 @@ export function CourseUnitFolders({
             style={{ padding: "2px 7px 2px 2px", gap: 4 }}
           >
             <span
-              className="font-sans text-label-sm font-semibold text-stone-900"
+              className="font-sans text-label-sm font-semibold text-stone-900 whitespace-nowrap"
               style={{
                 paddingInline: "calc(var(--year-btn-px) - 2px)",
                 paddingBlock: "calc(var(--year-btn-py) - 2px)",
               }}
             >
-              {y.label}
+              {shortYearLabel(y.label)}
             </span>
             <div className="flex items-center" role="tablist" aria-label="Select semester">
               {y.semesters.map((s) => {
@@ -175,7 +179,10 @@ export function CourseUnitFolders({
                     type="button"
                     role="tab"
                     aria-selected={semActive}
-                    onClick={() => setActiveSemester(s.semester)}
+                    onClick={() => {
+                      haptic("selection");
+                      setActiveSemester(s.semester);
+                    }}
                     className="font-sans uppercase cursor-pointer transition-colors"
                     style={{
                       fontSize: "0.72rem",

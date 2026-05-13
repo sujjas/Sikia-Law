@@ -20,16 +20,13 @@ export default async function LibraryPage({
   const initialCategory = sp.type && VALID_CATEGORIES.has(sp.type) ? sp.type : "all";
 
   return (
-    <div
-      className="grid min-h-screen"
-      style={{ gridTemplateColumns: "var(--width-sidebar) 1fr" }}
-    >
+    <div className="min-h-screen lg:grid lg:[grid-template-columns:var(--width-sidebar)_1fr]">
       <Sidebar
         active="library"
         user={{ initials: "AM", name: "Amelia M.", meta: "Year 2 · Makerere" }}
       />
       <main
-        className="min-w-0"
+        className="page-panel min-w-0"
         style={{
           paddingInline: "var(--page-px)",
           paddingTop: "var(--page-pt)",
