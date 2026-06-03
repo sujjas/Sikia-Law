@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, ChevronRight, ChevronLeft, Sparkles } from "lucide-react";
+import { ArrowLeft, ChevronRight, ChevronLeft, Sparkles, Volume2 } from "lucide-react";
 import type { Note } from "@/data/curriculum";
 import { AskPanel } from "./AskPanel";
 import { SummaryCard } from "./SummaryCard";
 import { DefineInline } from "./DefineInline";
+import { ListenPlayer } from "./ListenPlayer";
 
 type Breadcrumb = {
   yearLabel: string;
@@ -91,6 +92,16 @@ export function DocumentReader({
   const [originRect, setOriginRect] = useState<
     { top: number; left: number; width: number; height: number } | null
   >(null);
+  const [listenOpen, setListenOpen] = useState(false);
+  const [listenDuration, setListenDuration] = useState(0);
+
+  // Estimate a read-aloud length from the prose (~150 wpm = 2.5 words/sec),
+  // clamped to a believable 45s–30min so very long extractions stay realistic.
+  const openListen = useCallback(() => {
+    const words = (proseRef.current?.innerText || "").trim().split(/\s+/).filter(Boolean).length;
+    setListenDuration(Math.min(1800, Math.max(45, Math.round(words / 2.5))));
+    setListenOpen(true);
+  }, []);
 
   useEffect(() => {
     const root = proseRef.current;
@@ -240,26 +251,32 @@ export function DocumentReader({
           </h1>
 
           <div
-            className="flex flex-wrap mb-8 pb-5"
-            style={{
-              gap: "14px 24px",
-              color: "var(--text-2)",
-              fontSize: "var(--text-body-sm)",
-              borderBottom: "1px solid var(--line-2)",
-            }}
+            className="flex flex-wrap items-center justify-between mb-8 pb-5"
+            style={{ gap: "12px 20px", borderBottom: "1px solid var(--line-2)" }}
           >
-            {meta.map((m, i) => (
-              <span key={i} className="flex items-center gap-2">
-                {i > 0 && (
-                  <span
-                    aria-hidden
-                    className="inline-block rounded-full"
-                    style={{ width: 4, height: 4, background: "var(--surface-3)" }}
-                  />
-                )}
-                {m}
-              </span>
-            ))}
+            <div
+              className="flex flex-wrap"
+              style={{ gap: "14px 24px", color: "var(--text-2)", fontSize: "var(--text-body-sm)" }}
+            >
+              {meta.map((m, i) => (
+                <span key={i} className="flex items-center gap-2">
+                  {i > 0 && (
+                    <span
+                      aria-hidden
+                      className="inline-block rounded-full"
+                      style={{ width: 4, height: 4, background: "var(--surface-3)" }}
+                    />
+                  )}
+                  {m}
+                </span>
+              ))}
+            </div>
+            {html && (
+              <button className="listen-trigger" onClick={openListen} aria-haspopup="dialog">
+                <Volume2 size={15} strokeWidth={2.2} />
+                Listen
+              </button>
+            )}
           </div>
 
           <SummaryCard
@@ -380,6 +397,15 @@ export function DocumentReader({
           </RailCard>
         </aside>
       </div>
+
+      {/* Read aloud — simulated TTS transport bar. */}
+      {listenOpen && (
+        <ListenPlayer
+          noteTitle={noteTitle}
+          durationSec={listenDuration}
+          onClose={() => setListenOpen(false)}
+        />
+      )}
 
       {/* Define inline — select a legal term in the prose for a definition. */}
       <DefineInline proseRef={proseRef} />
