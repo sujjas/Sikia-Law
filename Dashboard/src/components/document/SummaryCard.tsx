@@ -2,6 +2,7 @@
 
 import { useCallback, useRef, useState } from "react";
 import { Sparkles, ChevronDown, ChevronUp, Copy, Check } from "lucide-react";
+import { haptic } from "@/lib/haptics";
 import {
   findDemoBank,
   buildNoteSummary,
@@ -35,6 +36,7 @@ export function SummaryCard({ noteTitle, headings, hasContent, onCite }: Props) 
   const sources: Source[] = summary ? resolveDemoSources(summary.sources, headings) : [];
 
   const summarise = useCallback(() => {
+    haptic("light");
     setStatus("loading");
     timer.current = setTimeout(() => setStatus("open"), 650);
   }, []);
@@ -46,6 +48,7 @@ export function SummaryCard({ noteTitle, headings, hasContent, onCite }: Props) 
 
   const copy = () => {
     if (!summary) return;
+    haptic("selection");
     const plain = [summary.tldr, ...summary.points].map((t) => t.replace(/\*\*/g, "")).join("\n");
     navigator.clipboard?.writeText(plain).then(() => {
       setCopied(true);
@@ -111,7 +114,7 @@ export function SummaryCard({ noteTitle, headings, hasContent, onCite }: Props) 
                 <button
                   key={s.id}
                   className="ask-source"
-                  onClick={() => onCite(s.id)}
+                  onClick={() => { haptic("selection"); onCite(s.id); }}
                   title={`Jump to “${s.title}”`}
                 >
                   <span className="ask-source__type" data-kind={s.kind}>{KIND_LABEL[s.kind]}</span>

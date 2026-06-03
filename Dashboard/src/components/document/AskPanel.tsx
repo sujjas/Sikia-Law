@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import gsap from "gsap";
+import { haptic } from "@/lib/haptics";
 import {
   findDemoBank,
   matchDemoQA,
@@ -333,6 +334,7 @@ export function AskPanel({ noteTitle, headings, hasContent, originRect, onCite, 
   // then scroll. On desktop the panel is docked beside the prose — scroll live.
   const onCiteClick = useCallback(
     (id: string) => {
+      haptic("selection");
       if (typeof window !== "undefined" && window.innerWidth < 1024) {
         requestClose(() => onCite(id));
       } else {
@@ -413,6 +415,7 @@ export function AskPanel({ noteTitle, headings, hasContent, originRect, onCite, 
   }, []);
 
   const stopStreaming = useCallback(() => {
+    haptic("light");
     if (streamTimer.current) {
       clearInterval(streamTimer.current);
       streamTimer.current = null;
@@ -462,6 +465,7 @@ export function AskPanel({ noteTitle, headings, hasContent, originRect, onCite, 
     (raw: string) => {
       const text = raw.trim();
       if (!text || busy || !hasContent) return;
+      haptic("light");
       setInput("");
       setMessages((prev) => [
         ...prev,
@@ -473,6 +477,7 @@ export function AskPanel({ noteTitle, headings, hasContent, originRect, onCite, 
   );
 
   const copy = useCallback((m: Message) => {
+    haptic("selection");
     navigator.clipboard?.writeText(m.text.replace(/\*\*/g, "")).then(() => {
       setCopiedId(m.id);
       setTimeout(() => setCopiedId((c) => (c === m.id ? null : c)), 1400);

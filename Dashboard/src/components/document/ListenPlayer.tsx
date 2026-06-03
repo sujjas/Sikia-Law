@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Play, Pause, RotateCcw, RotateCw, X } from "lucide-react";
+import { haptic } from "@/lib/haptics";
 
 const SPEEDS = [1, 1.25, 1.5, 2];
 const fmt = (s: number) =>
@@ -56,6 +57,7 @@ export function ListenPlayer({ noteTitle, durationSec, onClose }: Props) {
   );
 
   const onPlayPause = () => {
+    haptic("medium");
     if (done) {
       setElapsed(0);
       setPlaying(true);
@@ -82,13 +84,13 @@ export function ListenPlayer({ noteTitle, durationSec, onClose }: Props) {
 
       <div className="listen-main">
         <div className="listen-ctrls">
-          <button className="listen-btn" onClick={() => setElapsed((e) => Math.max(0, e - 15))} aria-label="Back 15 seconds">
+          <button className="listen-btn" onClick={() => { haptic("selection"); setElapsed((e) => Math.max(0, e - 15)); }} aria-label="Back 15 seconds">
             <RotateCcw size={16} />
           </button>
           <button className="listen-play" onClick={onPlayPause} aria-label={playingNow ? "Pause" : "Play"}>
             {playingNow ? <Pause size={17} fill="currentColor" /> : <Play size={17} fill="currentColor" />}
           </button>
-          <button className="listen-btn" onClick={() => setElapsed((e) => Math.min(durationSec, e + 15))} aria-label="Forward 15 seconds">
+          <button className="listen-btn" onClick={() => { haptic("selection"); setElapsed((e) => Math.min(durationSec, e + 15)); }} aria-label="Forward 15 seconds">
             <RotateCw size={16} />
           </button>
         </div>
@@ -113,12 +115,12 @@ export function ListenPlayer({ noteTitle, durationSec, onClose }: Props) {
       <div className="listen-bar__tail">
         <button
           className="listen-speed"
-          onClick={() => setSpeed((s) => SPEEDS[(SPEEDS.indexOf(s) + 1) % SPEEDS.length])}
+          onClick={() => { haptic("selection"); setSpeed((s) => SPEEDS[(SPEEDS.indexOf(s) + 1) % SPEEDS.length]); }}
           aria-label="Playback speed"
         >
           {speed}×
         </button>
-        <button className="listen-close" onClick={onClose} aria-label="Close player">
+        <button className="listen-close" onClick={() => { haptic("light"); onClose(); }} aria-label="Close player">
           <X size={16} />
         </button>
       </div>

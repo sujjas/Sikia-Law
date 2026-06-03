@@ -8,6 +8,7 @@ import { AskPanel } from "./AskPanel";
 import { SummaryCard } from "./SummaryCard";
 import { DefineInline } from "./DefineInline";
 import { ListenPlayer } from "./ListenPlayer";
+import { haptic } from "@/lib/haptics";
 
 type Breadcrumb = {
   yearLabel: string;
@@ -98,6 +99,7 @@ export function DocumentReader({
   // Estimate a read-aloud length from the prose (~150 wpm = 2.5 words/sec),
   // clamped to a believable 45s–30min so very long extractions stay realistic.
   const openListen = useCallback(() => {
+    haptic("light");
     const words = (proseRef.current?.innerText || "").trim().split(/\s+/).filter(Boolean).length;
     setListenDuration(Math.min(1800, Math.max(45, Math.round(words / 2.5))));
     setListenOpen(true);
@@ -416,6 +418,7 @@ export function DocumentReader({
         className="ask-launcher"
         data-hidden={askOpen || undefined}
         onClick={(e) => {
+          haptic("medium");
           const r = e.currentTarget.getBoundingClientRect();
           setOriginRect({ top: r.top, left: r.left, width: r.width, height: r.height });
           setAskOpen(true);

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Sparkles } from "lucide-react";
 import { lookupDefinition, type Definition } from "@/lib/ask-demo";
+import { haptic } from "@/lib/haptics";
 
 type Props = {
   /** The prose container to watch for selections. */
@@ -79,6 +80,7 @@ export function DefineInline({ proseRef }: Props) {
 
   const define = useCallback(() => {
     if (state.phase !== "offer") return;
+    haptic("light");
     const { term, at } = state;
     setState({ phase: "loading", at });
     timer.current = setTimeout(() => {

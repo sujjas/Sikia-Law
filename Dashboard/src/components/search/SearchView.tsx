@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { searchNotes, type SearchHit } from "@/lib/search";
 import { getAllNotes } from "@/lib/curriculum-lookup";
+import { haptic } from "@/lib/haptics";
 
 // Year tabs, derived once from the curriculum.
 const YEARS = (() => {
@@ -233,7 +234,7 @@ export function SearchView({ initialQuery }: { initialQuery: string }) {
               {RECENT.map((q) => (
                 <button
                   key={q}
-                  onClick={() => runSearch(q)}
+                  onClick={() => { haptic("selection"); runSearch(q); }}
                   className="flex items-center gap-2.5 transition-colors cursor-pointer hover:[background:var(--surface-2)] text-left"
                   style={{ padding: "9px 6px", borderRadius: "var(--radius-md)", border: 0, background: "transparent", color: "inherit" }}
                 >
@@ -317,7 +318,7 @@ function YearTabs({
           className="t-tab"
           role="tab"
           aria-selected={value === t.key}
-          onClick={() => onChange(t.key)}
+          onClick={() => { haptic("selection"); onChange(t.key); }}
         >
           {t.label}
         </button>
