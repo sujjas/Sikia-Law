@@ -1288,6 +1288,11 @@ html::-webkit-scrollbar-thumb:hover,
 }
 .ask-composer textarea::placeholder { color: var(--text-3); }
 .ask-composer textarea:disabled { color: var(--text-3); }
+/* iOS Safari zooms into any input below 16px on focus, which then lets the page
+   pan sideways and overflow. Keep the composer at 16px on mobile to prevent it. */
+@media (max-width: 1023px) {
+  .ask-composer textarea { font-size: 16px; }
+}
 .ask-send {
   flex-shrink: 0;
   width: 34px; height: 34px;

@@ -353,6 +353,29 @@ export function AskPanel({ noteTitle, headings, hasContent, originRect, onCite, 
     return () => html.classList.remove("ask-sheet-open");
   }, []);
 
+  // Size the mobile sheet from the visual viewport. iOS Safari does NOT honor
+  // interactive-widget=resizes-content, so when the keyboard opens we shrink the
+  // sheet to the still-visible area (composer ends up just above the keyboard)
+  // instead of letting it overflow off-screen.
+  useEffect(() => {
+    const panel = panelRef.current;
+    const vv = typeof window !== "undefined" ? window.visualViewport : null;
+    if (isDesktopRef.current || !panel || !vv) return;
+    const apply = () => {
+      const peek = Math.round(vv.height * 0.08); // small gap showing the page behind
+      panel.style.top = `${Math.max(0, vv.offsetTop) + peek}px`;
+      panel.style.height = `${vv.height - peek}px`;
+      panel.style.bottom = "auto";
+    };
+    apply();
+    vv.addEventListener("resize", apply);
+    vv.addEventListener("scroll", apply);
+    return () => {
+      vv.removeEventListener("resize", apply);
+      vv.removeEventListener("scroll", apply);
+    };
+  }, []);
+
   // Velocity-aware drag-to-dismiss for the mobile sheet. Drag from the grab
   // handle / header; flick down or pull past ~28% to dismiss, else snap back.
   // Dragging up past the top meets resistance (damping) rather than a hard stop.
@@ -467,6 +490,12 @@ export function AskPanel({ noteTitle, headings, hasContent, originRect, onCite, 
       if (!text || busy || !hasContent) return;
       haptic("light");
       setInput("");
+      // Reset the grown textarea and, on mobile, drop focus so the keyboard
+      // collapses and the full sheet comes back into view.
+      if (taRef.current) {
+        taRef.current.style.height = "auto";
+        if (typeof window !== "undefined" && window.innerWidth < 1024) taRef.current.blur();
+      }
       setMessages((prev) => [
         ...prev,
         { id: ++MSG_ID, role: "user", text, sources: [], followups: [], refusal: false, streaming: false },
