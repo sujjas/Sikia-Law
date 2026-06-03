@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Sparkles, Play, Pause, RotateCcw, RotateCw, X } from "lucide-react";
+import { Play, Pause, RotateCcw, RotateCw, X } from "lucide-react";
 
 const SPEEDS = [1, 1.25, 1.5, 2];
 const fmt = (s: number) =>
@@ -71,9 +71,6 @@ export function ListenPlayer({ noteTitle, durationSec, onClose }: Props) {
   return createPortal(
     <div className="listen-bar" role="dialog" aria-label={`Read aloud: ${noteTitle}`}>
       <div className="listen-bar__lead">
-        <span className="listen-spark" data-playing={playingNow || undefined} aria-hidden>
-          <Sparkles size={15} strokeWidth={2.2} />
-        </span>
         <span className="listen-eq" data-playing={playingNow || undefined} aria-hidden>
           <i /><i /><i /><i />
         </span>

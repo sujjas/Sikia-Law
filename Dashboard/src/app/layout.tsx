@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Newsreader, JetBrains_Mono } from "next/font/google";
 import { Agentation } from "agentation";
 import "./globals.css";
@@ -26,6 +26,14 @@ export const metadata: Metadata = {
   title: "Sikia Law — Legal research for Ugandan law students",
   description:
     "A study companion for Ugandan law students. Notes, case law, statutes, statutory documents — organised by year, semester, and course.",
+};
+
+// resizes-content: when the on-screen keyboard opens, the layout viewport
+// shrinks so bottom-anchored UI (the Ask sheet composer) stays above it.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  interactiveWidget: "resizes-content",
 };
 
 export default function RootLayout({

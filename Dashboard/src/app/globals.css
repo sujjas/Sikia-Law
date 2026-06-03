@@ -1573,16 +1573,7 @@ html::-webkit-scrollbar-thumb:hover,
 }
 @keyframes listenUp { from { opacity: 0; transform: translate(-50%, 14px); } to { opacity: 1; transform: translate(-50%, 0); } }
 
-.listen-bar__lead { display: flex; align-items: center; gap: 9px; min-width: 0; flex: 0 1 auto; }
-.listen-spark {
-  flex-shrink: 0;
-  width: 30px; height: 30px;
-  border-radius: var(--radius-full);
-  background: var(--orange);
-  color: #fff;
-  display: inline-flex; align-items: center; justify-content: center;
-}
-.listen-spark[data-playing="true"] { animation: askOrbPulse 1.4s var(--ease-in-out) infinite; }
+.listen-bar__lead { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 0 1 auto; }
 
 /* Equalizer bars */
 .listen-eq { display: inline-flex; align-items: flex-end; gap: 2px; height: 16px; flex-shrink: 0; }
@@ -1674,7 +1665,7 @@ html::-webkit-scrollbar-thumb:hover,
 
 @media (prefers-reduced-motion: reduce) {
   .listen-bar { animation: none !important; }
-  .listen-spark[data-playing="true"], .listen-eq[data-playing="true"] i { animation: none !important; }
+  .listen-eq[data-playing="true"] i { animation: none !important; }
 }
 
 /* ──────────────────────────────────────────────────────────────
