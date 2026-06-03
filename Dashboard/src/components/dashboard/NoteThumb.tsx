@@ -2,11 +2,16 @@ import Link from "next/link";
 import { ProgressFill } from "@/components/ui/ProgressFill";
 
 export type NoteThumbVariant =
+  | "amber"
   | "orange"
-  | "petrol"
-  | "forest"
   | "rose"
-  | "indigo";
+  | "pink"
+  | "fuchsia"
+  | "violet"
+  | "indigo"
+  | "sky"
+  | "teal"
+  | "emerald";
 
 export function NoteThumb({
   href,
@@ -77,7 +82,18 @@ export function NoteThumb({
   );
 }
 
-const VARIANT_CYCLE: NoteThumbVariant[] = ["orange", "petrol", "forest", "rose", "indigo"];
+const VARIANT_CYCLE: NoteThumbVariant[] = [
+  "orange",
+  "amber",
+  "rose",
+  "pink",
+  "fuchsia",
+  "violet",
+  "indigo",
+  "sky",
+  "teal",
+  "emerald",
+];
 
 export function noteThumbVariantFor(i: number): NoteThumbVariant {
   return VARIANT_CYCLE[i % VARIANT_CYCLE.length];

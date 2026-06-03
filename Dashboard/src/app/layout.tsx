@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Inter, Newsreader, JetBrains_Mono } from "next/font/google";
-import { InterfaceKit } from "interface-kit/react";
 import { Agentation } from "agentation";
 import "./globals.css";
 
@@ -40,10 +39,7 @@ export default function RootLayout({
       <body className="min-h-full">
         {children}
         {process.env.NODE_ENV === "development" && (
-          <>
-            <InterfaceKit />
-            <Agentation endpoint="http://localhost:4747" />
-          </>
+          <Agentation endpoint="http://localhost:4747" />
         )}
       </body>
     </html>

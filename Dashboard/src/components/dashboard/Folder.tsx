@@ -1,7 +1,30 @@
 import Link from "next/link";
 import { MoreHorizontal } from "lucide-react";
 
-export type FolderVariant = "orange" | "petrol" | "forest" | "rose" | "blue" | "indigo";
+export type FolderVariant =
+  | "amber"
+  | "orange"
+  | "rose"
+  | "pink"
+  | "fuchsia"
+  | "violet"
+  | "indigo"
+  | "sky"
+  | "teal"
+  | "emerald";
+
+export const FOLDER_VARIANTS: FolderVariant[] = [
+  "orange",
+  "amber",
+  "rose",
+  "pink",
+  "fuchsia",
+  "violet",
+  "indigo",
+  "sky",
+  "teal",
+  "emerald",
+];
 
 const PAPER_LINES = Array.from({ length: 13 });
 

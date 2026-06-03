@@ -1,9 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, ArrowUpRight, ChevronRight, ChevronLeft } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ArrowLeft, ChevronRight, ChevronLeft, Sparkles } from "lucide-react";
 import type { Note } from "@/data/curriculum";
+import { AskPanel } from "./AskPanel";
+import { SummaryCard } from "./SummaryCard";
+import { DefineInline } from "./DefineInline";
 
 type Breadcrumb = {
   yearLabel: string;
@@ -84,6 +87,10 @@ export function DocumentReader({
   const proseRef = useRef<HTMLElement | null>(null);
   const [headings, setHeadings] = useState<Heading[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [askOpen, setAskOpen] = useState(false);
+  const [originRect, setOriginRect] = useState<
+    { top: number; left: number; width: number; height: number } | null
+  >(null);
 
   useEffect(() => {
     const root = proseRef.current;
@@ -151,15 +158,23 @@ export function DocumentReader({
     return () => obs.disconnect();
   }, [html]);
 
-  const onTocClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
-    e.preventDefault();
+  const scrollToId = useCallback((id: string) => {
     const root = proseRef.current;
     if (!root) return;
     const target = root.querySelector(`#${CSS.escape(id)}`) as HTMLElement | null;
     if (target) {
       window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 80, behavior: "smooth" });
     }
+  }, []);
+
+  const onTocClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault();
+    scrollToId(id);
   };
+
+  // Citation click from the AI panel jumps to the heading. The panel owns the
+  // mobile close-then-scroll timing, so here we just scroll.
+  const onCite = scrollToId;
 
   const meta = useMemo(() => {
     const items: string[] = [];
@@ -246,6 +261,13 @@ export function DocumentReader({
               </span>
             ))}
           </div>
+
+          <SummaryCard
+            noteTitle={noteTitle}
+            headings={headings.map((h) => ({ id: h.id, text: h.text }))}
+            hasContent={!!html}
+            onCite={scrollToId}
+          />
 
           {html ? (
             <article
@@ -358,6 +380,39 @@ export function DocumentReader({
           </RailCard>
         </aside>
       </div>
+
+      {/* Define inline — select a legal term in the prose for a definition. */}
+      <DefineInline proseRef={proseRef} />
+
+      {/* Ask this note — Sikia AI. Launcher is always present; the panel mounts
+          on open. */}
+      <button
+        className="ask-launcher"
+        data-hidden={askOpen || undefined}
+        onClick={(e) => {
+          const r = e.currentTarget.getBoundingClientRect();
+          setOriginRect({ top: r.top, left: r.left, width: r.width, height: r.height });
+          setAskOpen(true);
+        }}
+        aria-haspopup="dialog"
+        aria-expanded={askOpen}
+      >
+        <span className="ask-spark" aria-hidden>
+          <Sparkles size={14} strokeWidth={2.2} />
+        </span>
+        Ask this note
+      </button>
+
+      {askOpen && (
+        <AskPanel
+          noteTitle={noteTitle}
+          headings={headings.map((h) => ({ id: h.id, text: h.text }))}
+          hasContent={!!html}
+          originRect={originRect}
+          onCite={onCite}
+          onClose={() => setAskOpen(false)}
+        />
+      )}
     </>
   );
 }

@@ -1,5 +1,4 @@
 import { Sidebar } from "@/components/layout/Sidebar";
-import { Topbar } from "@/components/layout/Topbar";
 import { SearchView } from "@/components/search/SearchView";
 
 export default async function SearchPage({
@@ -22,7 +21,6 @@ export default async function SearchPage({
           paddingBottom: "var(--page-pb)",
         }}
       >
-        <Topbar />
         <SearchView initialQuery={sp.q ?? ""} />
       </main>
     </div>

@@ -64,11 +64,11 @@ const CAT_SHORT_LABEL: Record<Exclude<CategoryId, "all">, string> = {
 
 /** Folder palette mapped per category so thumbs are color-coded by kind. */
 const CAT_THUMB_VARIANT: Record<Exclude<CategoryId, "all">, NoteThumbVariant> = {
-  "case-law": "petrol",
-  statutes: "indigo",
-  "statutory-documents": "forest",
+  "case-law": "indigo",
+  statutes: "violet",
+  "statutory-documents": "emerald",
   decrees: "rose",
-  "legal-notices": "orange",
+  "legal-notices": "amber",
 };
 
 /** Stand-in document for each category — the mock library data doesn't have

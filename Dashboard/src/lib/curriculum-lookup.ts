@@ -38,3 +38,42 @@ export function getPrevNext(loc: NoteLocation): { prev: Note | null; next: Note 
 export function getRelatedNotes(loc: NoteLocation): Note[] {
   return loc.course.notes.filter((_, i) => i !== loc.indexInCourse);
 }
+
+export type FlatNote = {
+  title: string;
+  courseCode: string | null;
+  courseTitle: string;
+  yearLabel: string;
+  yearNum: number;
+  semesterLabel: string;
+  hasContent: boolean;
+  href: string;
+};
+
+/** Every note in the curriculum, flattened with its course/year/semester
+ *  context, for search. Notes with extracted HTML route to the reader; the
+ *  rest open the original PDF in a new tab. */
+export function getAllNotes(): FlatNote[] {
+  const out: FlatNote[] = [];
+  for (const year of curriculum.years) {
+    for (const semester of year.semesters) {
+      for (const course of semester.courses) {
+        for (const note of course.notes) {
+          out.push({
+            title: note.title,
+            courseCode: course.code,
+            courseTitle: course.title,
+            yearLabel: year.label,
+            yearNum: year.year,
+            semesterLabel: semester.label,
+            hasContent: !!note.html_file,
+            href: note.html_file
+              ? `/document?file=${encodeURIComponent(note.html_file)}`
+              : `/Notes/${note.file}`,
+          });
+        }
+      }
+    }
+  }
+  return out;
+}

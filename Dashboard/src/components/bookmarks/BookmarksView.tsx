@@ -19,7 +19,7 @@ import {
   NoteThumb,
   type NoteThumbVariant,
 } from "@/components/dashboard/NoteThumb";
-import { Folder, type FolderVariant } from "@/components/dashboard/Folder";
+import { FOLDER_VARIANTS, type FolderVariant } from "@/components/dashboard/Folder";
 import { haptic } from "@/lib/haptics";
 
 type BookmarkType = "notes" | "case-law" | "statutes" | "docs";
@@ -33,19 +33,10 @@ const TYPE_LABEL: Record<BookmarkType, string> = {
 
 const TYPE_THUMB_VARIANT: Record<BookmarkType, NoteThumbVariant> = {
   notes: "orange",
-  "case-law": "petrol",
-  statutes: "indigo",
-  docs: "forest",
+  "case-law": "indigo",
+  statutes: "violet",
+  docs: "emerald",
 };
-
-const FOLDER_VARIANTS: FolderVariant[] = [
-  "orange",
-  "petrol",
-  "forest",
-  "rose",
-  "indigo",
-  "blue",
-];
 
 type Bookmark = {
   type: BookmarkType;

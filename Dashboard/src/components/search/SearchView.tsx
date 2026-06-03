@@ -1,121 +1,78 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowUpRight,
   BookOpen,
   Clock,
   FileText,
-  Gavel,
-  Newspaper,
-  Scale,
+  Sparkles,
   Search as SearchIcon,
   X,
-  type LucideIcon,
 } from "lucide-react";
+import { searchNotes, type SearchHit } from "@/lib/search";
+import { getAllNotes } from "@/lib/curriculum-lookup";
 
-type FilterId = "all" | "notes" | "case-law" | "statutes" | "docs";
+// Year tabs, derived once from the curriculum.
+const YEARS = (() => {
+  const seen = new Map<number, string>();
+  for (const n of getAllNotes()) if (!seen.has(n.yearNum)) seen.set(n.yearNum, n.yearLabel);
+  return [...seen.entries()].sort((a, b) => a[0] - b[0]).map(([num, label]) => ({ num, label }));
+})();
 
-const FILTERS: { id: FilterId; label: string; icon: LucideIcon | null }[] = [
-  { id: "all", label: "All", icon: null },
-  { id: "notes", label: "Notes", icon: FileText },
-  { id: "case-law", label: "Case Law", icon: Gavel },
-  { id: "statutes", label: "Statutes", icon: Scale },
-  { id: "docs", label: "Documents", icon: Newspaper },
-];
-
-type SearchResult = {
-  type: Exclude<FilterId, "all">;
-  icon: LucideIcon;
-  tag: string;
-  title: string;
-  snippet: string;
-  source: string[];
-  href: string;
-};
-
-const RESULTS: SearchResult[] = [
-  {
-    type: "case-law",
-    icon: Gavel,
-    tag: "Case · Supreme Court",
-    title: "Uganda v. Kato Jonathan (Criminal Appeal No. 14 of 2021)",
-    snippet:
-      "The judgment reaffirms the duty of a trial court to exercise the greatest caution before convicting on the basis of <mark>identification evidence</mark> given under difficult conditions.",
-    source: ["Supreme Court of Uganda", "12 May 2021"],
-    href: "/document",
-  },
-  {
-    type: "case-law",
-    icon: Gavel,
-    tag: "Case · Court of Appeal",
-    title: "Abdalla Nabulere & 2 Others v. Uganda [1979] HCB 77",
-    snippet:
-      "Cautionary principles for <mark>identification evidence</mark> in criminal trials — the foundational Ugandan authority on this question.",
-    source: ["Court of Appeal", "1979"],
-    href: "/document",
-  },
-  {
-    type: "notes",
-    icon: FileText,
-    tag: "Note · LAW 1108",
-    title: "Criminal Law — Jorvan Notes",
-    snippet:
-      "Where <mark>identification</mark> rests on a single witness in difficult lighting, the court must look for corroborating evidence before convicting.",
-    source: ["Year 1, Sem 1", "Fundamentals of Criminal Law"],
-    href: `/document?file=${encodeURIComponent("HTML/YR 1 SEM 1/Criminal Law 1 - jorvannotes.html")}`,
-  },
-  {
-    type: "statutes",
-    icon: Scale,
-    tag: "Statute",
-    title: "The Penal Code Act, Cap. 120 (s. 286)",
-    snippet:
-      "Aggravated robbery — sections 285 and 286(2). The principal statute referenced in <mark>identification</mark>-based prosecutions for theft with violence.",
-    source: ["Cap. 120", "In force"],
-    href: "/document",
-  },
-  {
-    type: "notes",
-    icon: FileText,
-    tag: "Note · LAW 2210",
-    title: "Evidence II Notes",
-    snippet:
-      "Identification parades, dock identification, and the cautionary principles from <mark>Abdalla Nabulere</mark> applied to modern Uganda.",
-    source: ["Year 2, Sem 2", "Law of Evidence II"],
-    href: `/document?file=${encodeURIComponent("HTML/YR 3 SEM 2/EVIDENCE 2 NOTES-12.html")}`,
-  },
-  {
-    type: "docs",
-    icon: Newspaper,
-    tag: "Statutory Document",
-    title: "Statutory Instrument — Identification Procedures Update (1965 framework)",
-    snippet:
-      "Procedural updates to the conduct of <mark>identification</mark> parades and the documentation standards required.",
-    source: ["SI No. 24 of 1965"],
-    href: "/document",
-  },
-];
-
-const RECENT = [
-  { q: "identification evidence", when: "2 hours ago" },
-  { q: "mens rea", when: "Yesterday" },
-  { q: "land transactions", when: "3 days ago" },
-  { q: "Penal Code s. 286", when: "Last week" },
-  { q: "privity of contract", when: "Last week" },
-];
+const RECENT = ["equity", "identification evidence", "fairness", "criminal law", "natural law"];
 
 export function SearchView({ initialQuery }: { initialQuery: string }) {
   const [query, setQuery] = useState(initialQuery);
-  const [activeFilter, setActiveFilter] = useState<FilterId>("all");
+  const [yearFilter, setYearFilter] = useState<number | "all">("all");
+  const [loading, setLoading] = useState(false);
+  const [outcome, setOutcome] = useState<{ hits: SearchHit[]; semanticTerms: string[] }>(() =>
+    initialQuery.trim() ? searchNotes(initialQuery) : { hits: [], semanticTerms: [] }
+  );
+  const [shown, setShown] = useState(() => initialQuery.trim().length > 0);
 
   const hasQuery = query.trim().length > 0;
+  const debounce = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const filtered = useMemo(() => {
-    if (!hasQuery) return [];
-    return activeFilter === "all" ? RESULTS : RESULTS.filter((r) => r.type === activeFilter);
-  }, [hasQuery, activeFilter]);
+  // Search runs from event handlers (typing, recents, clear) — brief loading
+  // (skeleton) → results, which then reveal with a stagger.
+  const runSearch = (q: string) => {
+    setQuery(q);
+    setYearFilter("all");
+    if (debounce.current) clearTimeout(debounce.current);
+    if (!q.trim()) {
+      setLoading(false);
+      setOutcome({ hits: [], semanticTerms: [] });
+      setShown(false);
+      return;
+    }
+    setLoading(true);
+    setShown(false);
+    debounce.current = setTimeout(() => {
+      setOutcome(searchNotes(q));
+      setLoading(false);
+    }, 480);
+  };
+
+  useEffect(() => () => { if (debounce.current) clearTimeout(debounce.current); }, []);
+
+  // Trigger the staggered reveal once results land.
+  useEffect(() => {
+    if (loading || !hasQuery) return;
+    const id = requestAnimationFrame(() => setShown(true));
+    return () => cancelAnimationFrame(id);
+  }, [loading, hasQuery, outcome]);
+
+  const hits = useMemo(
+    () => (yearFilter === "all" ? outcome.hits : outcome.hits.filter((h) => h.yearNum === yearFilter)),
+    [outcome.hits, yearFilter]
+  );
+
+  const queryTokens = useMemo(
+    () => query.toLowerCase().split(/[^a-z0-9]+/).filter((t) => t.length >= 2),
+    [query]
+  );
 
   return (
     <>
@@ -123,24 +80,26 @@ export function SearchView({ initialQuery }: { initialQuery: string }) {
         className="flex items-center gap-1.5 mb-3.5"
         style={{ fontSize: "var(--text-meta)", color: "var(--text-3)" }}
       >
-        <Link href="/" className="hover:[color:var(--text)] no-underline">
-          Home
-        </Link>
+        <Link href="/" className="hover:[color:var(--text)] no-underline">Home</Link>
         <span>/</span>
         <span>Search</span>
       </nav>
 
       <header className="mb-6">
-        <h1 className="font-serif text-h1 sm:text-display font-semibold tracking-tight">
-          Search
-        </h1>
-        <p className="mt-2 max-w-[60ch]" style={{ color: "var(--text-2)" }}>
-          Search across notes, case law, statutes, and statutory documents.
+        <h1 className="font-serif text-h1 sm:text-display font-semibold tracking-tight">Search</h1>
+        <p className="mt-2 flex items-center gap-2" style={{ color: "var(--text-2)" }}>
+          <span
+            className="inline-flex items-center justify-center rounded-full"
+            style={{ width: 20, height: 20, background: "var(--orange)", color: "#fff", flexShrink: 0 }}
+          >
+            <Sparkles size={12} strokeWidth={2.3} />
+          </span>
+          Smart search — finds the right note by meaning, not just exact words.
         </p>
       </header>
 
       <label
-        className="flex items-center gap-3 sm:gap-3.5 mb-6 px-4 py-3 sm:px-[22px] sm:py-[18px] transition-all focus-within:shadow-[0_0_0_5px_rgba(15,15,16,0.06)]"
+        className="flex items-center gap-3 sm:gap-3.5 mb-6 px-4 py-3 sm:px-[22px] sm:py-[18px] transition-all"
         style={{
           border: "1px solid var(--line)",
           borderRadius: "var(--radius-xl)",
@@ -151,25 +110,19 @@ export function SearchView({ initialQuery }: { initialQuery: string }) {
         <input
           type="text"
           autoFocus
-          placeholder="Search everything…"
+          placeholder="Try “fairness”, “crime”, “natural law”…"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => runSearch(e.target.value)}
           className="flex-1 outline-none bg-transparent text-base sm:text-[1.1rem]"
           style={{ color: "var(--text)" }}
         />
         {hasQuery && (
           <button
             type="button"
-            onClick={() => setQuery("")}
+            onClick={() => runSearch("")}
             aria-label="Clear"
             className="flex items-center justify-center rounded-full cursor-pointer transition-colors hover:[background:var(--surface-3)] hover:[color:var(--text)]"
-            style={{
-              width: 28,
-              height: 28,
-              background: "var(--surface-2)",
-              color: "var(--text-2)",
-              border: 0,
-            }}
+            style={{ width: 28, height: 28, background: "var(--surface-2)", color: "var(--text-2)", border: 0 }}
           >
             <X size={14} />
           </button>
@@ -178,197 +131,241 @@ export function SearchView({ initialQuery }: { initialQuery: string }) {
 
       {hasQuery ? (
         <>
-          <div className="flex flex-wrap gap-2 mb-5">
-            {FILTERS.map((f) => {
-              const Icon = f.icon;
-              const active = activeFilter === f.id;
-              return (
-                <button
-                  key={f.id}
-                  onClick={() => setActiveFilter(f.id)}
-                  className="inline-flex items-center gap-2 cursor-pointer transition-colors"
-                  style={{
-                    padding: "7px 14px",
-                    borderRadius: 999,
-                    border: `1px solid ${active ? "var(--text)" : "var(--line)"}`,
-                    background: active ? "var(--text)" : "var(--surface)",
-                    color: active ? "var(--text-inv)" : "var(--text-2)",
-                    fontSize: "var(--text-body-sm)",
-                    fontWeight: 500,
-                  }}
-                >
-                  {Icon && <Icon size={13} />}
-                  {f.label}
-                </button>
-              );
-            })}
-          </div>
+          <YearTabs years={YEARS} value={yearFilter} onChange={setYearFilter} />
 
-          <div className="mb-3" style={{ fontSize: "var(--text-body-sm)", color: "var(--text-3)" }}>
-            {filtered.length} results for &ldquo;{query}&rdquo;
-          </div>
+          {loading ? (
+            <SkeletonResults />
+          ) : (
+            <>
+              <div
+                className="mt-5 mb-3 flex flex-wrap items-center gap-x-2 gap-y-1"
+                style={{ fontSize: "var(--text-body-sm)", color: "var(--text-3)" }}
+              >
+                <span>
+                  {hits.length} result{hits.length === 1 ? "" : "s"} for &ldquo;{query.trim()}&rdquo;
+                </span>
+                {outcome.semanticTerms.length > 0 && (
+                  <span className="inline-flex items-center gap-1.5" style={{ color: "var(--ai-text)" }}>
+                    <Sparkles size={12} strokeWidth={2.3} />
+                    also matching {outcome.semanticTerms.slice(0, 3).join(", ")}
+                  </span>
+                )}
+              </div>
 
-          <div className="flex flex-col gap-2">
-            {filtered.map((r, i) => {
-              const Icon = r.icon;
-              return (
-                <Link
-                  key={i}
-                  href={r.href}
-                  className="group grid gap-3 sm:gap-3.5 px-4 py-3 sm:px-[18px] sm:py-3.5 no-underline text-inherit transition-all hover:-translate-y-0.5 [grid-template-columns:32px_1fr] sm:[grid-template-columns:36px_1fr_auto]"
-                  style={{
-                    background: "var(--surface)",
-                    border: "1px solid var(--line-2)",
-                    borderRadius: "var(--radius-lg)",
-                  }}
+              {hits.length === 0 ? (
+                <div
+                  className="reveal-row is-shown text-center"
+                  style={{ padding: "40px 16px", color: "var(--text-3)", fontSize: "var(--text-body-sm)" }}
                 >
-                  <div
-                    className="flex items-center justify-center self-start"
-                    style={{
-                      width: 36,
-                      height: 36,
-                      borderRadius: "var(--radius-md)",
-                      background: "var(--surface-2)",
-                      border: "1px solid var(--line-2)",
-                      color: "var(--text-2)",
-                    }}
-                  >
-                    <Icon size={16} />
-                  </div>
-                  <div className="min-w-0">
-                    <div
-                      className="uppercase font-medium mb-1"
+                  No notes matched that. Try a topic like <b>equity</b>, <b>evidence</b>, or <b>contract</b>.
+                </div>
+              ) : (
+                <div className="flex flex-col gap-2">
+                  {hits.map((r, i) => (
+                    <Link
+                      key={r.href + i}
+                      href={r.href}
+                      {...(r.hasContent ? {} : { target: "_blank", rel: "noopener" })}
+                      className={"reveal-row group grid gap-3 sm:gap-3.5 px-4 py-3 sm:px-[18px] sm:py-3.5 no-underline text-inherit [grid-template-columns:36px_1fr] sm:[grid-template-columns:36px_1fr_auto] hover:-translate-y-0.5" + (shown ? " is-shown" : "")}
                       style={{
-                        fontSize: "0.7rem",
-                        letterSpacing: "0.1em",
-                        color: "var(--text-3)",
+                        background: "var(--surface)",
+                        border: "1px solid var(--line-2)",
+                        borderRadius: "var(--radius-lg)",
+                        transitionDelay: shown ? `${Math.min(i, 10) * 40}ms` : "0ms",
                       }}
                     >
-                      {r.tag}
-                    </div>
-                    <div
-                      className="mb-1"
-                      style={{
-                        fontSize: "var(--text-label)",
-                        fontWeight: 500,
-                        lineHeight: 1.35,
-                        color: "var(--text)",
-                      }}
-                    >
-                      {r.title}
-                    </div>
-                    <div
-                      className="mb-1.5 search-snippet"
-                      style={{
-                        fontSize: "var(--text-body-sm)",
-                        color: "var(--text-2)",
-                        lineHeight: 1.55,
-                      }}
-                      dangerouslySetInnerHTML={{ __html: r.snippet }}
-                    />
-                    <div
-                      className="flex flex-wrap items-center gap-2.5"
-                      style={{ fontSize: "var(--text-mono)", color: "var(--text-3)" }}
-                    >
-                      {r.source.map((s, j) => (
-                        <span key={j} className="inline-flex items-center gap-1">
-                          {j > 0 && <span style={{ color: "var(--surface-3)" }}>·</span>}
-                          <span>{s}</span>
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  <div
-                    className="hidden sm:flex self-center items-center transition-all group-hover:translate-x-0.5 group-hover:[color:var(--text)]"
-                    style={{ color: "var(--text-3)" }}
-                  >
-                    <ArrowUpRight size={16} />
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
+                      <div
+                        className="flex items-center justify-center self-start"
+                        style={{
+                          width: 36,
+                          height: 36,
+                          borderRadius: "var(--radius-md)",
+                          background: "var(--surface-2)",
+                          border: "1px solid var(--line-2)",
+                          color: "var(--text-2)",
+                        }}
+                      >
+                        <FileText size={16} />
+                      </div>
+                      <div className="min-w-0">
+                        <div
+                          className="uppercase font-medium mb-1"
+                          style={{ fontSize: "0.7rem", letterSpacing: "0.1em", color: "var(--text-3)" }}
+                        >
+                          {r.hasContent ? "Note" : "PDF"}
+                          {r.courseCode ? ` · ${r.courseCode}` : ""}
+                        </div>
+                        <div
+                          className="mb-1 search-title"
+                          style={{ fontSize: "var(--text-label)", fontWeight: 500, lineHeight: 1.35, color: "var(--text)" }}
+                        >
+                          {highlight(r.title, queryTokens)}
+                        </div>
+                        <div
+                          className="flex flex-wrap items-center gap-2.5"
+                          style={{ fontSize: "var(--text-mono)", color: "var(--text-3)" }}
+                        >
+                          {[r.courseTitle, `${r.yearLabel} · ${r.semesterLabel}`].map((s, j) => (
+                            <span key={j} className="inline-flex items-center gap-1">
+                              {j > 0 && <span style={{ color: "var(--surface-3)" }}>·</span>}
+                              <span>{s}</span>
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                      <div
+                        className="hidden sm:flex self-center items-center transition-all group-hover:translate-x-0.5 group-hover:[color:var(--text)]"
+                        style={{ color: "var(--text-3)" }}
+                      >
+                        <ArrowUpRight size={16} />
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
         </>
       ) : (
         <div className="grid gap-4 sm:gap-5 grid-cols-1 sm:[grid-template-columns:1.2fr_1fr]">
           <Card label="Recent searches" icon={Clock}>
             <div className="flex flex-col">
-              {RECENT.map((r) => (
+              {RECENT.map((q) => (
                 <button
-                  key={r.q}
-                  onClick={() => setQuery(r.q)}
+                  key={q}
+                  onClick={() => runSearch(q)}
                   className="flex items-center gap-2.5 transition-colors cursor-pointer hover:[background:var(--surface-2)] text-left"
-                  style={{
-                    padding: "9px 6px",
-                    borderRadius: "var(--radius-md)",
-                    border: 0,
-                    background: "transparent",
-                    color: "inherit",
-                  }}
+                  style={{ padding: "9px 6px", borderRadius: "var(--radius-md)", border: 0, background: "transparent", color: "inherit" }}
                 >
                   <SearchIcon size={13} style={{ color: "var(--text-3)" }} />
-                  <span className="flex-1" style={{ fontSize: "var(--text-body-sm)", color: "var(--text)" }}>
-                    {r.q}
-                  </span>
-                  <span style={{ fontSize: "var(--text-meta)", color: "var(--text-3)" }}>{r.when}</span>
+                  <span className="flex-1" style={{ fontSize: "var(--text-body-sm)", color: "var(--text)" }}>{q}</span>
                 </button>
               ))}
             </div>
           </Card>
-          <Card label="Search tips" icon={BookOpen}>
-            <Tip>
-              Use <Code>&quot;</Code> for exact phrases — <strong>&ldquo;due process&rdquo;</strong> finds the phrase, not the words separately.
-            </Tip>
-            <Tip>
-              Filter by year — <strong>year:2</strong> narrows to your Year 2 notes.
-            </Tip>
-            <Tip>
-              Search a course — <strong>law:1108</strong> looks inside Fundamentals of Criminal Law.
-            </Tip>
-            <Tip>
-              Press <Code>⌘K</Code> from anywhere to jump back here.
-            </Tip>
+          <Card label="How smart search works" icon={BookOpen}>
+            <Tip>Search by <strong>meaning</strong> — &ldquo;fairness&rdquo; surfaces <strong>Equity &amp; Trusts</strong>, &ldquo;crime&rdquo; surfaces <strong>Criminal Law</strong>.</Tip>
+            <Tip>Searches across <strong>every note</strong> in the curriculum, by title, course, year and semester.</Tip>
+            <Tip>Filter results to your <strong>year</strong> with the tabs once you&apos;ve searched.</Tip>
           </Card>
         </div>
       )}
 
       <style>{`
-        .search-snippet mark {
-          background: rgba(15, 15, 16, 0.1);
-          color: var(--text);
-          padding: 1px 3px;
-          border-radius: 2px;
-        }
+        .search-title mark { background: var(--ai-tint); color: var(--ai-text); padding: 0 2px; border-radius: 3px; font-weight: 600; }
       `}</style>
     </>
   );
 }
 
-function Card({
-  label,
-  icon: Icon,
-  children,
+/** Sliding segmented control (transitions.dev #16). */
+function YearTabs({
+  years,
+  value,
+  onChange,
 }: {
-  label: string;
-  icon: LucideIcon;
-  children: React.ReactNode;
+  years: { num: number; label: string }[];
+  value: number | "all";
+  onChange: (v: number | "all") => void;
 }) {
+  const barRef = useRef<HTMLDivElement | null>(null);
+  const pillRef = useRef<HTMLSpanElement | null>(null);
+
+  const moveTo = (animate: boolean) => {
+    const bar = barRef.current;
+    const pill = pillRef.current;
+    if (!bar || !pill) return;
+    const active = bar.querySelector('[aria-selected="true"]') as HTMLElement | null;
+    if (!active) return;
+    if (!animate) {
+      const prev = pill.style.transition;
+      pill.style.transition = "none";
+      pill.style.transform = `translateX(${active.offsetLeft}px)`;
+      pill.style.width = `${active.offsetWidth}px`;
+      void pill.offsetWidth;
+      pill.style.transition = prev;
+    } else {
+      pill.style.transform = `translateX(${active.offsetLeft}px)`;
+      pill.style.width = `${active.offsetWidth}px`;
+    }
+  };
+
+  useEffect(() => {
+    moveTo(true);
+  }, [value]);
+  useEffect(() => {
+    const id = requestAnimationFrame(() => moveTo(false));
+    const onResize = () => moveTo(false);
+    window.addEventListener("resize", onResize);
+    return () => {
+      cancelAnimationFrame(id);
+      window.removeEventListener("resize", onResize);
+    };
+  }, []);
+
+  const tabs: { key: number | "all"; label: string }[] = [
+    { key: "all", label: "All" },
+    ...years.map((y) => ({ key: y.num, label: y.label })),
+  ];
+
   return (
-    <div
-      style={{
-        background: "var(--surface)",
-        border: "1px solid var(--line-2)",
-        borderRadius: "var(--radius-lg)",
-        padding: "20px 22px",
-      }}
-    >
+    <div className="t-tabs" role="tablist" ref={barRef}>
+      <span className="t-tabs-pill" aria-hidden ref={pillRef} />
+      {tabs.map((t) => (
+        <button
+          key={String(t.key)}
+          className="t-tab"
+          role="tab"
+          aria-selected={value === t.key}
+          onClick={() => onChange(t.key)}
+        >
+          {t.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function SkeletonResults() {
+  return (
+    <div className="mt-5 flex flex-col gap-2" aria-hidden>
+      {Array.from({ length: 5 }).map((_, i) => (
+        <div
+          key={i}
+          className="grid gap-3.5 px-4 py-3 sm:px-[18px] sm:py-3.5 [grid-template-columns:36px_1fr]"
+          style={{ background: "var(--surface)", border: "1px solid var(--line-2)", borderRadius: "var(--radius-lg)" }}
+        >
+          <div className="skel-bar" style={{ width: 36, height: 36, borderRadius: "var(--radius-md)" }} />
+          <div className="flex flex-col gap-2 py-0.5">
+            <div className="skel-bar" style={{ width: "30%", height: 9 }} />
+            <div className="skel-bar" style={{ width: "70%", height: 13 }} />
+            <div className="skel-bar" style={{ width: "45%", height: 9 }} />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** Wrap query tokens in <mark> within a title. */
+function highlight(text: string, tokens: string[]) {
+  if (!tokens.length) return text;
+  const re = new RegExp(`(${tokens.map(escapeRe).join("|")})`, "gi");
+  const parts = text.split(re);
+  return parts.map((p, i) =>
+    tokens.some((t) => p.toLowerCase() === t.toLowerCase()) ? <mark key={i}>{p}</mark> : <span key={i}>{p}</span>
+  );
+}
+function escapeRe(s: string) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function Card({ label, icon: Icon, children }: { label: string; icon: typeof Clock; children: React.ReactNode }) {
+  return (
+    <div style={{ background: "var(--surface)", border: "1px solid var(--line-2)", borderRadius: "var(--radius-lg)", padding: "20px 22px" }}>
       <div
         className="flex items-center gap-2 mb-3.5 uppercase font-semibold"
-        style={{
-          fontSize: "0.7rem",
-          letterSpacing: "0.1em",
-          color: "var(--text-3)",
-        }}
+        style={{ fontSize: "0.7rem", letterSpacing: "0.1em", color: "var(--text-3)" }}
       >
         <Icon size={13} style={{ color: "var(--text-2)" }} />
         {label}
@@ -393,22 +390,5 @@ function Tip({ children }: { children: React.ReactNode }) {
     >
       {children}
     </div>
-  );
-}
-
-function Code({ children }: { children: React.ReactNode }) {
-  return (
-    <code
-      style={{
-        fontFamily: "var(--font-mono)",
-        fontSize: "0.82em",
-        padding: "1px 6px",
-        borderRadius: "var(--radius-sm)",
-        background: "var(--surface)",
-        border: "1px solid var(--line-2)",
-      }}
-    >
-      {children}
-    </code>
   );
 }

@@ -2,7 +2,7 @@
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { Folder, type FolderVariant } from "./Folder";
+import { Folder, FOLDER_VARIANTS, type FolderVariant } from "./Folder";
 import { haptic } from "@/lib/haptics";
 
 export type CourseUnit = {
@@ -23,7 +23,7 @@ export type YearGroup = {
   semesters: SemesterGroup[];
 };
 
-const VARIANT_CYCLE: FolderVariant[] = ["orange", "petrol", "forest", "rose", "indigo", "blue"];
+const VARIANT_CYCLE: FolderVariant[] = FOLDER_VARIANTS;
 
 export function CourseUnitFolders({
   curriculum,

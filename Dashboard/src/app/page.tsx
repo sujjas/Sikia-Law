@@ -49,7 +49,7 @@ const CONTINUE: {
     course: "Equity & Trusts",
     code: "LAW 2108",
     progress: 28,
-    variant: "petrol",
+    variant: "sky",
   },
   {
     href: `/document?file=${encodeURIComponent("HTML/YR 1 SEM 1/Criminal Law 1 - jorvannotes.html")}`,
@@ -57,7 +57,7 @@ const CONTINUE: {
     course: "Fundamentals of Criminal Law",
     code: "LAW 1108",
     progress: 82,
-    variant: "forest",
+    variant: "emerald",
   },
   {
     href: `/document?file=${encodeURIComponent("HTML/YR 2 SEM 2/Land Law II-Lecture notes..html")}`,

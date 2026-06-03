@@ -10,7 +10,7 @@ import {
   type FolderVariant,
 } from "@/components/dashboard/Folder";
 
-const YEAR_VARIANTS: FolderVariant[] = ["orange", "petrol", "forest", "indigo"];
+const YEAR_VARIANTS: FolderVariant[] = ["orange", "violet", "emerald", "sky"];
 
 const STORAGE_KEY = "sikia-welcome-seen";
 

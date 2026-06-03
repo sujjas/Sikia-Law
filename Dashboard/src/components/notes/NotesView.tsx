@@ -10,17 +10,10 @@ import {
   NoteThumb,
   noteThumbVariantFor,
 } from "@/components/dashboard/NoteThumb";
-import type { FolderVariant } from "@/components/dashboard/Folder";
+import { FOLDER_VARIANTS, type FolderVariant } from "@/components/dashboard/Folder";
 import { haptic } from "@/lib/haptics";
 
-const FOLDER_VARIANT_CYCLE: FolderVariant[] = [
-  "orange",
-  "petrol",
-  "forest",
-  "rose",
-  "indigo",
-  "blue",
-];
+const FOLDER_VARIANT_CYCLE: FolderVariant[] = FOLDER_VARIANTS;
 
 type Props = {
   curriculum: Curriculum;
