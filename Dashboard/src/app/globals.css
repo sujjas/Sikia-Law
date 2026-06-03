@@ -1011,7 +1011,11 @@ html::-webkit-scrollbar-thumb:hover,
     border-radius: 22px;
     overflow: hidden;
   }
+  /* The fixed hamburger toggle sits above the sheet's scrim — hide it while the
+     sheet is open so it doesn't float over the dimmed background. */
+  html.ask-sheet-open .sb-toggle { opacity: 0; pointer-events: none; }
 }
+.sb-toggle { transition: opacity 0.2s ease; }
 @keyframes askSheetUp   { from { transform: translateY(100%); }              to { transform: translateY(0); } }
 @keyframes askSheetDown { from { transform: translateY(0); }                 to { transform: translateY(100%); } }
 
