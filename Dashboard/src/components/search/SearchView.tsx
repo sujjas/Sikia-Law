@@ -181,9 +181,9 @@ export function SearchView({ initialQuery }: { initialQuery: string }) {
                           width: 36,
                           height: 36,
                           borderRadius: "var(--radius-md)",
-                          background: "var(--surface-2)",
-                          border: "1px solid var(--line-2)",
-                          color: "var(--text-2)",
+                          background: "var(--orange-wash)",
+                          border: "1px solid color-mix(in srgb, var(--orange) 22%, transparent)",
+                          color: "var(--orange-dark)",
                         }}
                       >
                         <FileText size={16} />
@@ -253,7 +253,7 @@ export function SearchView({ initialQuery }: { initialQuery: string }) {
       )}
 
       <style>{`
-        .search-title mark { background: var(--ai-tint); color: var(--ai-text); padding: 0 2px; border-radius: 3px; font-weight: 600; }
+        .search-title mark { background: var(--orange-wash); color: var(--orange-dark); padding: 0 3px; border-radius: 3px; font-weight: 700; }
       `}</style>
     </>
   );

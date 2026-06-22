@@ -1,14 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import {
+  Check,
   ChevronDown,
   FileText,
+  FolderOpen,
   Gavel,
+  MoreHorizontal,
   Newspaper,
+  Palette,
   Plus,
   Scale,
   SlidersHorizontal,
@@ -19,7 +23,7 @@ import {
   NoteThumb,
   type NoteThumbVariant,
 } from "@/components/dashboard/NoteThumb";
-import { FOLDER_VARIANTS, type FolderVariant } from "@/components/dashboard/Folder";
+import { VARIANT_SWATCH, type FolderVariant } from "@/components/dashboard/Folder";
 import { haptic } from "@/lib/haptics";
 
 type BookmarkType = "notes" | "case-law" | "statutes" | "docs";
@@ -98,8 +102,43 @@ export function BookmarksView() {
   const [filterOpen, setFilterOpen] = useState(false);
   const [openFolder, setOpenFolder] = useState<string | null>(null);
 
+  // Per-folder colour — user-customisable. Seeded from the default palette order.
+  const [folderColors, setFolderColors] = useState<Record<string, FolderVariant>>(
+    () =>
+      Object.fromEntries(
+        FOLDERS.map((name) => [name, "orange" as FolderVariant])
+      ) as Record<string, FolderVariant>
+  );
+  const [colorPickerFor, setColorPickerFor] = useState<string | null>(null);
+
   const filterMenuRef = useRef<HTMLDivElement | null>(null);
   const resultsRef = useRef<HTMLDivElement | null>(null);
+  const colorPickerRef = useRef<HTMLDivElement | null>(null);
+
+  // Close the colour picker on outside-click / Escape.
+  useEffect(() => {
+    if (!colorPickerFor) return;
+    const onClick = (e: MouseEvent) => {
+      if (!colorPickerRef.current?.contains(e.target as Node)) {
+        setColorPickerFor(null);
+      }
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setColorPickerFor(null);
+    };
+    document.addEventListener("mousedown", onClick);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onClick);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [colorPickerFor]);
+
+  const recolorFolder = (name: string, variant: FolderVariant) => {
+    haptic("selection");
+    setFolderColors((prev) => ({ ...prev, [name]: variant }));
+    setColorPickerFor(null);
+  };
 
   useEffect(() => {
     if (!filterOpen) return;
@@ -243,17 +282,24 @@ export function BookmarksView() {
       </div>
 
       <div className="grid mb-10 sm:mb-14 gap-3 sm:gap-4 grid-cols-2 sm:[grid-template-columns:repeat(auto-fill,minmax(220px,1fr))]">
-        {FOLDERS.map((name, i) => (
-          <FolderButton
+        {FOLDERS.map((name) => (
+          <FolderCard
             key={name}
             name={name}
             count={folderCounts[name] ?? 0}
-            variant={FOLDER_VARIANTS[i % FOLDER_VARIANTS.length]}
+            variant={folderColors[name]}
             selected={openFolder === name}
-            onClick={() => {
+            pickerOpen={colorPickerFor === name}
+            pickerRef={colorPickerFor === name ? colorPickerRef : undefined}
+            onOpen={() => {
               haptic("medium");
               setOpenFolder(name);
             }}
+            onTogglePicker={() => {
+              haptic("light");
+              setColorPickerFor((cur) => (cur === name ? null : name));
+            }}
+            onPick={(v) => recolorFolder(name, v)}
           />
         ))}
         {/* New folder — keep dashed CTA as-is */}
@@ -502,58 +548,187 @@ export function BookmarksView() {
   );
 }
 
-/* Clickable Folder card — mirrors the Notes-page FolderButton so the
- * wallet visual is consistent across the app. */
-function FolderButton({
+/* Clickable Folder card — wallet visual + a per-folder colour picker.
+ * The card itself opens the folder; a small colour dot (top-right of the
+ * cover) opens a swatch popover so users can personalise each folder. */
+function FolderCard({
   name,
   count,
   variant,
   selected,
-  onClick,
+  pickerOpen,
+  pickerRef,
+  onOpen,
+  onTogglePicker,
+  onPick,
 }: {
   name: string;
   count: number;
   variant: FolderVariant;
   selected: boolean;
-  onClick: () => void;
+  pickerOpen: boolean;
+  pickerRef?: RefObject<HTMLDivElement | null>;
+  onOpen: () => void;
+  onTogglePicker: () => void;
+  onPick: (variant: FolderVariant) => void;
 }) {
+  const [showSwatches, setShowSwatches] = useState(false);
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={selected}
-      aria-label={`Open ${name} folder`}
-      className={`folder-card folder-card--${variant} text-left${
-        selected ? " is-selected" : ""
-      }`}
-    >
-      <div className="folder-card__top">
-        <div className="folder-card__cover">
-          <div className="folder-card__papers">
-            <div className="folder-card__paper folder-card__paper--1" />
-            <div className="folder-card__paper folder-card__paper--2" />
-            <div className="folder-card__paper folder-card__paper--3">
-              <div className="folder-card__lines">
-                {Array.from({ length: 13 }).map((_, i) => (
-                  <span key={i} />
-                ))}
+    <div className="relative">
+      <button
+        type="button"
+        onClick={onOpen}
+        aria-pressed={selected}
+        aria-label={`Open ${name} folder`}
+        className={`folder-card folder-card--${variant} text-left${
+          selected ? " is-selected" : ""
+        }`}
+      >
+        <div className="folder-card__top">
+          <div className="folder-card__cover">
+            <div className="folder-card__papers">
+              <div className="folder-card__paper folder-card__paper--1" />
+              <div className="folder-card__paper folder-card__paper--2" />
+              <div className="folder-card__paper folder-card__paper--3">
+                <div className="folder-card__lines">
+                  {Array.from({ length: 13 }).map((_, i) => (
+                    <span key={i} />
+                  ))}
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div className="folder-card__bottom">
-        <div className="folder-card__title-row">
-          <div className="flex flex-col gap-0.5 min-w-0">
-            <div className="folder-card__title truncate">{name}</div>
-            <div className="folder-card__subtitle truncate">Bookmark folder</div>
+        <div className="folder-card__bottom">
+          <div className="folder-card__title-row">
+            <div className="flex flex-col gap-0.5 min-w-0">
+              <div className="folder-card__title truncate">{name}</div>
+              <div className="folder-card__subtitle truncate">Bookmark folder</div>
+            </div>
+          </div>
+          <div className="folder-card__count">
+            {count} {count === 1 ? "Item" : "Items"}
           </div>
         </div>
-        <div className="folder-card__count">
-          {count} {count === 1 ? "Item" : "Items"}
+      </button>
+
+      {/* ⋯ menu trigger — sibling to the card button (no nested buttons). */}
+      <button
+        type="button"
+        onClick={() => {
+          setShowSwatches(false);
+          onTogglePicker();
+        }}
+        aria-expanded={pickerOpen}
+        aria-haspopup="menu"
+        aria-label={`${name} folder options`}
+        className="absolute z-10 flex items-center justify-center cursor-pointer transition-colors"
+        style={{
+          top: 150,
+          right: 12,
+          width: 26,
+          height: 26,
+          borderRadius: 7,
+          background: pickerOpen ? "rgba(255,255,255,0.22)" : "transparent",
+          border: 0,
+          color: "rgba(255,255,255,0.85)",
+        }}
+      >
+        <MoreHorizontal size={16} />
+      </button>
+
+      {pickerOpen && (
+        <div
+          ref={pickerRef}
+          role="menu"
+          aria-label={`${name} folder options`}
+          className="absolute z-20"
+          style={{
+            top: 180,
+            right: 12,
+            minWidth: 184,
+            padding: 6,
+            background: "var(--surface)",
+            border: "1px solid var(--line-2)",
+            borderRadius: "var(--radius-lg)",
+            boxShadow: "var(--shadow-3)",
+          }}
+        >
+          <button
+            type="button"
+            role="menuitem"
+            onClick={onOpen}
+            className="flex items-center gap-2.5 w-full text-left cursor-pointer"
+            style={{
+              padding: "8px 10px",
+              borderRadius: "var(--radius-md)",
+              background: "transparent",
+              border: 0,
+              color: "var(--text-2)",
+              fontSize: "var(--text-body-sm)",
+            }}
+          >
+            <FolderOpen size={15} /> Open folder
+          </button>
+
+          <button
+            type="button"
+            role="menuitem"
+            onClick={() => setShowSwatches((v) => !v)}
+            aria-expanded={showSwatches}
+            className="flex items-center gap-2.5 w-full text-left cursor-pointer"
+            style={{
+              padding: "8px 10px",
+              borderRadius: "var(--radius-md)",
+              background: showSwatches ? "var(--surface-2)" : "transparent",
+              border: 0,
+              color: "var(--text-2)",
+              fontSize: "var(--text-body-sm)",
+            }}
+          >
+            <Palette size={15} /> Change colour
+          </button>
+
+          {showSwatches && (
+            <div
+              className="grid"
+              style={{
+                gridTemplateColumns: "repeat(5, 1fr)",
+                gap: 8,
+                padding: "8px 6px 4px",
+              }}
+            >
+              {VARIANT_SWATCH.map((s) => {
+                const active = s.variant === variant;
+                return (
+                  <button
+                    key={s.variant}
+                    type="button"
+                    role="menuitemradio"
+                    aria-checked={active}
+                    aria-label={s.variant}
+                    onClick={() => onPick(s.variant)}
+                    className="flex items-center justify-center cursor-pointer transition-transform hover:scale-110"
+                    style={{
+                      width: 24,
+                      height: 24,
+                      borderRadius: "50%",
+                      background: s.color,
+                      border: 0,
+                      boxShadow: active
+                        ? "0 0 0 2px var(--surface), 0 0 0 4px var(--text)"
+                        : "0 0 0 1px rgba(0,0,0,0.06) inset",
+                    }}
+                  >
+                    {active && <Check size={12} color="#fff" strokeWidth={3} />}
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
-      </div>
-    </button>
+      )}
+    </div>
   );
 }
 

@@ -22,7 +22,7 @@ export function HeroGreeting({
           {overline}
         </div>
         <h1 className="font-serif text-h1 sm:text-display font-medium m-0">
-          {`Welcome back, ${name}.`}
+          Welcome back, <span style={{ color: "var(--orange)" }}>{name}</span>.
         </h1>
         <p
           className="font-sans text-body text-stone-600"

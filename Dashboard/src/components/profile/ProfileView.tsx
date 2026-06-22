@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   BarChart3,
@@ -43,6 +44,7 @@ const STATS = [
 ];
 
 export function ProfileView() {
+  const router = useRouter();
   const [activeSection, setActiveSection] = useState<SectionId>("profile");
   const [year, setYear] = useState(2);
   const [sem, setSem] = useState(1);
@@ -137,14 +139,14 @@ export function ProfileView() {
                   style={{
                     padding: "8px 12px",
                     fontSize: "var(--text-body-sm)",
-                    color: active ? "var(--text)" : "var(--text-2)",
-                    background: active ? "var(--surface-2)" : "transparent",
+                    color: active ? "var(--orange-dark)" : "var(--text-2)",
+                    background: active ? "var(--orange-wash)" : "transparent",
                     borderRadius: "var(--radius-md)",
                     textDecoration: "none",
                     fontWeight: active ? 600 : 400,
                   }}
                 >
-                  <Icon size={14} style={{ color: active ? "var(--text)" : "var(--text-3)" }} />
+                  <Icon size={14} style={{ color: active ? "var(--orange-dark)" : "var(--text-3)" }} />
                   {s.label}
                 </a>
               );
@@ -162,10 +164,10 @@ export function ProfileView() {
                   width: 84,
                   height: 84,
                   borderRadius: "50%",
-                  background: "linear-gradient(135deg, var(--surface-3), var(--surface-2))",
-                  border: "1px solid var(--line)",
+                  background: "linear-gradient(135deg, var(--color-orange-400), var(--color-orange-600))",
+                  border: "1px solid color-mix(in srgb, var(--orange) 40%, transparent)",
                   fontSize: "1.7rem",
-                  color: "var(--text-2)",
+                  color: "#fff",
                 }}
               >
                 AM
@@ -326,7 +328,12 @@ export function ProfileView() {
               desc="Download a JSON file of your saved notes and folders."
               buttonLabel="Export"
             />
-            <AccountRow title="Sign out" desc="Sign out of this browser session." buttonLabel="Sign out" />
+            <AccountRow
+              title="Sign out"
+              desc="Sign out of this browser session."
+              buttonLabel="Sign out"
+              onClick={() => router.push("/login")}
+            />
             <AccountRow
               title="Delete account"
               desc="Removes your profile, bookmarks and folders. Cannot be undone."
@@ -514,12 +521,14 @@ function AccountRow({
   buttonLabel,
   danger,
   last,
+  onClick,
 }: {
   title: string;
   desc: string;
   buttonLabel: string;
   danger?: boolean;
   last?: boolean;
+  onClick?: () => void;
 }) {
   return (
     <div
@@ -537,6 +546,7 @@ function AccountRow({
       </div>
       <button
         type="button"
+        onClick={onClick}
         className="cursor-pointer transition-all"
         style={{
           padding: "8px 14px",

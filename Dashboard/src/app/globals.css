@@ -6,17 +6,18 @@
    ────────────────────────────────────────────────────────────── */
 
 @theme {
-  /* ── Brand (Orange) — 10-step scale ── */
-  --color-orange-50:   #FFF8EC;
-  --color-orange-100:  #FFEFD8;
-  --color-orange-200:  #FFD9A1;
-  --color-orange-300:  #FFBC7D;
-  --color-orange-400:  #FFA94D;
-  --color-orange-500:  #FF9501;
-  --color-orange-600:  #E78600;
-  --color-orange-700:  #C9790A;
-  --color-orange-800:  #9C5D08;
-  --color-orange-900:  #6F4106;
+  /* ── Brand (Ochre) — 10-step scale, anchored on the brand colour #C9790A (500).
+     Per the Sikia Law brand guide: brand = #C9790A, plus black + white. ── */
+  --color-orange-50:   #FBF4E9;
+  --color-orange-100:  #F4E3C7;
+  --color-orange-200:  #E8C792;
+  --color-orange-300:  #DBAA5C;
+  --color-orange-400:  #D08F2E;
+  --color-orange-500:  #C9790A;
+  --color-orange-600:  #B26B09;
+  --color-orange-700:  #935808;
+  --color-orange-800:  #6F4106;
+  --color-orange-900:  #4E2E04;
 
   /* ── Petrol — brand complement ── */
   --color-petrol-50:   #F1F5F6;
@@ -595,7 +596,11 @@ html::-webkit-scrollbar-thumb:hover,
    Variants set --grad-a/b/c. Hover squares-up the paper stack.
    ────────────────────────────────────────────────────────────── */
 .folder-card {
-  --folder-bg: #0E0E0E;
+  /* Muted, flat brand-colour folder (no gradient). Cover + body are two
+     close, desaturated tones of the variant so the card reads as one calm
+     muted colour rather than a vivid gradient wallet. */
+  --cover-flat: color-mix(in srgb, var(--grad-b) 74%, #e2d8c8);
+  --folder-bg: color-mix(in srgb, var(--grad-c) 86%, #4a3818);
   --grad-a: var(--color-orange-300);
   --grad-b: var(--color-orange-500);
   --grad-c: var(--color-orange-700);
@@ -662,7 +667,7 @@ html::-webkit-scrollbar-thumb:hover,
   height: 132px;
   border-radius: 18px;
   overflow: hidden;
-  background: linear-gradient(135deg, var(--grad-a) 0%, var(--grad-b) 55%, var(--grad-c) 100%);
+  background: var(--cover-flat);
 }
 /* Container is centered horizontally; individual papers keep their original
  * fanned rotation + slight offsets for the layered "stack of pages" look. */
@@ -1718,18 +1723,18 @@ html::-webkit-scrollbar-thumb:hover,
   border-radius: var(--radius-full);
   transition: color var(--tabs-dur) var(--tabs-ease);
 }
-.t-tab:not([aria-selected="true"]):hover,
-.t-tab[aria-selected="true"] { color: var(--text); }
+.t-tab:not([aria-selected="true"]):hover { color: var(--text); }
+.t-tab[aria-selected="true"] { color: var(--orange-dark); font-weight: 600; }
 .t-tabs-pill {
   position: absolute;
   top: 3px;
   left: 0;
   height: 32px;
   width: 0;
-  background: var(--surface);
+  background: var(--orange-wash);
   border-radius: var(--radius-full);
   box-shadow: var(--shadow-1);
-  border: 1px solid var(--line-2);
+  border: 1px solid color-mix(in srgb, var(--orange) 28%, var(--line-2));
   transform: translateX(0);
   transition:
     transform var(--tabs-dur) var(--tabs-ease),
@@ -1760,4 +1765,28 @@ html::-webkit-scrollbar-thumb:hover,
   .t-tabs-pill, .t-tab, .reveal-row { transition: none !important; }
   .skel-bar { animation: none !important; }
   .reveal-row { opacity: 1; transform: none; filter: none; }
+}
+
+/* ──────────────────────────────────────────────────────────────
+   AUTH — login / signup. Animated brand panel entrance.
+   ────────────────────────────────────────────────────────────── */
+@keyframes auth-rise {
+  from { opacity: 0; transform: translateY(12px) scale(0.985); }
+  to   { opacity: 1; transform: none; }
+}
+.auth-rise   { animation: auth-rise 0.6s var(--ease-out) both; }
+.auth-rise-1 { animation: auth-rise 0.6s var(--ease-out) 0.10s both; }
+.auth-rise-2 { animation: auth-rise 0.6s var(--ease-out) 0.20s both; }
+.auth-rise-3 { animation: auth-rise 0.6s var(--ease-out) 0.30s both; }
+.auth-brand {
+  background:
+    radial-gradient(120% 90% at 0% 0%, var(--color-orange-100) 0%, transparent 55%),
+    linear-gradient(160deg, var(--bg-muted) 0%, var(--color-orange-50) 100%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .auth-rise, .auth-rise-1, .auth-rise-2, .auth-rise-3 { animation: none; }
+}
+.auth-input:focus {
+  border-color: var(--orange);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--orange) 18%, transparent);
 }

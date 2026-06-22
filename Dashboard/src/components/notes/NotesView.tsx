@@ -10,10 +10,11 @@ import {
   NoteThumb,
   noteThumbVariantFor,
 } from "@/components/dashboard/NoteThumb";
-import { FOLDER_VARIANTS, type FolderVariant } from "@/components/dashboard/Folder";
+import { type FolderVariant } from "@/components/dashboard/Folder";
 import { haptic } from "@/lib/haptics";
 
-const FOLDER_VARIANT_CYCLE: FolderVariant[] = FOLDER_VARIANTS;
+// Brand-orange predominant: course-unit folders default to the brand colour.
+const FOLDER_VARIANT_CYCLE: FolderVariant[] = ["orange"];
 
 type Props = {
   curriculum: Curriculum;
@@ -83,8 +84,8 @@ export function NotesView({ curriculum, initialYear, initialCourse }: Props) {
             Notes
           </h1>
           <p className="mt-2 max-w-[60ch]" style={{ color: "var(--text-2)" }}>
-            Your full curriculum, organised by year and semester. Pick a year to see the
-            courses you take and the notes attached.
+            Your full curriculum, organised by year and semester. Pick a year to find the
+            course outline and the notes attached.
           </p>
         </div>
         <div className="text-[color:var(--text-3)]" style={{ fontSize: "var(--text-body-sm)" }}>

@@ -365,12 +365,18 @@ export function LibraryView({ initialCategory }: { initialCategory: string }) {
         <div
           ref={catIndicatorRef}
           aria-hidden
-          className={`absolute top-1 bottom-1 bg-white rounded-full shadow-[0_1px_2px_rgba(0,0,0,0.06)] ring-1 ring-stone-200 ${
+          className={`absolute top-1 bottom-1 rounded-full ${
             catMeasured
               ? "transition-[left,width] duration-300 ease-[var(--ease-out)]"
               : ""
           }`}
-          style={{ left: 0, width: 0 }}
+          style={{
+            left: 0,
+            width: 0,
+            background: "var(--orange-wash)",
+            boxShadow:
+              "0 1px 2px rgba(0,0,0,0.06), inset 0 0 0 1px color-mix(in srgb, var(--orange) 30%, transparent)",
+          }}
         />
         {CATEGORIES.map((c) => {
           const Icon = c.icon;
@@ -389,7 +395,7 @@ export function LibraryView({ initialCategory }: { initialCategory: string }) {
               }}
               className={`relative z-10 inline-flex items-center gap-2 rounded-full transition-colors cursor-pointer shrink-0 whitespace-nowrap ${
                 active
-                  ? "text-stone-900 font-semibold"
+                  ? "font-semibold text-[color:var(--orange-dark)]"
                   : "text-stone-700 font-medium hover:text-stone-900"
               }`}
               style={{
@@ -404,9 +410,13 @@ export function LibraryView({ initialCategory }: { initialCategory: string }) {
                   fontSize: "0.72rem",
                   padding: "1px 7px",
                   borderRadius: 999,
-                  background: active ? "var(--color-stone-150)" : "var(--surface-2)",
-                  color: active ? "var(--text-2)" : "var(--text-3)",
-                  border: "1px solid var(--line-2)",
+                  background: active
+                    ? "color-mix(in srgb, var(--orange) 18%, transparent)"
+                    : "var(--surface-2)",
+                  color: active ? "var(--orange-dark)" : "var(--text-3)",
+                  border: active
+                    ? "1px solid color-mix(in srgb, var(--orange) 30%, transparent)"
+                    : "1px solid var(--line-2)",
                 }}
               >
                 {c.count.toLocaleString()}

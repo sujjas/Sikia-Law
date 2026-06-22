@@ -10,8 +10,8 @@ export function Logo({ href = "/" }: { href?: string }) {
       <img
         src="/sikia-law-logo.svg"
         alt="Sikia Law"
-        height={32}
-        style={{ height: 32, width: "auto", display: "block" }}
+        height={48}
+        style={{ height: 48, width: "auto", display: "block" }}
       />
     </Link>
   );

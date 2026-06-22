@@ -10,6 +10,13 @@ import { DefineInline } from "./DefineInline";
 import { ListenPlayer } from "./ListenPlayer";
 import { haptic } from "@/lib/haptics";
 
+/* Per-reader watermark — ties on-screen content to the logged-in student so
+ * leaked screenshots are traceable. (Web cannot block screenshots; this is the
+ * realistic deterrent — see the client note on content protection.) */
+const WATERMARK_LABEL = "Amelia M. · amelia.m@students.muk.ac.ug";
+const WATERMARK_SVG = `<svg xmlns='http://www.w3.org/2000/svg' width='470' height='250'><text x='14' y='150' transform='rotate(-26 235 125)' fill='#000000' fill-opacity='0.05' font-family='sans-serif' font-size='15' font-weight='500'>${WATERMARK_LABEL}</text></svg>`;
+const WATERMARK_BG = `url("data:image/svg+xml,${encodeURIComponent(WATERMARK_SVG)}")`;
+
 type Breadcrumb = {
   yearLabel: string;
   semesterLabel: string;
@@ -289,11 +296,22 @@ export function DocumentReader({
           />
 
           {html ? (
-            <article
-              ref={proseRef}
-              className="doc-prose"
-              dangerouslySetInnerHTML={{ __html: html }}
-            />
+            <div className="relative">
+              <article
+                ref={proseRef}
+                className="doc-prose"
+                dangerouslySetInnerHTML={{ __html: html }}
+              />
+              <div
+                aria-hidden
+                className="absolute inset-0"
+                style={{
+                  backgroundImage: WATERMARK_BG,
+                  backgroundRepeat: "repeat",
+                  pointerEvents: "none",
+                }}
+              />
+            </div>
           ) : (
             <div
               className="py-16 text-center"
