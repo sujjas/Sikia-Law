@@ -825,6 +825,11 @@ html::-webkit-scrollbar-thumb:hover,
 .folder-card--sky,     .note-thumb--sky     { --grad-a: #7DD3FC; --grad-b: #0EA5E9; --grad-c: #0369A1; }
 .folder-card--teal,    .note-thumb--teal    { --grad-a: #5EEAD4; --grad-b: #14B8A6; --grad-c: #0F766E; }
 .folder-card--emerald, .note-thumb--emerald { --grad-a: #6EE7B7; --grad-b: #10B981; --grad-c: #047857; }
+/* Black / charcoal — brand black. Override the muted mix with true dark tones. */
+.folder-card--black,  .note-thumb--black  {
+  --grad-a: #3f3f46; --grad-b: #27272a; --grad-c: #18181b;
+  --cover-flat: #2b2b30; --folder-bg: #141417;
+}
 
 /* Idea 1 — paper sheet (landscape) */
 .note-thumb--sheet {

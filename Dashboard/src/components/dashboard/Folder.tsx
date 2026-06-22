@@ -14,7 +14,8 @@ export type FolderVariant =
   | "indigo"
   | "sky"
   | "teal"
-  | "emerald";
+  | "emerald"
+  | "black";
 
 export const FOLDER_VARIANTS: FolderVariant[] = [
   "orange",
@@ -27,6 +28,7 @@ export const FOLDER_VARIANTS: FolderVariant[] = [
   "sky",
   "teal",
   "emerald",
+  "black",
 ];
 
 /* Representative swatch colour for the per-folder colour picker. */
@@ -41,6 +43,7 @@ export const VARIANT_SWATCH: { variant: FolderVariant; color: string }[] = [
   { variant: "sky", color: "#0EA5E9" },
   { variant: "teal", color: "#14B8A6" },
   { variant: "emerald", color: "#10B981" },
+  { variant: "black", color: "#1c1c1c" },
 ];
 
 const PAPER_LINES = Array.from({ length: 13 });
