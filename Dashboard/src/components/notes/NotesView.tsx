@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { Folder as FolderIcon, X } from "lucide-react";
+import { Check, FolderOpen, MoreHorizontal, Palette, X } from "lucide-react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import type { Curriculum, Course, Note, Semester } from "@/data/curriculum";
@@ -10,7 +10,7 @@ import {
   NoteThumb,
   noteThumbVariantFor,
 } from "@/components/dashboard/NoteThumb";
-import { type FolderVariant } from "@/components/dashboard/Folder";
+import { VARIANT_SWATCH, type FolderVariant } from "@/components/dashboard/Folder";
 import { haptic } from "@/lib/haptics";
 
 // Brand-orange predominant: course-unit folders default to the brand colour.
@@ -317,43 +317,193 @@ function FolderButton({
   selected?: boolean;
   onClick: () => void;
 }) {
+  const [color, setColor] = useState<FolderVariant>(variant);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [showSwatches, setShowSwatches] = useState(false);
+  const wrapRef = useRef<HTMLDivElement | null>(null);
+
+  const closeMenu = () => {
+    setMenuOpen(false);
+    setShowSwatches(false);
+  };
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onDocClick = (e: MouseEvent) => {
+      if (!wrapRef.current?.contains(e.target as Node)) closeMenu();
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeMenu();
+    };
+    document.addEventListener("mousedown", onDocClick);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDocClick);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [menuOpen]);
+
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={selected}
-      aria-label={`Open ${course.title}`}
-      className={`folder-card folder-card--${variant} text-left${selected ? " is-selected" : ""}`}
-    >
-      <div className="folder-card__top">
-        <div className="folder-card__cover">
-          <div className="folder-card__papers">
-            <div className="folder-card__paper folder-card__paper--1" />
-            <div className="folder-card__paper folder-card__paper--2" />
-            <div className="folder-card__paper folder-card__paper--3">
-              <div className="folder-card__lines">
-                {Array.from({ length: 13 }).map((_, i) => (
-                  <span key={i} />
-                ))}
+    <div className="relative" ref={wrapRef}>
+      <button
+        type="button"
+        onClick={onClick}
+        aria-pressed={selected}
+        aria-label={`Open ${course.title}`}
+        className={`folder-card folder-card--${color} text-left${selected ? " is-selected" : ""}`}
+      >
+        <div className="folder-card__top">
+          <div className="folder-card__cover">
+            <div className="folder-card__papers">
+              <div className="folder-card__paper folder-card__paper--1" />
+              <div className="folder-card__paper folder-card__paper--2" />
+              <div className="folder-card__paper folder-card__paper--3">
+                <div className="folder-card__lines">
+                  {Array.from({ length: 13 }).map((_, i) => (
+                    <span key={i} />
+                  ))}
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div className="folder-card__bottom">
-        <div className="folder-card__title-row">
-          <div className="flex flex-col gap-0.5 min-w-0">
-            <div className="folder-card__title truncate">{course.title}</div>
-            <div className="folder-card__subtitle truncate">
-              {yearLabel} · {semLabel}
+        <div className="folder-card__bottom">
+          <div className="folder-card__title-row">
+            <div className="flex flex-col gap-0.5 min-w-0">
+              <div className="folder-card__title truncate">{course.title}</div>
+              <div className="folder-card__subtitle truncate">
+                {yearLabel} · {semLabel}
+              </div>
             </div>
+            <span className="w-4 flex-shrink-0" aria-hidden="true" />
+          </div>
+          <div className="folder-card__count">
+            {course.notes.length} {course.notes.length === 1 ? "Note" : "Notes"}
           </div>
         </div>
-        <div className="folder-card__count">
-          {course.notes.length} {course.notes.length === 1 ? "Note" : "Notes"}
+      </button>
+
+      <button
+        type="button"
+        onClick={(e) => {
+          e.preventDefault();
+          setShowSwatches(false);
+          setMenuOpen((v) => !v);
+        }}
+        aria-expanded={menuOpen}
+        aria-haspopup="menu"
+        aria-label={`${course.title} folder options`}
+        className="absolute z-10 flex items-center justify-center cursor-pointer transition-colors"
+        style={{
+          top: 150,
+          right: 12,
+          width: 26,
+          height: 26,
+          borderRadius: 7,
+          background: menuOpen ? "rgba(255,255,255,0.22)" : "transparent",
+          border: 0,
+          color: "rgba(255,255,255,0.85)",
+        }}
+      >
+        <MoreHorizontal size={16} />
+      </button>
+
+      {menuOpen && (
+        <div
+          role="menu"
+          className="absolute z-20"
+          style={{
+            top: 180,
+            right: 12,
+            minWidth: 184,
+            padding: 6,
+            background: "var(--surface)",
+            border: "1px solid var(--line-2)",
+            borderRadius: "var(--radius-lg)",
+            boxShadow: "var(--shadow-3)",
+          }}
+        >
+          <button
+            type="button"
+            role="menuitem"
+            onClick={() => {
+              closeMenu();
+              onClick();
+            }}
+            className="flex items-center gap-2.5 w-full text-left cursor-pointer"
+            style={{
+              padding: "8px 10px",
+              borderRadius: "var(--radius-md)",
+              background: "transparent",
+              border: 0,
+              color: "var(--text-2)",
+              fontSize: "var(--text-body-sm)",
+            }}
+          >
+            <FolderOpen size={15} /> Open folder
+          </button>
+
+          <button
+            type="button"
+            role="menuitem"
+            onClick={() => setShowSwatches((v) => !v)}
+            aria-expanded={showSwatches}
+            className="flex items-center gap-2.5 w-full text-left cursor-pointer"
+            style={{
+              padding: "8px 10px",
+              borderRadius: "var(--radius-md)",
+              background: showSwatches ? "var(--surface-2)" : "transparent",
+              border: 0,
+              color: "var(--text-2)",
+              fontSize: "var(--text-body-sm)",
+            }}
+          >
+            <Palette size={15} /> Change colour
+          </button>
+
+          {showSwatches && (
+            <div
+              className="grid"
+              style={{
+                gridTemplateColumns: "repeat(5, 1fr)",
+                gap: 8,
+                padding: "8px 6px 4px",
+              }}
+            >
+              {VARIANT_SWATCH.map((s) => {
+                const active = s.variant === color;
+                return (
+                  <button
+                    key={s.variant}
+                    type="button"
+                    role="menuitemradio"
+                    aria-checked={active}
+                    aria-label={s.variant}
+                    onClick={() => {
+                      setColor(s.variant);
+                      closeMenu();
+                    }}
+                    className="flex items-center justify-center cursor-pointer transition-transform hover:scale-110"
+                    style={{
+                      width: 24,
+                      height: 24,
+                      borderRadius: "50%",
+                      background: s.color,
+                      border: 0,
+                      boxShadow: active
+                        ? "0 0 0 2px var(--surface), 0 0 0 4px var(--text)"
+                        : "0 0 0 1px rgba(0,0,0,0.06) inset",
+                    }}
+                  >
+                    {active && <Check size={12} color="#fff" strokeWidth={3} />}
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
-      </div>
-    </button>
+      )}
+    </div>
   );
 }
 
