@@ -1,0 +1,1781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sikia Law — Document</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  :root {
+    --bg: #ffffff; --bg-muted: #fafafa;
+    --surface: #ffffff; --surface-2: #f4f4f5; --surface-3: #e8e8ea;
+    --line: #dcdcdf; --line-2: #ececee;
+    --text: #0f0f10; --text-2: #525255; --text-3: #8a8a8f;
+    --accent: #0f0f10; --accent-fg: #ffffff;
+    --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  @font-face {
+    font-family: "FA";
+    src: url("fonts/fontawesome-regular.otf") format("opentype");
+    font-weight: 400; font-style: normal; font-display: block;
+  }
+  .fa { font-family: "FA"; font-style: normal; font-weight: 400; display: inline-block; line-height: 1; -webkit-font-smoothing: antialiased; }
+  .fa-search::before     { content: "\f002"; }
+  .fa-home::before       { content: "\f015"; }
+  .fa-file-lines::before { content: "\f15c"; }
+  .fa-book::before       { content: "\f02d"; }
+  .fa-bookmark::before   { content: "\f02e"; }
+  .fa-folder::before     { content: "\f07b"; }
+  .fa-folder-plus::before { content: "\f65e"; }
+  .fa-download::before   { content: "\f019"; }
+  .fa-arrow-up-right::before { content: "\f08e"; }
+  .fa-arrow-up::before   { content: "\f062"; }
+  .fa-arrow-left::before { content: "\f060"; }
+  .fa-chevron-right::before { content: "\f054"; }
+  .fa-chevron-left::before { content: "\f053"; }
+  .fa-plus::before       { content: "\2b"; }
+  .fa-check::before      { content: "\f00c"; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+    color: var(--text); background: var(--bg-muted);
+    line-height: 1.5; -webkit-font-smoothing: antialiased; min-height: 100vh;
+  }
+  h1, h2, h3, h4 { font-weight: 600; letter-spacing: -0.015em; color: var(--text); margin: 0; }
+  p { margin: 0; color: var(--text-2); }
+  a { color: inherit; }
+
+  /* Shell */
+  .dash-shell { display: grid; grid-template-columns: 272px 1fr; min-height: 100vh; }
+  .sidebar { background: var(--surface); border-right: 1px solid var(--line-2); padding: 26px 18px 16px; display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; }
+  .sidebar-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); padding: 4px 10px; margin-bottom: 36px; }
+  .logo-mark { width: 32px; height: 32px; border-radius: 9px; background: var(--text); color: var(--accent-fg); display: flex; align-items: center; justify-content: center; font-size: 0.92rem; font-weight: 700; }
+  .logo-word { font-weight: 600; font-size: 1.05rem; letter-spacing: -0.01em; }
+  .side-nav { display: flex; flex-direction: column; gap: 4px; }
+  .side-nav-item { display: flex; align-items: center; gap: 14px; padding: 11px 12px; border-radius: 10px; font-size: 0.96rem; font-weight: 500; color: var(--text-2); text-decoration: none; transition: background 0.18s ease, color 0.18s ease; }
+  .side-nav-item .nav-ico { width: 22px; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 1.05rem; color: var(--text-3); transition: color 0.18s ease; }
+  .side-nav-item:hover { background: var(--surface-2); color: var(--text); }
+  .side-nav-item:hover .nav-ico { color: var(--text); }
+  .side-nav-item.active { background: var(--surface-2); color: var(--text); font-weight: 600; }
+  .side-nav-item.active .nav-ico { color: var(--text); }
+  .nav-count { margin-left: auto; font-size: 0.74rem; font-weight: 500; padding: 2px 9px; border-radius: 999px; border: 1px solid var(--line); color: var(--text-2); min-width: 28px; text-align: center; }
+  .sidebar-foot { margin-top: auto; padding: 12px 10px; display: flex; align-items: center; gap: 12px; border-radius: 10px; text-decoration: none; transition: background 0.18s ease; }
+  .sidebar-foot:hover { background: var(--surface-2); }
+  .avatar-md { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, var(--surface-3), var(--surface-2)); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; font-size: 0.84rem; font-weight: 600; color: var(--text-2); flex-shrink: 0; }
+  .user-block { min-width: 0; }
+  .user-block .name { font-size: 0.96rem; font-weight: 600; color: var(--text); line-height: 1.2; }
+  .user-block .meta { font-size: 0.78rem; color: var(--text-3); margin-top: 2px; }
+
+  .main { padding: 22px 36px 80px; min-width: 0; }
+
+  .topbar { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; }
+  .search-input { flex: 1; max-width: 480px; display: flex; align-items: center; gap: 10px; padding: 9px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+  .search-input:focus-within { border-color: var(--text-2); box-shadow: 0 0 0 4px rgba(15, 15, 16, 0.05); }
+  .search-input input { flex: 1; border: none; outline: none; background: transparent; font-family: inherit; font-size: 0.9rem; color: var(--text); }
+  .search-input input::placeholder { color: var(--text-3); }
+  .search-input .fa { color: var(--text-3); font-size: 0.95rem; }
+  .topbar-spacer { flex: 1; }
+  .kbd { font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; background: var(--surface-2); border: 1px solid var(--line-2); color: var(--text-3); font-family: ui-monospace, monospace; }
+
+  /* Document toolbar — back link left, action icons right */
+  .doc-toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 18px; gap: 16px;
+  }
+  .back-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    color: var(--text-2); text-decoration: none;
+    font-size: 0.92rem; font-weight: 500;
+    padding: 6px 4px; border-radius: 6px;
+    transition: color 0.15s ease, gap 0.15s ease;
+  }
+  .back-link:hover { color: var(--text); gap: 10px; }
+
+  .doc-actions { display: flex; align-items: center; gap: 6px; }
+  .icon-btn {
+    width: 38px; height: 38px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border: 1px solid var(--line); background: var(--surface);
+    color: var(--text-2);
+    border-radius: 9px; cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+    text-decoration: none;
+  }
+  .icon-btn:hover { background: var(--surface-2); border-color: var(--text-3); color: var(--text); }
+  .icon-btn:active { transform: scale(0.95); }
+  .icon-btn.active { background: var(--text); color: var(--accent-fg); border-color: var(--text); }
+  .icon-btn .fa { font-size: 0.95rem; }
+
+  .pill-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    height: 38px; padding: 0 16px;
+    border: 1px solid var(--text); background: var(--text); color: var(--accent-fg);
+    border-radius: 9px; cursor: pointer;
+    font-family: inherit; font-size: 0.88rem; font-weight: 500;
+    transition: background 0.15s ease, transform 0.1s ease;
+  }
+  .pill-btn:hover { background: #2c2c2f; }
+  .pill-btn:active { transform: scale(0.97); }
+  .pill-btn .fa { font-size: 0.9rem; }
+
+  /* Two-column reader layout */
+  .reader {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 56px;
+    align-items: start;
+  }
+
+  /* Prose column */
+  .prose-col { min-width: 0; max-width: 720px; }
+
+  .breadcrumb { font-size: 0.82rem; color: var(--text-3); display: flex; gap: 6px; align-items: center; margin-bottom: 16px; flex-wrap: wrap; }
+  .breadcrumb a { text-decoration: none; }
+  .breadcrumb a:hover { color: var(--text); }
+  .breadcrumb-active { color: var(--text-2); }
+
+  .doc-tag {
+    display: inline-flex; align-items: center;
+    padding: 5px 14px; margin-bottom: 18px;
+    border: 1px solid var(--line); border-radius: 999px;
+    font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-2); font-weight: 500;
+    background: var(--surface);
+  }
+
+  .doc-title {
+    font-size: 2.1rem; line-height: 1.18; letter-spacing: -0.022em;
+    font-weight: 700; color: var(--text);
+    margin-bottom: 18px;
+  }
+  .doc-meta-row {
+    display: flex; flex-wrap: wrap; gap: 14px 24px;
+    color: var(--text-2); font-size: 0.92rem;
+    padding-bottom: 22px; margin-bottom: 32px;
+    border-bottom: 1px solid var(--line-2);
+  }
+  .doc-meta-item { display: flex; align-items: center; gap: 8px; }
+  .doc-meta-item::before {
+    content: ""; width: 4px; height: 4px; border-radius: 50%;
+    background: var(--surface-3);
+  }
+  .doc-meta-item:first-child::before { display: none; }
+
+  /* Reader prose typography — modeled on v1 case-reader treatment */
+  .prose {
+    color: var(--text);
+    font-size: 1.05rem; line-height: 1.85;
+    font-weight: 400;
+    text-rendering: optimizeLegibility;
+    -webkit-font-feature-settings: "kern", "liga", "calt";
+            font-feature-settings: "kern", "liga", "calt";
+  }
+  .prose > *:first-child { margin-top: 0; }
+  .prose h1 {
+    font-size: 1.75rem; margin: 52px 0 18px; line-height: 1.25;
+    font-weight: 700; letter-spacing: -0.02em;
+  }
+  .prose h2 {
+    font-size: 1.5rem; margin: 60px 0 20px; line-height: 1.3;
+    padding-bottom: 12px; font-weight: 700; letter-spacing: -0.015em;
+    border-bottom: 1px solid var(--line-2);
+  }
+  .prose h3 {
+    font-size: 1.18rem; margin: 38px 0 12px; line-height: 1.4;
+    font-weight: 600; letter-spacing: -0.005em;
+  }
+  .prose h4 { font-size: 1.04rem; margin: 28px 0 8px; font-weight: 600; }
+  .prose p { color: var(--text); margin: 0 0 22px; }
+  .prose ul, .prose ol { margin: 8px 0 22px; padding-left: 28px; color: var(--text); }
+  .prose li { margin-bottom: 10px; line-height: 1.75; }
+  .prose li > p { margin: 0 0 6px; }
+  .prose li::marker { color: var(--text-3); }
+  .prose em, .prose i { font-style: italic; }
+  .prose strong, .prose b { font-weight: 600; }
+  .prose blockquote {
+    border-left: 3px solid var(--line);
+    padding: 4px 0 4px 20px; margin: 24px 0;
+    color: var(--text-2); font-style: italic;
+  }
+  .prose hr { border: 0; border-top: 1px solid var(--line-2); margin: 36px 0; }
+  .prose a {
+    color: var(--text); text-decoration: underline;
+    text-underline-offset: 3px; text-decoration-color: var(--line);
+    transition: text-decoration-color 0.15s ease;
+  }
+  .prose a:hover { text-decoration-color: var(--text); }
+
+  /* Hide PDF-page artifacts — they're source boundaries, not part of the reading experience */
+  .prose .page-label { display: none; }
+  .prose .page { margin: 0; padding: 0; border: 0; }
+  .prose .empty-page { display: none; }
+
+  .reader-loading {
+    padding: 60px 0; color: var(--text-3); font-size: 0.95rem; text-align: center;
+  }
+
+  /* Right rail */
+  .rail {
+    position: sticky; top: 22px;
+    display: flex; flex-direction: column; gap: 14px;
+    align-self: start;
+    max-height: calc(100vh - 44px);
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+  .rail-card {
+    background: var(--surface); border: 1px solid var(--line-2);
+    border-radius: 14px; padding: 16px 14px;
+  }
+  .rail-label {
+    font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--text-3); font-weight: 600;
+    padding: 0 4px 12px; margin-bottom: 6px;
+    border-bottom: 1px solid var(--line-2);
+  }
+
+  .toc-list { display: flex; flex-direction: column; gap: 1px; }
+  .toc-item {
+    display: block; padding: 7px 10px;
+    font-size: 0.86rem; color: var(--text-2);
+    text-decoration: none; border-radius: 8px;
+    line-height: 1.4;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .toc-item:hover { background: var(--surface-2); color: var(--text); }
+  .toc-item.active {
+    background: var(--surface-2); color: var(--text); font-weight: 600;
+  }
+  .toc-item.h3 { padding-left: 22px; font-size: 0.82rem; color: var(--text-3); }
+  .toc-item.h4 { padding-left: 32px; font-size: 0.78rem; color: var(--text-3); }
+  .toc-empty { padding: 10px; color: var(--text-3); font-size: 0.82rem; text-align: center; }
+
+  .rail-item {
+    display: block; padding: 9px 10px;
+    border-radius: 8px;
+    text-decoration: none; color: inherit;
+    transition: background 0.15s ease;
+  }
+  .rail-item:hover { background: var(--surface-2); }
+  .rail-item-title { font-size: 0.86rem; font-weight: 500; line-height: 1.3; color: var(--text); }
+  .rail-item-sub { font-size: 0.74rem; color: var(--text-3); margin-top: 3px; }
+  .rail-empty { padding: 10px; color: var(--text-3); font-size: 0.82rem; font-style: italic; }
+  .rail-info {
+    margin-top: 8px; padding: 8px 10px;
+    font-size: 0.74rem; color: var(--text-3);
+    background: var(--bg-muted);
+    border-radius: 8px; line-height: 1.45;
+  }
+
+  /* Folder popover */
+  .folder-popover-wrap { position: relative; }
+  .folder-popover {
+    position: absolute; top: calc(100% + 6px); right: 0;
+    width: 280px;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 12px;
+    box-shadow: 0 18px 36px -16px rgba(0,0,0,0.16);
+    padding: 6px;
+    display: none; z-index: 50;
+    animation: popIn 0.18s var(--ease-out);
+  }
+  .folder-popover.open { display: block; }
+  @keyframes popIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .pop-toast {
+    margin: 4px 6px 6px;
+    padding: 8px 12px; border-radius: 8px;
+    background: var(--surface-2); color: var(--text-2);
+    font-size: 0.82rem;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .pop-toast .fa { color: var(--text); }
+  .pop-head { padding: 8px 12px 4px; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); font-weight: 600; }
+  .folder-row { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 8px; font-size: 0.88rem; cursor: pointer; transition: background 0.12s ease; }
+  .folder-row:hover, .folder-row.selected { background: var(--surface-2); }
+  .folder-row .fa { color: var(--text-3); width: 16px; }
+  .folder-row .check { margin-left: auto; opacity: 0; color: var(--text); transition: opacity 0.15s ease; }
+  .folder-row.selected .check { opacity: 1; }
+  .folder-divider { height: 1px; background: var(--line-2); margin: 4px 8px; }
+  .folder-new { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 8px; font-size: 0.88rem; color: var(--text-2); cursor: pointer; transition: background 0.12s ease, color 0.12s ease; }
+  .folder-new:hover { background: var(--surface-2); color: var(--text); }
+  .folder-new .fa { width: 16px; }
+
+  /* Footer nav */
+  .doc-foot-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 60px; padding-top: 28px; border-top: 1px solid var(--line-2); }
+  .foot-nav-card { display: flex; flex-direction: column; gap: 5px; padding: 16px 18px; border: 1px solid var(--line-2); border-radius: 12px; background: var(--surface); text-decoration: none; color: inherit; cursor: pointer; transition: transform 0.18s var(--ease-out), border-color 0.18s ease; }
+  .foot-nav-card:hover { transform: translateY(-2px); border-color: var(--text-3); }
+  .foot-nav-card.disabled { opacity: 0.4; pointer-events: none; }
+  .foot-nav-card.next { text-align: right; }
+  .foot-nav-label { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-3); display: flex; align-items: center; gap: 6px; }
+  .foot-nav-card.next .foot-nav-label { justify-content: flex-end; }
+  .foot-nav-title { font-size: 0.95rem; font-weight: 500; line-height: 1.3; }
+
+  /* Toast */
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--text); color: var(--accent-fg); padding: 10px 16px; border-radius: 8px; font-size: 0.85rem; box-shadow: 0 8px 24px -10px rgba(0,0,0,0.3); opacity: 0; pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease; z-index: 100; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(-2px); }
+
+  @media (max-width: 1100px) {
+    .reader { grid-template-columns: 1fr; }
+    .rail { position: static; max-height: none; order: 2; }
+    .prose-col { order: 1; max-width: none; }
+  }
+  @media (max-width: 900px) {
+    .dash-shell { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .main { padding: 16px; }
+    .doc-title { font-size: 1.5rem; }
+    .doc-foot-nav { grid-template-columns: 1fr; }
+  }
+
+  /* Print: hide chrome, show only the prose column */
+  @media print {
+    .sidebar, .topbar, .doc-toolbar, .rail, .doc-foot-nav, .breadcrumb { display: none !important; }
+    .dash-shell { display: block; }
+    .main { padding: 0; }
+    .reader { display: block; }
+    .prose-col { max-width: none; }
+    .doc-meta-row { color: #555; }
+  }
+
+  /* ─ Mobile drawer ────────────────────────────────────────── */
+  .menu-toggle {
+    display: none;
+    width: 40px; height: 40px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    border-radius: 9px;
+    align-items: center; justify-content: center;
+    cursor: pointer; color: var(--text); flex-shrink: 0;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+  }
+  .menu-toggle:hover { background: var(--surface-2); border-color: var(--text-3); }
+  .menu-toggle:active { transform: scale(0.94); }
+  .menu-toggle svg { width: 18px; height: 18px; display: block; }
+  .sidebar-backdrop {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(15, 15, 16, 0.4);
+    z-index: 40;
+    animation: backdropFade 0.2s ease;
+  }
+  @keyframes backdropFade { from { opacity: 0; } to { opacity: 1; } }
+  .dash-shell.sidebar-open .sidebar-backdrop { display: block; }
+  @media (max-width: 900px) {
+    .menu-toggle { display: inline-flex; }
+    body.menu-open { overflow: hidden; }
+    .dash-shell .sidebar {
+      display: flex !important;
+      position: fixed; top: 0; left: 0;
+      width: 280px; max-width: 85vw;
+      height: 100vh;
+      z-index: 50;
+      transform: translateX(-100%);
+      transition: transform 0.28s var(--ease-out);
+      box-shadow: 0 0 40px rgba(0,0,0,0.18);
+    }
+    .dash-shell.sidebar-open .sidebar { transform: translateX(0); }
+    .topbar { gap: 8px; }
+    .search-input, .search-input-top { max-width: none; }
+  }
+
+</style>
+</head>
+<body>
+
+<div class="dash-shell">
+  <aside class="sidebar">
+    <a class="sidebar-logo" href="sikia-dashboard.html"><span class="logo-mark">S</span><span class="logo-word">Sikia</span></a>
+    <nav class="side-nav">
+      <a class="side-nav-item" href="sikia-search.html"><span class="nav-ico"><i class="fa fa-search"></i></span>Search</a>
+      <a class="side-nav-item" href="sikia-dashboard.html"><span class="nav-ico"><i class="fa fa-home"></i></span>Home</a>
+      <a class="side-nav-item" href="sikia-notes.html"><span class="nav-ico"><i class="fa fa-file-lines"></i></span>Notes<span class="nav-count">87</span></a>
+      <a class="side-nav-item" href="sikia-library.html"><span class="nav-ico"><i class="fa fa-book"></i></span>Library</a>
+      <a class="side-nav-item" href="sikia-bookmarks.html"><span class="nav-ico"><i class="fa fa-bookmark"></i></span>Bookmarks<span class="nav-count">12</span></a>
+    </nav>
+    <a class="sidebar-foot" href="sikia-profile.html">
+      <div class="avatar-md">AM</div>
+      <div class="user-block"><div class="name">Amelia M.</div><div class="meta">Year 2 · Makerere</div></div>
+    </a>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <button class="menu-toggle" aria-label="Open menu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <label class="search-input">
+        <i class="fa fa-search"></i>
+        <input type="text" placeholder="Search notes, course units, or topics" />
+        <span class="kbd">⌘K</span>
+      </label>
+      <div class="topbar-spacer"></div>
+    </div>
+
+    <div class="doc-toolbar">
+      <a class="back-link" href="sikia-notes.html"><i class="fa fa-arrow-left"></i>Back to Notes</a>
+      <div class="doc-actions" id="doc-actions"></div>
+    </div>
+
+    <div class="reader">
+      <div class="prose-col">
+        <div class="breadcrumb" id="breadcrumb"></div>
+        <div class="doc-tag" id="doc-tag">Note</div>
+        <h1 class="doc-title" id="doc-title">Loading…</h1>
+        <div class="doc-meta-row" id="doc-meta"></div>
+        <article class="prose" id="prose">
+          <div class="reader-loading">Loading note content…</div>
+        </article>
+
+        <nav class="doc-foot-nav" id="doc-foot-nav"></nav>
+      </div>
+
+      <aside class="rail">
+        <div class="rail-card">
+          <div class="rail-label">In this note</div>
+          <div class="toc-list" id="toc"><div class="toc-empty">Building table of contents…</div></div>
+        </div>
+        <div class="rail-card">
+          <div class="rail-label">Cited references</div>
+          <div id="cited"><div class="rail-empty">No references detected yet.</div></div>
+          <div class="rail-info">Detection of references to library cases and statutes will be wired up once the Library has content.</div>
+        </div>
+        <div class="rail-card">
+          <div class="rail-label">Other notes in this course</div>
+          <div id="related"><div class="rail-empty">—</div></div>
+        </div>
+      </aside>
+    </div>
+  </main>
+  <div class="sidebar-backdrop"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="notes-content/manifest.js"></script>
+<script>
+  const CURRICULUM = {
+  "_meta": {
+    "source": "Students Notes Work Flow.xlsx (provided by client, Apr 2026)",
+    "structure": "Year → Semester → Course Unit → Notes",
+    "source_of_truth": "The curriculum spreadsheet — confirmed by client. PDF placement in the Notes/ folder is informational only; courses are surfaced in the year/semester the spreadsheet specifies, regardless of which folder the file lives in.",
+    "notes_path_base": "Notes/",
+    "course_code_format": "LAW [Y][S][NN] where Y=year (1-4), S=1 for Sem 1, 2 for Sem 2, NN=course number. A few legacy entries don't have codes."
+  },
+  "years": [
+    {
+      "year": 1,
+      "label": "Year 1",
+      "semesters": [
+        {
+          "semester": 1,
+          "label": "Semester 1",
+          "courses": [
+            {
+              "code": "LAW 1106",
+              "title": "Introducing Law",
+              "notes": [
+                {
+                  "title": "Introducing Law Notes",
+                  "file": "YR 1 SEM 1/PDFs/Introducing law notes(1).pdf",
+                  "html_file": "HTML/YR 1 SEM 1/Introducing law notes(1).html"
+                },
+                {
+                  "title": "Foundations of Law — Questions and Answers (2017)",
+                  "file": "YR 1 SEM 1/PDFs/FOUNDATIONS_OF_LAW_QUESTIONS_AND_ANSWERS_2017[1] (Autosaved).pdf",
+                  "html_file": "HTML/YR 1 SEM 1/FOUNDATIONS_OF_LAW_QUESTIONS_AND_ANSWERS_2017[1] (Autosaved).html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 1107",
+              "title": "Development Studies",
+              "notes": []
+            },
+            {
+              "code": "LAW 1108",
+              "title": "Fundamentals of Criminal Law",
+              "notes": [
+                {
+                  "title": "Criminal Law — Jorvan Notes",
+                  "file": "YR 1 SEM 1/PDFs/Criminal Law 1 - jorvannotes.pdf",
+                  "html_file": "HTML/YR 1 SEM 1/Criminal Law 1 - jorvannotes.html"
+                },
+                {
+                  "title": "Criminal Law Notes K",
+                  "file": "YR 1 SEM 1/PDFs/Criminal Law notes K.pdf",
+                  "html_file": "HTML/YR 1 SEM 1/Criminal Law notes K.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 1109",
+              "title": "Law of Contracts I",
+              "notes": [
+                {
+                  "title": "Notes on Contract 1 and 2 (Uganda)",
+                  "file": "YR 1 SEM 1/PDFs/NOTES_ON_CONTRACT_1_and_2_Ug (1).pdf",
+                  "_also_used_by": [
+                    "LAW 1209"
+                  ],
+                  "html_file": "HTML/YR 1 SEM 1/NOTES_ON_CONTRACT_1_and_2_Ug (1).html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 1110",
+              "title": "Principles of Constitutional Law I",
+              "notes": [
+                {
+                  "title": "1900 Buganda Agreement",
+                  "file": "YR 1 SEM 1/PDFs/1900 BUGANDA AGREEMENT.pdf",
+                  "html_file": "HTML/YR 1 SEM 1/1900 BUGANDA AGREEMENT.html"
+                },
+                {
+                  "title": "Constitutional History — Notes by Dr Onoria",
+                  "file": "YR 1 SEM 1/PDFs/CONSTITUTIONAL HISTORY NOTES Dr ONORIA-1(4).pdf",
+                  "html_file": "HTML/YR 1 SEM 1/CONSTITUTIONAL HISTORY NOTES Dr ONORIA-1(4).html"
+                },
+                {
+                  "title": "Constitutional History Notes (2021)",
+                  "file": "YR 1 SEM 1/PDFs/Constitutional History Notes 2021.pdf",
+                  "html_file": "HTML/YR 1 SEM 1/Constitutional History Notes 2021.html"
+                },
+                {
+                  "title": "MU Constitutional History Notes",
+                  "file": "YR 1 SEM 1/PDFs/MU-CONSTITUTIONAL HISTORY NOTES.pdf",
+                  "html_file": "HTML/YR 1 SEM 1/MU-CONSTITUTIONAL HISTORY NOTES.html"
+                },
+                {
+                  "title": "Constitutional History — Finale",
+                  "file": "YR 1 SEM 1/PDFs/Notes_Constitutional_Hist_Finale_A___12_(1)[1].pdf",
+                  "html_file": "HTML/YR 1 SEM 1/Notes_Constitutional_Hist_Finale_A___12_(1)[1].html"
+                },
+                {
+                  "title": "Constitutional History (MUK)",
+                  "file": "YR 1 SEM 1/PDFs/constitutional History MUK.pdf",
+                  "html_file": "HTML/YR 1 SEM 1/constitutional History MUK.html"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "semester": 2,
+          "label": "Semester 2",
+          "courses": [
+            {
+              "code": null,
+              "title": "Communication Skills",
+              "notes": [
+                {
+                  "title": "Communication Skills Notes (A)",
+                  "file": "YR 1 SEM 1/PDFs/COMMUNICATION SKILLS NOTES .pdf",
+                  "_filed_in": "YR 1 SEM 1",
+                  "html_file": "HTML/YR 1 SEM 1/COMMUNICATION SKILLS NOTES .html"
+                },
+                {
+                  "title": "Communication Skills Notes (B)",
+                  "file": "YR 1 SEM 1/PDFs/COMMUNICATION-SKILLS-NOTES-B.pdf",
+                  "_filed_in": "YR 1 SEM 1",
+                  "html_file": "HTML/YR 1 SEM 1/COMMUNICATION-SKILLS-NOTES-B.html"
+                },
+                {
+                  "title": "Communication Skills Notes (C)",
+                  "file": "YR 1 SEM 2/PDFs/COMMUNICATION SKILLS NOTES C.pdf",
+                  "html_file": "HTML/YR 1 SEM 2/COMMUNICATION SKILLS NOTES C.html"
+                }
+              ]
+            },
+            {
+              "code": null,
+              "title": "Legal Methods",
+              "notes": [
+                {
+                  "title": "Legal Methods — Questions and Answers",
+                  "file": "YR 1 SEM 2/PDFs/LEGAL METHODS QUESTIONS AND ANSWERS (1).pdf",
+                  "html_file": "HTML/YR 1 SEM 2/LEGAL METHODS QUESTIONS AND ANSWERS (1).html"
+                },
+                {
+                  "title": "Legal Methods Notes",
+                  "file": "YR 1 SEM 2/PDFs/Legal Method Notes 1.pdf",
+                  "html_file": "HTML/YR 1 SEM 2/Legal Method Notes 1.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 1207",
+              "title": "Administrative Law I",
+              "notes": []
+            },
+            {
+              "code": "LAW 1208",
+              "title": "Criminal Liability",
+              "notes": [
+                {
+                  "title": "LLB Fundamentals of Criminal Law Notes",
+                  "file": "YR 1 SEM 2/PDFs/LLB Fundamentals of Criminal Law Notes.pdf",
+                  "html_file": "HTML/YR 1 SEM 2/LLB Fundamentals of Criminal Law Notes.html"
+                },
+                {
+                  "title": "Shisa Robert — Strict Liability Notes",
+                  "file": "YR 1 SEM 2/PDFs/SHISA_ROBERT_STRICT_LIABILITY_NOTES.pdf",
+                  "html_file": "HTML/YR 1 SEM 2/SHISA_ROBERT_STRICT_LIABILITY_NOTES.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 1209",
+              "title": "Law of Contracts II",
+              "notes": [
+                {
+                  "title": "Law of Contract II Notes",
+                  "file": "YR 1 SEM 2/PDFs/LAW OF CONTRACT-2 Notes.pdf",
+                  "html_file": "HTML/YR 1 SEM 2/LAW OF CONTRACT-2 Notes.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 1210",
+              "title": "Principles of Constitutional Law II",
+              "notes": [
+                {
+                  "title": "Constitutional Law Notes — Finale",
+                  "file": "YR 1 SEM 2/PDFs/CONSTITUTIONAL LAW NOTES   finale.pdf",
+                  "html_file": "HTML/YR 1 SEM 2/CONSTITUTIONAL LAW NOTES   finale.html"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "year": 2,
+      "label": "Year 2",
+      "semesters": [
+        {
+          "semester": 1,
+          "label": "Semester 1",
+          "courses": [
+            {
+              "code": "LAW 2106",
+              "title": "Nature & History of Torts",
+              "notes": []
+            },
+            {
+              "code": "LAW 2107",
+              "title": "Administrative Law II",
+              "notes": [
+                {
+                  "title": "Administrative Law II Notes",
+                  "file": "YR 2 SEM 1/PDFs/ADMINISTRATIVE LAW 2.pdf",
+                  "html_file": "HTML/YR 2 SEM 1/ADMINISTRATIVE LAW 2.html"
+                },
+                {
+                  "title": "Administrative Law Summary",
+                  "file": "YR 2 SEM 1/PDFs/ADMINISTRATIVE LAW sammary.pdf",
+                  "html_file": "HTML/YR 2 SEM 1/ADMINISTRATIVE LAW sammary.html"
+                },
+                {
+                  "title": "Full Administrative Law Reading List & Class Notes",
+                  "file": "YR 2 SEM 1/PDFs/Full Administrative Law Reading List and Class Notes_1 - Copy.pdf",
+                  "html_file": "HTML/YR 2 SEM 1/Full Administrative Law Reading List and Class Notes_1 - Copy.html"
+                },
+                {
+                  "title": "Full Admin II Notes",
+                  "file": "YR 2 SEM 2/PDFs/Full Admin 2 Notes.pdf",
+                  "_filed_in": "YR 2 SEM 2",
+                  "html_file": "HTML/YR 2 SEM 2/Full Admin 2 Notes.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 2108",
+              "title": "Equity & Trusts",
+              "notes": [
+                {
+                  "title": "Equity & Trusts — Q&A",
+                  "file": "YR 2 SEM 2/PDFs/EQUITY AND TRUST Q&A.pdf",
+                  "_filed_in": "YR 2 SEM 2",
+                  "html_file": "HTML/YR 2 SEM 2/EQUITY AND TRUST Q&A.html"
+                },
+                {
+                  "title": "Equity & Trusts Notes (2021)",
+                  "file": "YR 2 SEM 2/PDFs/EQUITY AND TRUSTS NOTES 2021.pdf",
+                  "_filed_in": "YR 2 SEM 2",
+                  "html_file": "HTML/YR 2 SEM 2/EQUITY AND TRUSTS NOTES 2021.html"
+                }
+              ]
+            },
+            {
+              "code": null,
+              "title": "Company Law I",
+              "notes": [
+                {
+                  "title": "Company Law Notes",
+                  "file": "YR 2 SEM 1/PDFs/Company-law-Notespdf.pdf",
+                  "html_file": "HTML/YR 2 SEM 1/Company-law-Notespdf.html"
+                }
+              ]
+            },
+            {
+              "code": null,
+              "title": "Sale of Goods",
+              "notes": [
+                {
+                  "title": "Sale of Goods",
+                  "file": "YR 2 SEM 1/PDFs/Sale of Goods.pdf",
+                  "html_file": "HTML/YR 2 SEM 1/Sale of Goods.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 2109",
+              "title": "Law of Evidence I",
+              "notes": []
+            },
+            {
+              "code": null,
+              "title": "Foundations of Land Law",
+              "notes": []
+            }
+          ]
+        },
+        {
+          "semester": 2,
+          "label": "Semester 2",
+          "courses": [
+            {
+              "code": "LAW 2207",
+              "title": "Negligence, Strict Liability & Procedure in Torts",
+              "notes": [
+                {
+                  "title": "TORTS",
+                  "file": "YR 2 SEM 2/PDFs/ TORTS.pdf",
+                  "html_file": "HTML/YR 2 SEM 2/ TORTS.html"
+                },
+                {
+                  "title": "Negligence and Strict Liability Notes",
+                  "file": "YR 2 SEM 2/PDFs/NEGLIGENCE and STRICT LIABILITY. NOTES.pdf",
+                  "html_file": "HTML/YR 2 SEM 2/NEGLIGENCE and STRICT LIABILITY. NOTES.html"
+                },
+                {
+                  "title": "Tort Class Material Notes",
+                  "file": "YR 2 SEM 2/PDFs/Tort class material NOTES .pdf",
+                  "html_file": "HTML/YR 2 SEM 2/Tort class material NOTES .html"
+                },
+                {
+                  "title": "Negligence and Strict Liability (2)",
+                  "file": "YR 2 SEM 1/PDFs/NEGLIGENCE_and_STRICT_LIABILITY._NOTES.pdf (1).pdf",
+                  "_filed_in": "YR 2 SEM 1",
+                  "html_file": "HTML/YR 2 SEM 1/NEGLIGENCE_and_STRICT_LIABILITY._NOTES.pdf (1).html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 2208",
+              "title": "Social Research Methods",
+              "notes": [
+                {
+                  "title": "Research Methods Notes (Groups Combined)",
+                  "file": "YR 4 SEM 1/PDFs/RESEARCH METHODS NOTES.docx  GROUPS COMBINED .pdf",
+                  "_filed_in": "YR 4 SEM 1",
+                  "html_file": "HTML/YR 4 SEM 1/RESEARCH METHODS NOTES.docx  GROUPS COMBINED .html"
+                },
+                {
+                  "title": "Research Methods Notes",
+                  "file": "YR 4 SEM 1/PDFs/research-methods-notes.pdf",
+                  "_filed_in": "YR 4 SEM 1",
+                  "html_file": "HTML/YR 4 SEM 1/research-methods-notes.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 2209",
+              "title": "Family Law II",
+              "notes": [
+                {
+                  "title": "Family Law Notes",
+                  "file": "YR 2 SEM 1/PDFs/FAMILY_LAW_NOTES.pdf",
+                  "_filed_in": "YR 2 SEM 1",
+                  "html_file": "HTML/YR 2 SEM 1/FAMILY_LAW_NOTES.html"
+                },
+                {
+                  "title": "Family Law (Real Notes)",
+                  "file": "YR 2 SEM 1/PDFs/family-law-real-notes-1.pdf",
+                  "_filed_in": "YR 2 SEM 1",
+                  "html_file": "HTML/YR 2 SEM 1/family-law-real-notes-1.html"
+                },
+                {
+                  "title": "Family Law II Notes",
+                  "file": "YR 2 SEM 2/PDFs/family-2-notes.pdf",
+                  "html_file": "HTML/YR 2 SEM 2/family-2-notes.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 2210",
+              "title": "Law of Evidence II",
+              "notes": [
+                {
+                  "title": "Evidence II Notes",
+                  "file": "YR 3 SEM 2/PDFs/EVIDENCE 2 NOTES-12.pdf",
+                  "_filed_in": "YR 3 SEM 2",
+                  "html_file": "HTML/YR 3 SEM 2/EVIDENCE 2 NOTES-12.html"
+                },
+                {
+                  "title": "Law of Evidence II",
+                  "file": "YR 3 SEM 2/PDFs/LAW OF EVIDENCE 11.pdf",
+                  "_filed_in": "YR 3 SEM 2",
+                  "html_file": "HTML/YR 3 SEM 2/LAW OF EVIDENCE 11.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 2211",
+              "title": "Land Transactions",
+              "notes": [
+                {
+                  "title": "Land Law Main Notes",
+                  "file": "YR 2 SEM 1/PDFs/LAND_LAW_MAIN_NOTES_2[1].pdf",
+                  "_filed_in": "YR 2 SEM 1",
+                  "html_file": "HTML/YR 2 SEM 1/LAND_LAW_MAIN_NOTES_2[1].html"
+                },
+                {
+                  "title": "Escalating Land Conflicts in Uganda",
+                  "file": "YR 2 SEM 1/PDFs/Escalating Land Conflicts in Uganda.pdf",
+                  "_filed_in": "YR 2 SEM 1",
+                  "html_file": "HTML/YR 2 SEM 1/Escalating Land Conflicts in Uganda.html"
+                },
+                {
+                  "title": "Expropriated Properties",
+                  "file": "YR 2 SEM 2/PDFs/_EXPROPRIATED_PROPERTIES.pdf",
+                  "html_file": "HTML/YR 2 SEM 2/_EXPROPRIATED_PROPERTIES.html"
+                },
+                {
+                  "title": "Equitable Redemption of Mortgages",
+                  "file": "YR 2 SEM 2/PDFs/equitable redemtion of mortgages.pdf",
+                  "html_file": "HTML/YR 2 SEM 2/equitable redemtion of mortgages.html"
+                },
+                {
+                  "title": "Land Law II — Kitata (Mortgages)",
+                  "file": "YR 2 SEM 2/PDFs/land law 2- kitata (mortgage).pdf",
+                  "html_file": "HTML/YR 2 SEM 2/land law 2- kitata (mortgage).html"
+                },
+                {
+                  "title": "Land Law II — Lecture Notes",
+                  "file": "YR 2 SEM 2/PDFs/Land Law II-Lecture notes..pdf",
+                  "html_file": "HTML/YR 2 SEM 2/Land Law II-Lecture notes..html"
+                },
+                {
+                  "title": "Theories of Ownership",
+                  "file": "YR 2 SEM 2/PDFs/theories of ownership.pdf",
+                  "html_file": "HTML/YR 2 SEM 2/theories of ownership.html"
+                },
+                {
+                  "title": "Condominium Property in Uganda",
+                  "file": "YR 3 SEM 2/PDFs/CONDOMINIUM_PROPERTY_IN_UGANDA[1].pdf",
+                  "_filed_in": "YR 3 SEM 2",
+                  "html_file": "HTML/YR 3 SEM 2/CONDOMINIUM_PROPERTY_IN_UGANDA[1].html"
+                }
+              ]
+            },
+            {
+              "code": null,
+              "title": "Company Law II",
+              "notes": [
+                {
+                  "title": "Company Law II — Aziz",
+                  "file": "YR 2 SEM 2/PDFs/company-law-2-aziz.pdf",
+                  "html_file": "HTML/YR 2 SEM 2/company-law-2-aziz.html"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "year": 3,
+      "label": "Year 3",
+      "semesters": [
+        {
+          "semester": 1,
+          "label": "Semester 1",
+          "courses": [
+            {
+              "code": "LAW 3109",
+              "title": "Family Law II (core)",
+              "notes": [],
+              "_flag": "Conflict — also listed as LAW 2209 in Year 2 Sem 2. Awaiting client confirmation."
+            },
+            {
+              "code": "LAW 3110",
+              "title": "Law of Sale of Goods & Hire Purchase (core)",
+              "notes": [
+                {
+                  "title": "Law of Sale of Goods Notes",
+                  "file": "YR 2 SEM 2/PDFs/LAW_OF_SALE_OF_GOODS_NOTES.pdf",
+                  "_filed_in": "YR 2 SEM 2",
+                  "html_file": "HTML/YR 2 SEM 2/LAW_OF_SALE_OF_GOODS_NOTES.html"
+                },
+                {
+                  "title": "Liability of Goods",
+                  "file": "YR 2 SEM 2/PDFs/LIABILITY OF GOODS.pdf",
+                  "_filed_in": "YR 2 SEM 2",
+                  "html_file": "HTML/YR 2 SEM 2/LIABILITY OF GOODS.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 3111",
+              "title": "Conflict of Laws",
+              "notes": []
+            },
+            {
+              "code": "LAW 3112",
+              "title": "Principles of International Law",
+              "notes": [
+                {
+                  "title": "International Organizations",
+                  "file": "YR 3 SEM 2/PDFs/International Organizations.pdf",
+                  "_filed_in": "YR 3 SEM 2",
+                  "html_file": "HTML/YR 3 SEM 2/International Organizations.html"
+                },
+                {
+                  "title": "Notes on International Dispute Settlement",
+                  "file": "YR 3 SEM 2/PDFs/notes-on-international-dispute-settlement.pdf",
+                  "_filed_in": "YR 3 SEM 2",
+                  "html_file": "HTML/YR 3 SEM 2/notes-on-international-dispute-settlement.html"
+                },
+                {
+                  "title": "Principles of International State Recognition",
+                  "file": "YR 3 SEM 2/PDFs/principles-of-intl-state-recognition (1).pdf",
+                  "_filed_in": "YR 3 SEM 2",
+                  "html_file": "HTML/YR 3 SEM 2/principles-of-intl-state-recognition (1).html"
+                },
+                {
+                  "title": "The Law of Use of Force — Lecture Notes",
+                  "file": "YR 3 SEM 2/PDFs/the-law-of-use-of-force-lecture-notes (1) (1).pdf",
+                  "_filed_in": "YR 3 SEM 2",
+                  "html_file": "HTML/YR 3 SEM 2/the-law-of-use-of-force-lecture-notes (1) (1).html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 3113",
+              "title": "Banking and Negotiable Instruments",
+              "notes": [
+                {
+                  "title": "Banking — Questions & Answers (Final)",
+                  "file": "YR 3 SEM 1/PDFs/BANKING - QNS & ANS - FINAL.pdf",
+                  "html_file": "HTML/YR 3 SEM 1/BANKING - QNS & ANS - FINAL.html"
+                },
+                {
+                  "title": "Banking Law Notes",
+                  "file": "YR 3 SEM 1/PDFs/Banking Law notes docx.pdf",
+                  "html_file": "HTML/YR 3 SEM 1/Banking Law notes docx.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 3114",
+              "title": "International & Regional Human Rights",
+              "notes": [
+                {
+                  "title": "International and Regional Human Rights Regimes",
+                  "file": "YR 4 SEM 1/PDFs/INTERNATIONAL AND REGIONAL HUMAN RIGHTS REGIMES.pdf",
+                  "_filed_in": "YR 4 SEM 1",
+                  "html_file": "HTML/YR 4 SEM 1/INTERNATIONAL AND REGIONAL HUMAN RIGHTS REGIMES.html"
+                }
+              ]
+            },
+            {
+              "code": null,
+              "title": "Jurisprudence",
+              "notes": [
+                {
+                  "title": "Jurisprudence Unit I",
+                  "file": "YR 3 SEM 1/PDFs/jurisprudence-Unit-I.pdf",
+                  "html_file": "HTML/YR 3 SEM 1/jurisprudence-Unit-I.html"
+                },
+                {
+                  "title": "Natural Theory of Law",
+                  "file": "YR 3 SEM 1/PDFs/NATURAL_THEORY_OF_LAW[2] (1).pdf",
+                  "html_file": "HTML/YR 3 SEM 1/NATURAL_THEORY_OF_LAW[2] (1).html"
+                },
+                {
+                  "title": "Jurisprudence I — Notes (Nuru)",
+                  "file": "YR 3 SEM 2/PDFs/jurisprudence 1 notes nuru2.pdf",
+                  "_filed_in": "YR 3 SEM 2",
+                  "html_file": "HTML/YR 3 SEM 2/jurisprudence 1 notes nuru2.html"
+                },
+                {
+                  "title": "Feminist Theory and the Law",
+                  "file": "YR 4 SEM 1/PDFs/Feminist theory and the Law.pdf",
+                  "_filed_in": "YR 4 SEM 1",
+                  "html_file": "HTML/YR 4 SEM 1/Feminist theory and the Law.html"
+                },
+                {
+                  "title": "Time Present and Time Past — Lord Reed Lecture",
+                  "file": "YR 3 SEM 2/PDFs/time-present-and-time-past-lord-reed-lecture.pdf",
+                  "_filed_in": "YR 3 SEM 2",
+                  "html_file": "HTML/YR 3 SEM 2/time-present-and-time-past-lord-reed-lecture.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 3115",
+              "title": "Civil Procedure I",
+              "notes": [
+                {
+                  "title": "Civil Procedure I Notes",
+                  "file": "YR 3 SEM 1/PDFs/CIVIL PROCEDURE 1 NOTES.pdf",
+                  "html_file": "HTML/YR 3 SEM 1/CIVIL PROCEDURE 1 NOTES.html"
+                },
+                {
+                  "title": "Civil Procedure 1 — Best Notes",
+                  "file": "YR 3 SEM 1/PDFs/Civil procedure 1 best notes.pdf",
+                  "html_file": "HTML/YR 3 SEM 1/Civil procedure 1 best notes.html"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "semester": 2,
+          "label": "Semester 2",
+          "courses": [
+            {
+              "code": "LAW 3210",
+              "title": "Criminal Procedure (core)",
+              "notes": []
+            },
+            {
+              "code": "LAW 3211",
+              "title": "Law of Business Associations I (core)",
+              "notes": [
+                {
+                  "title": "Business Law — Guidance Notes",
+                  "file": "YR 3 SEM 2/PDFs/BUSINESS LAW NOTES GUIDANCE NOTES.pdf",
+                  "html_file": "HTML/YR 3 SEM 2/BUSINESS LAW NOTES GUIDANCE NOTES.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 3212",
+              "title": "Environmental Law & Policy",
+              "notes": [
+                {
+                  "title": "LLB Environmental Law Notes",
+                  "file": "YR 2 SEM 2/PDFs/LLB Environmental Law Notes.pdf",
+                  "_filed_in": "YR 2 SEM 2",
+                  "html_file": "HTML/YR 2 SEM 2/LLB Environmental Law Notes.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 3213",
+              "title": "Principles of International Law II",
+              "notes": [
+                {
+                  "title": "International Law II — Notes (Uganda)",
+                  "file": "YR 3 SEM 2/PDFs/international-law-2-notes-uganda (2).pdf",
+                  "html_file": "HTML/YR 3 SEM 2/international-law-2-notes-uganda (2).html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 3214",
+              "title": "Human Rights in the Domestic Perspective",
+              "notes": []
+            },
+            {
+              "code": "LAW 3215",
+              "title": "Consumer Law",
+              "notes": []
+            },
+            {
+              "code": "LAW 3217",
+              "title": "Clinical Legal Education",
+              "notes": []
+            },
+            {
+              "code": "LAW 3218",
+              "title": "Civil Procedure II",
+              "notes": [
+                {
+                  "title": "Civil Procedure II Notes",
+                  "file": "YR 3 SEM 2/PDFs/CIVIL PROCEDURE 2 NOTES (1).pdf",
+                  "html_file": "HTML/YR 3 SEM 2/CIVIL PROCEDURE 2 NOTES (1).html"
+                },
+                {
+                  "title": "Civil Procedure",
+                  "file": "YR 3 SEM 2/PDFs/CIVIL PROCEDURE.pdf",
+                  "html_file": "HTML/YR 3 SEM 2/CIVIL PROCEDURE.html"
+                },
+                {
+                  "title": "Grounds for Judicial Review",
+                  "file": "YR 3 SEM 2/PDFs/Grounds for Judicial Review.pdf",
+                  "html_file": "HTML/YR 3 SEM 2/Grounds for Judicial Review.html"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "year": 4,
+      "label": "Year 4",
+      "semesters": [
+        {
+          "semester": 1,
+          "label": "Semester 1",
+          "courses": [
+            {
+              "code": "LAW 4112",
+              "title": "Law of Business Associations II",
+              "notes": [
+                {
+                  "title": "Business Associations II",
+                  "file": "YR 2 SEM 2/PDFs/Business Associations 2 .pdf",
+                  "_filed_in": "YR 2 SEM 2",
+                  "html_file": "HTML/YR 2 SEM 2/Business Associations 2 .html"
+                },
+                {
+                  "title": "Partnership Notes — Class II",
+                  "file": "YR 3 SEM 1/PDFs/partnership notes class-2.pdf",
+                  "_filed_in": "YR 3 SEM 1",
+                  "html_file": "HTML/YR 3 SEM 1/partnership notes class-2.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 4113",
+              "title": "Revenue Law & Taxation I",
+              "notes": [
+                {
+                  "title": "Revenue Law and Taxation I",
+                  "file": "YR 4 SEM 1/PDFs/Copy-Revenue Law and Taxation I.pdf",
+                  "html_file": "HTML/YR 4 SEM 1/Copy-Revenue Law and Taxation I.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 4114",
+              "title": "International Trade & Business",
+              "notes": [
+                {
+                  "title": "International Trade",
+                  "file": "YR 3 SEM 1/PDFs/international-trade.pdf",
+                  "_filed_in": "YR 3 SEM 1",
+                  "html_file": "HTML/YR 3 SEM 1/international-trade.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 4115",
+              "title": "Health & the Law I",
+              "notes": []
+            },
+            {
+              "code": "LAW 4116",
+              "title": "Intellectual Property Law I",
+              "notes": [
+                {
+                  "title": "Intellectual Property I",
+                  "file": "YR 4 SEM 1/PDFs/interlectual-property-one.pdf",
+                  "html_file": "HTML/YR 4 SEM 1/interlectual-property-one.html"
+                },
+                {
+                  "title": "Patent Lecture Notes",
+                  "file": "YR 4 SEM 1/PDFs/patent-lecture-notes.pdf",
+                  "html_file": "HTML/YR 4 SEM 1/patent-lecture-notes.html"
+                },
+                {
+                  "title": "Intellectual Property Fair",
+                  "file": "YR 4 SEM 1/PDFs/INTELLECTUAL PROPERTY FAIR.pdf",
+                  "html_file": "HTML/YR 4 SEM 1/INTELLECTUAL PROPERTY FAIR.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 4118",
+              "title": "Insurance Law",
+              "notes": [
+                {
+                  "title": "The Law of Insurance — Class Notes",
+                  "file": "YR 3 SEM 1/PDFs/the-law-of-insurance-class-notes.pdf",
+                  "_filed_in": "YR 3 SEM 1",
+                  "html_file": "HTML/YR 3 SEM 1/the-law-of-insurance-class-notes.html"
+                },
+                {
+                  "title": "Insurance Law — Evening Class (Mr Ntegyereize)",
+                  "file": "YR 3 SEM 2/PDFs/INSURANCE LAW - Evening Class- Mr Ntegyereize Alauterio (1).pdf",
+                  "_filed_in": "YR 3 SEM 2",
+                  "html_file": "HTML/YR 3 SEM 2/INSURANCE LAW - Evening Class- Mr Ntegyereize Alauterio (1).html"
+                },
+                {
+                  "title": "Insurance Law Class Notes (Revised)",
+                  "file": "YR 3 SEM 2/PDFs/INSURANCE LAW CLASS NOTES Revised.pdf",
+                  "_filed_in": "YR 3 SEM 2",
+                  "html_file": "HTML/YR 3 SEM 2/INSURANCE LAW CLASS NOTES Revised.html"
+                },
+                {
+                  "title": "Insurance Summary",
+                  "file": "YR 3 SEM 2/PDFs/Insurance Summary.pdf",
+                  "_filed_in": "YR 3 SEM 2",
+                  "html_file": "HTML/YR 3 SEM 2/Insurance Summary.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 4119",
+              "title": "Labour Law I",
+              "notes": []
+            },
+            {
+              "code": null,
+              "title": "Human Rights",
+              "notes": [
+                {
+                  "title": "Human Rights I",
+                  "file": "YR 4 SEM 1/PDFs/human rights-1[1].pdf",
+                  "html_file": "HTML/YR 4 SEM 1/human rights-1[1].html"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "semester": 2,
+          "label": "Semester 2",
+          "courses": [
+            {
+              "code": "LAW 4202",
+              "title": "Research Paper",
+              "notes": [
+                {
+                  "title": "Legal Research Methodology — Kasim Balarabe",
+                  "file": "YR 4 SEM 2/PDFs/Legal Research Methodology by Kasim Balarabe-1.pdf",
+                  "html_file": "HTML/YR 4 SEM 2/Legal Research Methodology by Kasim Balarabe-1.html"
+                },
+                {
+                  "title": "Research Notes Lecture",
+                  "file": "YR 4 SEM 1/PDFs/RESEARCH NOTES LECTURE.pdf",
+                  "_filed_in": "YR 4 SEM 1",
+                  "html_file": "HTML/YR 4 SEM 1/RESEARCH NOTES LECTURE.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 4214",
+              "title": "Estate Planning",
+              "notes": []
+            },
+            {
+              "code": "LAW 4215",
+              "title": "Revenue Law & Taxation II",
+              "notes": []
+            },
+            {
+              "code": "LAW 4216",
+              "title": "Gender and the Law",
+              "notes": [
+                {
+                  "title": "Gender CW — Group Seven",
+                  "file": "YR 4 SEM 2/PDFs/GENDER CW GROUP SEVEN.pdf",
+                  "html_file": "HTML/YR 4 SEM 2/GENDER CW GROUP SEVEN.html"
+                }
+              ]
+            },
+            {
+              "code": "LAW 4217",
+              "title": "Criminology and Penology",
+              "notes": []
+            },
+            {
+              "code": "LAW 4220",
+              "title": "Intellectual Property Law II",
+              "notes": [
+                {
+                  "title": "Intellectual Property Fair (II)",
+                  "file": "YR 4 SEM 2/PDFs/INTELLECTUAL PROPERTY FAIR.pdf",
+                  "html_file": "HTML/YR 4 SEM 2/INTELLECTUAL PROPERTY FAIR.html"
+                }
+              ]
+            },
+            {
+              "code": null,
+              "title": "Jurisprudence II",
+              "notes": [
+                {
+                  "title": "Jurisprudence Unit I (II)",
+                  "file": "YR 4 SEM 2/PDFs/jurisprudence-Unit-I.pdf",
+                  "html_file": "HTML/YR 4 SEM 2/jurisprudence-Unit-I.html"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "_inconsistencies_to_flag": [
+    "LAW 3109 'Family Law II (core)' in Year 3 Sem 1 — Family Law II is also LAW 2209 in Year 2 Sem 2. One is likely mislabeled. Possibly Year 3 should be 'Family Law III' or Year 2 should be 'Family Law I'.",
+    "LAW 4215 'Revenue Law & Taxation I' was listed in Year 4 Sem 1 alongside LAW 4113 with the same title. Treated as a duplicate; LAW 4215 retained only in Year 4 Sem 2 as 'Revenue Law & Taxation II'.",
+    "Several courses lack codes (Communication Skills, Legal Methods, Company Law I/II, Sale of Goods, Foundations of Land Law, Jurisprudence I/II, Human Rights). Awaiting client confirmation on whether codes are coming.",
+    "Some PDFs are surfaced under multiple courses (e.g. NOTES_ON_CONTRACT_1_and_2_Ug.pdf is the source for both LAW 1109 and LAW 1209). Marked with `_also_used_by`."
+  ],
+  "_ambiguous_mappings": [
+    {
+      "file": "YR 1 SEM 2/PDFs/LLB Fundamentals of Criminal Law Notes.pdf",
+      "assigned_to": "LAW 1208 Criminal Liability",
+      "reason": "Spreadsheet's LAW 1208 entry references 'Fundamentals of criminal law notes' which matches this filename. LAW 1108 'Fundamentals of Criminal Law' could also be a candidate."
+    },
+    {
+      "file": "YR 3 SEM 2/PDFs/CIVIL PROCEDURE.pdf",
+      "assigned_to": "LAW 3218 Civil Procedure II",
+      "reason": "Generic title, could fit LAW 3115 (Civil Procedure I) or LAW 3218. Folder placement (Sem 2) tipped toward 3218."
+    },
+    {
+      "file": "YR 3 SEM 2/PDFs/Grounds for Judicial Review.pdf",
+      "assigned_to": "LAW 3218 Civil Procedure II",
+      "reason": "Judicial review can sit under Admin Law (LAW 1207/2107) or Civil Procedure II. Assigned to 3218 based on folder placement."
+    },
+    {
+      "file": "YR 3 SEM 2/PDFs/time-present-and-time-past-lord-reed-lecture.pdf",
+      "assigned_to": "Jurisprudence (Year 3 Sem 1)",
+      "reason": "Lord Reed lectures often cover legal-philosophical themes; could fit Jurisprudence or International Law. Placed under Jurisprudence."
+    },
+    {
+      "file": "YR 3 SEM 1/PDFs/GENDER CW GROUP SEVEN.pdf",
+      "assigned_to": "LAW 4216 Gender and the Law (Year 4 Sem 2)",
+      "reason": "Same file appears in YR 4 SEM 2 folder as well. Spreadsheet places Gender CW under both LAW 4216 and Jurisprudence II — kept the LAW 4216 link as primary."
+    }
+  ],
+  "_unmapped_pdfs": {
+    "_note": "These 8 PDFs are duplicate copies of files already mapped under another path (same filename in another folder, or explicit 'copy' suffix). They aren't lost — the canonical file is referenced. Listed here for completeness.",
+    "duplicates": [
+      {
+        "duplicate": "YR 1 SEM 1/PDFs/LEGAL METHODS QUESTIONS AND ANSWERS (1).pdf",
+        "canonical": "YR 1 SEM 2/PDFs/LEGAL METHODS QUESTIONS AND ANSWERS (1).pdf"
+      },
+      {
+        "duplicate": "YR 1 SEM 1/PDFs/Legal Method Notes 1.pdf",
+        "canonical": "YR 1 SEM 2/PDFs/Legal Method Notes 1.pdf"
+      },
+      {
+        "duplicate": "YR 1 SEM 2/PDFs/Criminal Law 1 - jorvannotes.pdf",
+        "canonical": "YR 1 SEM 1/PDFs/Criminal Law 1 - jorvannotes.pdf"
+      },
+      {
+        "duplicate": "YR 2 SEM 2/PDFs/Land Law II-Lecture notes. copy.pdf",
+        "canonical": "YR 2 SEM 2/PDFs/Land Law II-Lecture notes..pdf"
+      },
+      {
+        "duplicate": "YR 3 SEM 1/PDFs/Business Associations 2 .pdf",
+        "canonical": "YR 2 SEM 2/PDFs/Business Associations 2 .pdf"
+      },
+      {
+        "duplicate": "YR 3 SEM 1/PDFs/CIVIL PROCEDURE 1 NOTES copy.pdf",
+        "canonical": "YR 3 SEM 1/PDFs/CIVIL PROCEDURE 1 NOTES.pdf"
+      },
+      {
+        "duplicate": "YR 3 SEM 1/PDFs/GENDER CW GROUP SEVEN.pdf",
+        "canonical": "YR 4 SEM 2/PDFs/GENDER CW GROUP SEVEN.pdf"
+      },
+      {
+        "duplicate": "YR 4 SEM 1/PDFs/Legal Research Methodology by Kasim Balarabe-1.pdf",
+        "canonical": "YR 4 SEM 2/PDFs/Legal Research Methodology by Kasim Balarabe-1.pdf"
+      }
+    ]
+  }
+};
+  const FOLDERS = ["Exam revision", "Land Law cases", "Weekend reading"];
+  const NOTES_BASE = "Notes/";
+
+  // ---------- Locate note from URL ----------
+  const params = new URLSearchParams(location.search);
+  const fileParam = params.get('file');
+
+  function findNote(htmlFile) {
+    for (const year of CURRICULUM.years) {
+      for (const sem of year.semesters) {
+        for (const course of sem.courses) {
+          for (let i = 0; i < course.notes.length; i++) {
+            if (course.notes[i].html_file === htmlFile) return { year, sem, course, note: course.notes[i], idx: i };
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  function encodePath(p) { return p.split('/').map(encodeURIComponent).join('/'); }
+
+  // ---------- Render ----------
+  function renderBreadcrumb(loc) {
+    document.getElementById('breadcrumb').innerHTML = `
+      <a href="sikia-dashboard.html">Home</a><span>/</span>
+      <a href="sikia-notes.html">Notes</a><span>/</span>
+      <span>${loc.year.label}</span><span>/</span>
+      <span>${loc.sem.label}</span><span>/</span>
+      <span class="breadcrumb-active">${loc.course.code ? loc.course.code + ' · ' : ''}${loc.course.title}</span>
+    `;
+  }
+
+  function renderHead(loc) {
+    document.getElementById('doc-tag').textContent = `Note — ${loc.course.code || loc.course.title}`;
+    document.getElementById('doc-title').textContent = loc.note.title;
+    const parts = [
+      loc.course.code ? loc.course.code + ' · ' + loc.course.title : loc.course.title,
+      `${loc.year.label} · ${loc.sem.label}`,
+      'Source: ' + loc.note.file.split('/').pop()
+    ];
+    document.getElementById('doc-meta').innerHTML = parts.map(p => `<span class="doc-meta-item">${p}</span>`).join('');
+    document.title = `Sikia Law — ${loc.note.title}`;
+  }
+
+  let bookmarked = false;
+  let assignedFolder = null;
+
+  function renderActions(loc) {
+    const el = document.getElementById('doc-actions');
+    el.innerHTML = `
+      <button class="icon-btn" id="btn-bookmark" title="Bookmark"><i class="fa fa-bookmark"></i></button>
+      <button class="icon-btn" id="btn-top" title="Back to top"><i class="fa fa-arrow-up"></i></button>
+      <button class="icon-btn" id="btn-download" title="Download as PDF"><i class="fa fa-download"></i></button>
+      <a class="icon-btn" id="btn-original" href="${NOTES_BASE + encodePath(loc.note.file)}" target="_blank" rel="noopener" title="Open original PDF"><i class="fa fa-arrow-up-right"></i></a>
+      <div class="folder-popover-wrap">
+        <button class="pill-btn" id="btn-folder"><i class="fa fa-folder-plus"></i>Add to folder</button>
+        <div class="folder-popover" id="folder-popover">
+          <div class="pop-toast" id="pop-toast" style="display:none"><i class="fa fa-check"></i><span id="pop-toast-text">Saved to bookmarks</span></div>
+          <div class="pop-head">Add to folder</div>
+          <div id="folder-list"></div>
+          <div class="folder-divider"></div>
+          <div class="folder-new" id="folder-new"><i class="fa fa-plus"></i>Create new folder</div>
+        </div>
+      </div>
+    `;
+
+    document.getElementById('btn-bookmark').addEventListener('click', () => {
+      bookmarked = !bookmarked;
+      document.getElementById('btn-bookmark').classList.toggle('active', bookmarked);
+      showToast(bookmarked ? 'Added to bookmarks' : 'Removed from bookmarks');
+    });
+    document.getElementById('btn-top').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    document.getElementById('btn-download').addEventListener('click', () => window.print());
+    document.getElementById('btn-folder').addEventListener('click', (e) => {
+      e.stopPropagation();
+      document.getElementById('folder-popover').classList.toggle('open');
+      if (!bookmarked) {
+        bookmarked = true;
+        document.getElementById('btn-bookmark').classList.add('active');
+        const t = document.getElementById('pop-toast');
+        t.style.display = 'flex';
+        document.getElementById('pop-toast-text').textContent = 'Saved to bookmarks';
+      }
+      renderFolderList();
+    });
+    document.addEventListener('click', (e) => {
+      const pop = document.getElementById('folder-popover');
+      if (pop && !pop.parentElement.contains(e.target)) pop.classList.remove('open');
+    });
+  }
+
+  function renderFolderList() {
+    const el = document.getElementById('folder-list');
+    if (!el) return;
+    el.innerHTML = FOLDERS.map(f => `
+      <div class="folder-row${assignedFolder === f ? ' selected' : ''}" data-folder="${f}">
+        <i class="fa fa-folder"></i><span>${f}</span><i class="fa fa-check check"></i>
+      </div>
+    `).join('');
+    el.querySelectorAll('.folder-row').forEach(row => {
+      row.addEventListener('click', () => {
+        const f = row.dataset.folder;
+        assignedFolder = (assignedFolder === f) ? null : f;
+        renderFolderList();
+        document.getElementById('pop-toast-text').textContent = assignedFolder ? `Moved to "${assignedFolder}"` : 'Removed from folder';
+      });
+    });
+    document.getElementById('folder-new').onclick = () => {
+      const name = prompt('New folder name');
+      if (name && name.trim()) { FOLDERS.push(name.trim()); renderFolderList(); }
+    };
+  }
+
+  function renderRelated(loc) {
+    const el = document.getElementById('related');
+    const others = loc.course.notes.filter((_, i) => i !== loc.idx);
+    if (others.length === 0) {
+      el.innerHTML = '<div class="rail-empty">This is the only note for this course.</div>';
+      return;
+    }
+    el.innerHTML = others.slice(0, 6).map(n => `
+      <a class="rail-item" href="sikia-document.html?file=${encodeURIComponent(n.html_file)}">
+        <div class="rail-item-title">${n.title}</div>
+        <div class="rail-item-sub">${loc.course.code ? loc.course.code + ' · ' : ''}${loc.course.title}</div>
+      </a>
+    `).join('');
+  }
+
+  function renderFootNav(loc) {
+    const el = document.getElementById('doc-foot-nav');
+    const prev = loc.idx > 0 ? loc.course.notes[loc.idx - 1] : null;
+    const next = loc.idx < loc.course.notes.length - 1 ? loc.course.notes[loc.idx + 1] : null;
+    el.innerHTML = `
+      <a class="foot-nav-card prev ${prev ? '' : 'disabled'}" ${prev ? `href="sikia-document.html?file=${encodeURIComponent(prev.html_file)}"` : ''}>
+        <div class="foot-nav-label"><i class="fa fa-chevron-left"></i>Previous in this course</div>
+        <div class="foot-nav-title">${prev ? prev.title : 'No previous note'}</div>
+      </a>
+      <a class="foot-nav-card next ${next ? '' : 'disabled'}" ${next ? `href="sikia-document.html?file=${encodeURIComponent(next.html_file)}"` : ''}>
+        <div class="foot-nav-label">Next in this course<i class="fa fa-chevron-right"></i></div>
+        <div class="foot-nav-title">${next ? next.title : 'No next note'}</div>
+      </a>
+    `;
+  }
+
+  // ---------- Load extracted content from per-note JS bundle ----------
+  // Each note's body lives at notes-content/<slug>.js and sets window.__NOTE_CONTENT.
+  // <script src=...> loads work on file://, unlike fetch and iframe.contentDocument.
+  function loadContent(htmlFile) {
+    const proseEl = document.getElementById('prose');
+    const slug = (typeof NOTES_MANIFEST !== 'undefined') ? NOTES_MANIFEST[htmlFile] : null;
+    if (!slug) {
+      proseEl.innerHTML = `<div class="reader-loading">
+        No extracted content found for this note.<br>
+        <a href="${NOTES_BASE + encodePath(htmlFile)}" target="_blank" rel="noopener" style="color: var(--text); margin-top: 12px; display: inline-block;">Open the source HTML directly →</a>
+      </div>`;
+      return;
+    }
+    window.__NOTE_CONTENT = null;
+    const script = document.createElement('script');
+    script.src = `notes-content/${slug}.js`;
+    script.onload = () => {
+      const html = window.__NOTE_CONTENT;
+      if (html) {
+        proseEl.innerHTML = html;
+        cleanProse(proseEl);
+        buildTOC(proseEl);
+        applyScrollspy(proseEl);
+      } else {
+        proseEl.innerHTML = `<div class="reader-loading">Note content was empty.</div>`;
+      }
+      script.remove();
+    };
+    script.onerror = () => {
+      proseEl.innerHTML = `<div class="reader-loading">
+        Could not load note content.<br>
+        <a href="${NOTES_BASE + encodePath(htmlFile)}" target="_blank" rel="noopener" style="color: var(--text); margin-top: 12px; display: inline-block;">Open the source HTML directly →</a>
+      </div>`;
+      script.remove();
+    };
+    document.head.appendChild(script);
+  }
+
+  // ---------- Prose cleanup: title-case ALL CAPS headings + merge soft-break paragraphs ----------
+  // Words that stay lowercase in title case unless they're the first or last word.
+  const TITLE_SMALL_WORDS = new Set([
+    'a','an','the','of','in','on','at','to','for','but','by','with','and','or','as','is','it',
+    'if','from','than','that','vs','v','via','per','onto','into','upon','off','out','up','down'
+  ]);
+
+  function smartTitleCase(str) {
+    if (!str) return str;
+    const trimmed = str.trim();
+    // Only convert if it's actually all-caps (ignore numbers and punctuation in the test).
+    const letters = trimmed.replace(/[^A-Za-z]/g, '');
+    if (!letters || letters !== letters.toUpperCase()) return str; // mixed case → leave alone
+    // Split, title-case each word, keep small words lowercase unless first/last.
+    const tokens = trimmed.split(/(\s+)/); // keep whitespace tokens
+    let wordIdx = 0;
+    const wordCount = tokens.filter(t => t.trim().length).length;
+    return tokens.map(tok => {
+      if (!tok.trim()) return tok;
+      const isFirst = wordIdx === 0;
+      const isLast = wordIdx === wordCount - 1;
+      wordIdx++;
+      const lower = tok.toLowerCase();
+      // Strip surrounding punctuation to check the core word
+      const core = lower.replace(/^[^a-z0-9]+|[^a-z0-9]+$/g, '');
+      if (!isFirst && !isLast && TITLE_SMALL_WORDS.has(core)) return lower;
+      // Capitalize first letter of the core word; preserve surrounding punctuation
+      return lower.replace(/([a-z])/, (m) => m.toUpperCase());
+    }).join('');
+  }
+
+  function titleCaseHeadings(root) {
+    root.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(h => {
+      // Only process if there are no child elements (just text). Mixed-content headings stay as-is.
+      if (h.children.length === 0) {
+        const original = h.textContent;
+        const converted = smartTitleCase(original);
+        if (converted !== original) h.textContent = converted;
+      }
+    });
+  }
+
+  function joinSoftBreaks(root) {
+    // Walk top-level <p> elements; if a <p> doesn't end in sentence-final punctuation
+    // and its next sibling is also a <p>, merge them. Repeat until current ends cleanly.
+    const ps = Array.from(root.querySelectorAll('p'));
+    for (const p of ps) {
+      // skip if already removed during a prior merge
+      if (!p.parentNode) continue;
+      let next = p.nextElementSibling;
+      while (next && next.tagName === 'P') {
+        const txt = (p.textContent || '').replace(/[\s ]+$/, '');
+        if (!txt) break;
+        const last = txt.slice(-1);
+        // Sentence-final or close-bracket → keep as separate paragraph
+        if (/[.?!:;)"\]]/.test(last)) break;
+        // Soft break: append next's content to p with a single space
+        const cur = p.innerHTML.replace(/\s+$/, '');
+        const more = next.innerHTML.replace(/^\s+/, '');
+        p.innerHTML = cur + ' ' + more;
+        const toRemove = next;
+        next = next.nextElementSibling;
+        toRemove.remove();
+      }
+    }
+  }
+
+  function cleanProse(root) {
+    joinSoftBreaks(root);
+    titleCaseHeadings(root);
+  }
+
+  // ---------- TOC + scrollspy ----------
+  function slugify(str, used) {
+    let base = str.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'section';
+    let s = base, n = 1;
+    while (used.has(s)) { n++; s = base + '-' + n; }
+    used.add(s);
+    return s;
+  }
+
+  function buildTOC(prose) {
+    const headings = prose.querySelectorAll('h2, h3, h4');
+    const tocEl = document.getElementById('toc');
+    if (!headings.length) {
+      tocEl.innerHTML = '<div class="toc-empty">No sections detected.</div>';
+      return;
+    }
+    const used = new Set();
+    let html = '';
+    headings.forEach(h => {
+      if (!h.id || used.has(h.id)) h.id = slugify(h.textContent || h.innerText, used);
+      else used.add(h.id);
+      const level = h.tagName.toLowerCase();
+      const txt = (h.textContent || '').trim();
+      if (!txt) return;
+      html += `<a class="toc-item ${level}" href="#${h.id}">${txt}</a>`;
+    });
+    tocEl.innerHTML = html;
+
+    // smooth scroll
+    tocEl.querySelectorAll('.toc-item').forEach(a => {
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        const id = a.getAttribute('href').slice(1);
+        const target = document.getElementById(id);
+        if (target) {
+          window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
+        }
+      });
+    });
+  }
+
+  function applyScrollspy(prose) {
+    const headings = prose.querySelectorAll('h2, h3, h4');
+    if (!headings.length) return;
+    const tocLinks = document.querySelectorAll('#toc .toc-item');
+    const idToLink = new Map();
+    tocLinks.forEach(a => idToLink.set(a.getAttribute('href').slice(1), a));
+
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          tocLinks.forEach(l => l.classList.remove('active'));
+          const id = entry.target.id;
+          const link = idToLink.get(id);
+          if (link) link.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-30% 0px -55% 0px' });
+    headings.forEach(h => obs.observe(h));
+  }
+
+  // ---------- Toast ----------
+  function showToast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(showToast.t);
+    showToast.t = setTimeout(() => el.classList.remove('show'), 2200);
+  }
+
+  // ---------- Boot ----------
+  if (!fileParam) {
+    document.getElementById('doc-title').textContent = 'No document selected';
+    document.getElementById('doc-meta').innerHTML = '';
+    document.getElementById('doc-tag').style.display = 'none';
+    document.getElementById('prose').innerHTML = '<div class="reader-loading"><a href="sikia-notes.html">← Back to Notes</a></div>';
+  } else {
+    const loc = findNote(fileParam);
+    if (!loc) {
+      document.getElementById('doc-title').textContent = 'Document not found';
+      document.getElementById('doc-meta').innerHTML = '';
+      document.getElementById('doc-tag').style.display = 'none';
+      document.getElementById('prose').innerHTML = '<div class="reader-loading"><a href="sikia-notes.html">← Back to Notes</a></div>';
+    } else {
+      renderBreadcrumb(loc);
+      renderHead(loc);
+      renderActions(loc);
+      renderRelated(loc);
+      renderFootNav(loc);
+      loadContent(fileParam);
+    }
+  }
+</script>
+
+<script>
+  // Mobile drawer toggle — works alongside the page's existing scripts.
+  (function() {
+    const shell = document.querySelector('.dash-shell');
+    const toggle = document.querySelector('.menu-toggle');
+    if (!shell || !toggle) return;
+    const backdrop = document.querySelector('.sidebar-backdrop');
+    function openMenu() {
+      shell.classList.add('sidebar-open');
+      document.body.classList.add('menu-open');
+      toggle.setAttribute('aria-expanded', 'true');
+    }
+    function closeMenu() {
+      shell.classList.remove('sidebar-open');
+      document.body.classList.remove('menu-open');
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+    toggle.addEventListener('click', () => {
+      shell.classList.contains('sidebar-open') ? closeMenu() : openMenu();
+    });
+    if (backdrop) backdrop.addEventListener('click', closeMenu);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+    document.querySelectorAll('.sidebar a').forEach(a => {
+      a.addEventListener('click', () => setTimeout(closeMenu, 50));
+    });
+  })();
+</script>
+
+</body>
+</html>
