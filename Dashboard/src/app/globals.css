@@ -598,8 +598,12 @@ html::-webkit-scrollbar-thumb:hover,
 .folder-card {
   /* Muted, flat brand-colour folder (no gradient). Cover + body are two
      close, desaturated tones of the variant so the card reads as one calm
-     muted colour rather than a vivid gradient wallet. */
+     muted colour rather than a vivid gradient wallet.
+     Solid fallbacks first so browsers without color-mix support
+     (Safari < 16.2) still render a visible folder instead of a blank card. */
+  --cover-flat: #d0923b;
   --cover-flat: color-mix(in srgb, var(--grad-b) 74%, #e2d8c8);
+  --folder-bg: #89540a;
   --folder-bg: color-mix(in srgb, var(--grad-c) 86%, #4a3818);
   --grad-a: var(--color-orange-300);
   --grad-b: var(--color-orange-500);
