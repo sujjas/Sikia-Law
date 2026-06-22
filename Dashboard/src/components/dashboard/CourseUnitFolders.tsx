@@ -108,12 +108,18 @@ export function CourseUnitFolders({
       <div
         ref={yearIndicatorRef}
         aria-hidden
-        className={`absolute top-1 bottom-1 bg-white rounded-full shadow-[0_1px_2px_rgba(0,0,0,0.06)] ring-1 ring-stone-200 ${
+        className={`absolute top-1 bottom-1 rounded-full ${
           yearMeasured
             ? "transition-[left,width] duration-300 ease-[var(--ease-out)]"
             : ""
         }`}
-        style={{ left: 0, width: 0 }}
+        style={{
+          left: 0,
+          width: 0,
+          background: "var(--orange-wash)",
+          boxShadow:
+            "0 1px 2px rgba(0,0,0,0.06), inset 0 0 0 1px color-mix(in srgb, var(--orange) 30%, transparent)",
+        }}
       />
       {curriculum.map((y) => {
         const isActive = y.year === activeYear;
@@ -163,7 +169,7 @@ export function CourseUnitFolders({
             style={{ padding: "2px 7px 2px 2px", gap: 4 }}
           >
             <span
-              className="font-sans text-label-sm font-semibold text-stone-900 whitespace-nowrap"
+              className="font-sans text-label-sm font-semibold text-[color:var(--orange-dark)] whitespace-nowrap"
               style={{
                 paddingInline: "calc(var(--year-btn-px) - 2px)",
                 paddingBlock: "calc(var(--year-btn-py) - 2px)",
@@ -193,10 +199,14 @@ export function CourseUnitFolders({
                       // Border kept transparent on inactive so widths stay even
                       // and the white indicator pill shows through.
                       border: `1px solid ${
-                        semActive ? "var(--line-2)" : "transparent"
+                        semActive
+                          ? "color-mix(in srgb, var(--orange) 30%, transparent)"
+                          : "transparent"
                       }`,
-                      background: semActive ? "var(--color-stone-150)" : "transparent",
-                      color: semActive ? "var(--text-2)" : "var(--text-3)",
+                      background: semActive
+                        ? "color-mix(in srgb, var(--orange) 18%, transparent)"
+                        : "transparent",
+                      color: semActive ? "var(--orange-dark)" : "var(--text-3)",
                       fontWeight: semActive ? 600 : 500,
                       lineHeight: 1.3,
                     }}

@@ -102,10 +102,16 @@ export function NotesView({ curriculum, initialYear, initialCourse }: Props) {
         <div
           ref={indicatorRef}
           aria-hidden
-          className={`absolute top-1 bottom-1 bg-white rounded-full shadow-[0_1px_2px_rgba(0,0,0,0.06)] ring-1 ring-stone-200 ${
+          className={`absolute top-1 bottom-1 rounded-full ${
             hasMeasured ? "transition-[left,width] duration-300 ease-[var(--ease-out)]" : ""
           }`}
-          style={{ left: 0, width: 0 }}
+          style={{
+            left: 0,
+            width: 0,
+            background: "var(--orange-wash)",
+            boxShadow:
+              "0 1px 2px rgba(0,0,0,0.06), inset 0 0 0 1px color-mix(in srgb, var(--orange) 30%, transparent)",
+          }}
         />
         {years.map((y) => {
           const active = y.year === activeYear;
@@ -123,7 +129,7 @@ export function NotesView({ curriculum, initialYear, initialCourse }: Props) {
               }}
               className={`relative z-10 px-4 sm:px-5 py-2 rounded-full font-sans text-label-sm cursor-pointer transition-colors whitespace-nowrap ${
                 active
-                  ? "text-stone-900 font-semibold"
+                  ? "font-semibold text-[color:var(--orange-dark)]"
                   : "text-stone-700 font-medium hover:text-stone-900"
               }`}
             >
