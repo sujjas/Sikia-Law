@@ -709,7 +709,19 @@ html::-webkit-scrollbar-thumb:hover,
   transform: translate(42px, 2.6px) rotate(6deg);
   padding: 8px;
   display: flex;
+  flex-direction: column;
+  gap: 6px;
   overflow: hidden;
+}
+/* Sikia "letterhead" on the top sheet — the one white surface where the
+   two-tone logo renders true. A subtle brand mark on every folder. */
+.folder-card__paper--3::before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 11px;
+  flex-shrink: 0;
+  background: url("/sikia-law-logo.svg") left center / auto 11px no-repeat;
 }
 .folder-card:hover .folder-card__papers { margin-left: -72px; }
 .folder-card:hover .folder-card__paper--1 {
