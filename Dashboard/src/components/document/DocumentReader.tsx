@@ -10,12 +10,6 @@ import { DefineInline } from "./DefineInline";
 import { ListenPlayer } from "./ListenPlayer";
 import { haptic } from "@/lib/haptics";
 
-/* Per-reader watermark — ties on-screen content to the logged-in student so
- * leaked screenshots are traceable. (Web cannot block screenshots; this is the
- * realistic deterrent — see the client note on content protection.) */
-const WATERMARK_LABEL = "Amelia M. · amelia.m@students.muk.ac.ug";
-const WATERMARK_SVG = `<svg xmlns='http://www.w3.org/2000/svg' width='470' height='250'><text x='14' y='150' transform='rotate(-26 235 125)' fill='#000000' fill-opacity='0.05' font-family='sans-serif' font-size='15' font-weight='500'>${WATERMARK_LABEL}</text></svg>`;
-const WATERMARK_BG = `url("data:image/svg+xml,${encodeURIComponent(WATERMARK_SVG)}")`;
 
 type Breadcrumb = {
   yearLabel: string;
@@ -296,7 +290,7 @@ export function DocumentReader({
           />
 
           {html ? (
-            <div className="relative">
+            <div className="relative" style={{ overflow: "hidden" }}>
               <article
                 ref={proseRef}
                 className="doc-prose"
@@ -304,10 +298,17 @@ export function DocumentReader({
               />
               <div
                 aria-hidden
-                className="absolute inset-0"
+                className="absolute"
                 style={{
-                  backgroundImage: WATERMARK_BG,
+                  top: "-25%",
+                  left: "-25%",
+                  width: "150%",
+                  height: "150%",
+                  backgroundImage: "url(/sikia-law-logo.svg)",
                   backgroundRepeat: "repeat",
+                  backgroundSize: "230px auto",
+                  opacity: 0.09,
+                  transform: "rotate(-22deg)",
                   pointerEvents: "none",
                 }}
               />
